@@ -1,0 +1,17 @@
+LISEZMOI: TRAVAIL EN COURS (WIP) IsaGeoCoq2_R1
+--------
+
+
+On suppose l'installation:
+
+/home/user01/Isabelle2021-1/
+/home/user01/IsaGeoCoq2_R1/
+
+Pour compiler la bibliotèque ('-j 8' n'est pas nécessaire)
+cd /home/user01/
+./Isa*2021-1/bin/isabelle build -j 8 -v -D IsaGeoCoq2_R1
+
+Pour produire les documents pdf (dans le répertoire /home/user01/abc/)
+cd /home/user01/
+isabelle document -V -v -d IsaGeoCoq2_R1 -O abc IsaGeoCoq2_R1
+
