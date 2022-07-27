@@ -2,7 +2,8 @@
 
 Tarski_Postulate_Parallels.thy
 
-Version 2.1.0 IsaGeoCoq2_R1
+Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
+Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
@@ -27,18 +28,6 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-*)
-
-(* TODO
-In "Parallel postulates and continuity axioms: a mechanized
-study in intuitionistic logic using Coqs
-Pierre Boutry, Charly Gries, Julien Narboux, Pascal Schreck":
-Theorem 10
-Fig. 54. In Archimedean neutral geometry:
-
-(34) \<longrightarrow> (27)
-(23) \<longrightarrow> (33)
-Theorem 11 (Szmielew’s theorem)
 *)
 
 theory Tarski_Postulate_Parallels
@@ -580,11 +569,13 @@ definition Postulate31 :: "bool" where "Postulate31 \<equiv> weak_inverse_projec
 definition Postulate32 :: "bool" where "Postulate32 \<equiv> weak_tarski_s_parallel_postulate"
 
 (* (33) weak_triangle_circumscription_principle *)
-definition Postulate33 :: "bool" where "Postulate33 \<equiv>  weak_triangle_circumscription_principle"
-  (* (34) legendre_s_parallel_postulate *)
-definition Postulate34 :: "bool" where "Postulate34 \<equiv>  legendre_s_parallel_postulate"
+definition Postulate33 :: "bool" where "Postulate33 \<equiv> weak_triangle_circumscription_principle"
 
-(* (?) existential_playfair_s_postulate *)
+(* (34) legendre_s_parallel_postulate *)
+definition Postulate34 :: "bool" where "Postulate34 \<equiv> legendre_s_parallel_postulate"
+
+(* (35) existential_playfair_s_postulate *)
+definition Postulate35:: "bool" where "Postulate35 \<equiv> existential_playfair_s_postulate"
 
 section "Some postulates of the parallels"
 
@@ -628,9 +619,17 @@ proof -
       by (metis Col_perm P13 P17 P3 col_transitivity_2 midpoint_col)
     hence P21: "\<not> Col M C E"
       by (metis P19 P4 bet_col col2__eq col_permutation_4 midpoint_bet midpoint_distinct_2)
-    have P22: "M C D' CongA M B E \<and> M D' C CongA M E B" 
-      using P13 l11_49
-      by (metis Cong_cases P19 P2 P4 l11_51 l7_13_R1 l7_2 midpoint_cong not_col_distincts)
+    have "Cong C D' B E \<and> (C \<noteq> D' \<longrightarrow> (M C D' CongA M B E \<and> M D' C CongA M E B))" 
+    proof(rule l11_49)
+      show "C M D' CongA B M E" 
+        by (metis Bet_cases Midpoint_def P2 P21 P4 is_midpoint_id l11_14 not_col_distincts)
+      show "Cong M C M B" 
+        using P2 cong_3421 midpoint_cong by blast
+      show "Cong M D' M E" 
+        using P4 midpoint_cong not_cong_2134 by blast
+    qed
+    hence P22: "M C D' CongA M B E \<and> M D' C CongA M E B" 
+      using P13 by blast
     have P23: "Cong C D' B E"
       using P11 P2 P4 l7_13_R1 l7_2 by blast
     have P27: "C B TS D D'"
@@ -2173,7 +2172,7 @@ proof -
             ultimately
             have "?thesis"
             proof -
-              obtain pp :: "'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> 'p" where
+              obtain pp :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint" where
                 "\<forall>x0 x2 x3 x4 x5. (\<exists>v6. Col x5 x4 v6 \<and> x3 x2 OS x0 v6) 
                     = (Col x5 x4 (pp x0 x2 x3 x4 x5) \<and> 
                        x3 x2 OS x0 (pp x0 x2 x3 x4 x5))"
@@ -2394,8 +2393,8 @@ proof -
                 have "A B C CongA A B C"
                   by (simp add: \<open>A \<noteq> B\<close> \<open>C \<noteq> B\<close> conga_refl) 
                 moreover
-                have "C B B1 CongA B C A"
-                  by (simp add: Tarski_neutral_dimensionless.conga_sym Tarski_neutral_dimensionless_axioms \<open>B C A CongA C B B1\<close>) 
+                have "C B B1 CongA B C A" 
+                  using \<open>B C A CongA C B B1\<close> not_conga_sym by blast
                 moreover
                 have "A B B1 CongA B1 B A"
                   using \<open>A \<noteq> B\<close> \<open>B \<noteq> B1\<close> conga_pseudo_refl by auto 
@@ -3001,8 +3000,8 @@ Coplanar IAB IAC IBD C2 \<and>
             have "Acute A B C"
               by (simp add: \<open>Acute A B C\<close>) 
             moreover
-            have "A B T LeA A B C"
-              by (simp add: Tarski_neutral_dimensionless.inangle__lea Tarski_neutral_dimensionless_axioms \<open>T InAngle A B C\<close>) 
+            have "A B T LeA A B C" 
+              by (simp add: \<open>T InAngle A B C\<close> inangle__lea)
             hence "T B A LeA A B C"
               using lea_left_comm by blast 
             ultimately
@@ -4509,7 +4508,6 @@ proof -
   ultimately
   show ?thesis by auto
 qed
-
 
 lemma existential_playfair__rah:
   assumes "existential_playfair_s_postulate"
@@ -13811,6 +13809,28 @@ proof -
     by blast
 qed
 
+lemma playfair__existential_playfair:
+  assumes "playfair_s_postulate" 
+  shows "existential_playfair_s_postulate"
+proof -
+  obtain PA PB PC where "\<not> Bet PA PB PC" and "\<not> Bet PB PC PA" and "\<not> Bet PC PA PB"
+    using lower_dim_ex by blast
+  hence "\<not> Col PA PB PC" 
+    using Col_def by presburger
+  moreover
+  {
+    fix B1 B2 C1 C2
+    assume "PA PB Par B1 B2" and "Col PC B1 B2" and
+      "PA PB Par C1 C2" and
+      "Col PC C1 C2"
+    have "Col C1 B1 B2 \<and> Col C2 B1 B2" 
+      using assms \<open>Col PC B1 B2\<close> \<open>Col PC C1 C2\<close> \<open>PA PB Par B1 B2\<close> 
+        \<open>PA PB Par C1 C2\<close> playfair_s_postulate_def by blast
+  }
+  ultimately show ?thesis 
+    using existential_playfair_s_postulate_def by blast
+qed
+
 subsection "Equivalences" 
 
 lemma proclus__aristotle:
@@ -15560,26 +15580,40 @@ proof -
   have "Postulate09 \<longleftrightarrow> Postulate10" 
   proof -
     have "Postulate09 \<longrightarrow> Postulate10" 
-      using Postulate09_def Postulate10_def par_perp_perp_implies_par_perp_2_par by auto
-    moreover have "Postulate10 \<longrightarrow> Postulate09" 
-      using Postulate09_def Postulate10_def par_perp_2_par_implies_par_perp_perp by blast
-    ultimately show ?thesis
+      using Postulate09_def Postulate10_def 
+        par_perp_perp_implies_par_perp_2_par by auto
+    moreover
+    have "Postulate10 \<longrightarrow> Postulate09" 
+      using Postulate09_def Postulate10_def 
+        par_perp_2_par_implies_par_perp_perp by blast
+    ultimately
+    show ?thesis
       by blast
   qed
-  moreover have "Postulate09 \<longrightarrow> Postulate02" 
-    by (simp add: Postulate02_def Postulate09_def par_perp_perp_implies_playfair)
-  moreover have "Postulate02 \<longrightarrow> Postulate11" 
-    using Postulate02_def Postulate11_def playfair__universal_posidonius_postulate by blast
-  moreover have "Postulate11 \<longrightarrow> Postulate09" 
+  moreover
+  have "Postulate09 \<longrightarrow> Postulate02" 
+    by (simp add: Postulate02_def Postulate09_def 
+        par_perp_perp_implies_playfair)
+  moreover
+  have "Postulate02 \<longrightarrow> Postulate11" 
+    using Postulate02_def Postulate11_def 
+      playfair__universal_posidonius_postulate by blast
+  moreover
+  have "Postulate11 \<longrightarrow> Postulate09" 
     by (simp add: Postulate09_def Postulate11_def 
         universal_posidonius_postulate__perpendicular_transversal_postulate)
-  moreover have "Postulate02 \<longleftrightarrow> Postulate05" 
+  moreover
+  have "Postulate02 \<longleftrightarrow> Postulate05" 
   proof -
     have "Postulate02 \<longrightarrow> Postulate05" 
-      using Postulate02_def Postulate05_def playfair_implies_par_trans by auto
-    moreover have "Postulate05 \<longrightarrow> Postulate02" 
-      using Postulate02_def Postulate05_def par_trans_implies_playfair by blast
-    ultimately show ?thesis 
+      using Postulate02_def Postulate05_def 
+        playfair_implies_par_trans by auto
+    moreover
+    have "Postulate05 \<longrightarrow> Postulate02" 
+      using Postulate02_def Postulate05_def 
+        par_trans_implies_playfair by blast
+    ultimately
+    show ?thesis 
       by blast
   qed
   moreover
@@ -15587,32 +15621,45 @@ proof -
     using Postulate07_def Postulate11_def calculation(3) 
       par_perp_perp_implies_playfair playfair__alternate_interior 
       universal_posidonius_postulate__perpendicular_transversal_postulate by blast
-  moreover have "Postulate07 \<longrightarrow> Postulate12" 
-    using Postulate07_def Postulate12_def alternate_interior__playfair_bis by blast
-  moreover have "Postulate12 \<longrightarrow> Postulate02" 
+  moreover
+  have "Postulate07 \<longrightarrow> Postulate12" 
+    using Postulate07_def Postulate12_def 
+      alternate_interior__playfair_bis by blast
+  moreover
+  have "Postulate12 \<longrightarrow> Postulate02" 
     using Postulate11_def Postulate12_def calculation(2) 
       calculation(4) playfair__universal_posidonius_postulate 
       playfair_bis__playfair by blast
-  moreover have "Postulate07 \<longleftrightarrow> Postulate08" 
+  moreover
+  have "Postulate07 \<longleftrightarrow> Postulate08" 
   proof -
     have "Postulate07 \<longrightarrow> Postulate08" 
-      using Postulate07_def Postulate08_def alternate_interior__consecutive_interior by auto
-    moreover have "Postulate08 \<longrightarrow> Postulate07" 
-      using Postulate07_def Postulate08_def consecutive_interior__alternate_interior by blast
-    ultimately show ?thesis
+      using Postulate07_def Postulate08_def 
+        alternate_interior__consecutive_interior by auto
+    moreover
+    have "Postulate08 \<longrightarrow> Postulate07" 
+      using Postulate07_def Postulate08_def 
+        consecutive_interior__alternate_interior by blast
+    ultimately
+    show ?thesis
       by blast
   qed
-  moreover have "Postulate02 \<longleftrightarrow> Postulate06"
+  moreover
+  have "Postulate02 \<longleftrightarrow> Postulate06"
   proof -
     have "Postulate02 \<longrightarrow> Postulate06" 
       using Postulate02_def Postulate06_def 
         playfair_s_postulate_implies_midpoint_converse_postulate by blast
-    moreover have "Postulate06 \<longrightarrow> Postulate02" 
-      using Postulate02_def Postulate06_def midpoint_converse_postulate_implies_playfair by auto
-    ultimately show ?thesis
+    moreover
+    have "Postulate06 \<longrightarrow> Postulate02" 
+      using Postulate02_def Postulate06_def 
+        midpoint_converse_postulate_implies_playfair by auto
+    ultimately
+    show ?thesis
       by blast
   qed
-  ultimately show ?thesis 
+  ultimately
+  show ?thesis 
     by blast
 qed
 
@@ -15624,13 +15671,16 @@ proof -
   have "Postulate01 \<longrightarrow> Postulate02" 
     by (simp add: Postulate01_def Postulate02_def 
         tarski_s_euclid_implies_playfair_s_postulate)
-  moreover have "Postulate09 \<longrightarrow> Postulate15" 
+  moreover
+  have "Postulate09 \<longrightarrow> Postulate15" 
     using inter_dec_plus_par_perp_perp_imply_triangle_circumscription 
       Postulate09_def Postulate15_def by fastforce
-  moreover have "Postulate15 \<longrightarrow> Postulate01" 
+  moreover
+  have "Postulate15 \<longrightarrow> Postulate01" 
     by (simp add: Postulate01_def Postulate15_def 
         triangle_circumscription_implies_tarski_s_euclid)
-  ultimately show ?thesis 
+  ultimately
+  show ?thesis 
     by auto
 qed
 
@@ -15645,24 +15695,38 @@ lemma Cycle_2:
          (Postulate20 \<longleftrightarrow> Postulate01)"
 proof -
   have "Postulate01 \<longrightarrow> Postulate17" 
-    using Postulate01_def Postulate17_def tarski_s_euclid_implies_euclid_5 by blast
-  moreover have "Postulate17 \<longrightarrow> Postulate20" 
-    by (simp add: Postulate17_def Postulate20_def euclid_5__original_euclid)
-  moreover have "Postulate20 \<longrightarrow> Postulate19" 
-    using Postulate19_def Postulate20_def original_euclid__original_spp by blast
-  moreover have "Postulate19 \<longrightarrow> Postulate16" 
-    by (simp add: Postulate16_def Postulate19_def original_spp__inverse_projection_postulate)
-  moreover have "Postulate16 \<longrightarrow> Postulate14" 
-    using Postulate14_def Postulate16_def inverse_projection_postulate__proclus_bis by blast
-  moreover have "Postulate14 \<longrightarrow> Postulate13" 
-    by (simp add: Postulate13_def Postulate14_def proclus_bis__proclus)
-  moreover have "Postulate13 \<longrightarrow> Postulate18" 
+    using Postulate01_def Postulate17_def 
+      tarski_s_euclid_implies_euclid_5 by blast
+  moreover
+  have "Postulate17 \<longrightarrow> Postulate20" 
+    by (simp add: Postulate17_def Postulate20_def 
+        euclid_5__original_euclid)
+  moreover
+  have "Postulate20 \<longrightarrow> Postulate19" 
+    using Postulate19_def Postulate20_def 
+      original_euclid__original_spp by blast
+  moreover
+  have "Postulate19 \<longrightarrow> Postulate16" 
+    by (simp add: Postulate16_def Postulate19_def 
+        original_spp__inverse_projection_postulate)
+  moreover
+  have "Postulate16 \<longrightarrow> Postulate14" 
+    using Postulate14_def Postulate16_def 
+      inverse_projection_postulate__proclus_bis by blast
+  moreover
+  have "Postulate14 \<longrightarrow> Postulate13" 
+    by (simp add: Postulate13_def Postulate14_def
+        proclus_bis__proclus)
+  moreover
+  have "Postulate13 \<longrightarrow> Postulate18" 
     by (simp add: Postulate13_def Postulate18_def
         proclus_s_postulate_implies_strong_parallel_postulate)
-  moreover have "Postulate18 \<longrightarrow> Postulate01" 
+  moreover
+  have "Postulate18 \<longrightarrow> Postulate01" 
     using Postulate01_def Postulate18_def 
       strong_parallel_postulate_implies_tarski_s_euclid by blast
-  ultimately show ?thesis 
+  ultimately
+  show ?thesis 
     by auto
 qed
 
@@ -15680,57 +15744,90 @@ lemma Cycle_3:
          (Postulate30 \<longleftrightarrow> Postulate03)"
 proof -
   have "Postulate03 \<longrightarrow> Postulate21" 
-    using Postulate03_def Postulate21_def triangle__existential_triangle by blast
-  moreover have "Postulate21 \<longrightarrow> Postulate27" 
-    using Postulate21_def Postulate27_def existential_triangle__rah by fastforce
-  moreover have "Postulate27 \<longrightarrow> Postulate03" 
-    by (simp add: Postulate03_def Postulate27_def rah__triangle)
-  moreover have "Postulate27 \<longleftrightarrow> Postulate28" 
+    using Postulate03_def Postulate21_def 
+      triangle__existential_triangle by blast
+  moreover
+  have "Postulate21 \<longrightarrow> Postulate27" 
+    using Postulate21_def Postulate27_def 
+      existential_triangle__rah by fastforce
+  moreover
+  have "Postulate27 \<longrightarrow> Postulate03" 
+    by (simp add: Postulate03_def 
+        Postulate27_def rah__triangle)
+  moreover
+  have "Postulate27 \<longleftrightarrow> Postulate28" 
   proof -
     have "Postulate27 \<longrightarrow> Postulate28" 
-      by (simp add: Postulate27_def Postulate28_def rah__existential_saccheri)
-    moreover have "Postulate28 \<longrightarrow> Postulate27" 
-      by (simp add: Postulate27_def Postulate28_def existential_saccheri__rah) 
+      by (simp add: Postulate27_def Postulate28_def 
+          rah__existential_saccheri)
+    moreover
+    have "Postulate28 \<longrightarrow> Postulate27" 
+      by (simp add: Postulate27_def Postulate28_def 
+          existential_saccheri__rah) 
     ultimately show ?thesis
       by auto
   qed
-  moreover have "Postulate27 \<longrightarrow> Postulate29" 
-    using Postulate27_def Postulate29_def rah__rectangle_principle by fastforce
-  moreover have "Postulate29 \<longrightarrow> Postulate30" 
-    using Postulate29_def Postulate30_def rectangle_principle__rectangle_existence by blast
-  moreover have "Postulate30 \<longrightarrow> Postulate27" 
-    by (simp add: Postulate27_def Postulate30_def rectangle_existence__rah)
-  moreover have "Postulate27 \<longleftrightarrow> Postulate22" 
+  moreover
+  have "Postulate27 \<longrightarrow> Postulate29" 
+    using Postulate27_def Postulate29_def 
+      rah__rectangle_principle by fastforce
+  moreover
+  have "Postulate29 \<longrightarrow> Postulate30" 
+    using Postulate29_def Postulate30_def 
+      rectangle_principle__rectangle_existence by blast
+  moreover
+  have "Postulate30 \<longrightarrow> Postulate27" 
+    by (simp add: Postulate27_def Postulate30_def 
+        rectangle_existence__rah)
+  moreover
+  have "Postulate27 \<longleftrightarrow> Postulate22" 
   proof -
     have "Postulate27 \<longrightarrow> Postulate22" 
-      using Postulate22_def Postulate27_def rah__posidonius by blast
-    moreover have "Postulate22 \<longrightarrow> Postulate27" 
-      using Postulate22_def Postulate27_def posidonius_postulate__rah by blast
-    ultimately show ?thesis 
+      using Postulate22_def Postulate27_def 
+        rah__posidonius by blast
+    moreover
+    have "Postulate22 \<longrightarrow> Postulate27" 
+      using Postulate22_def Postulate27_def 
+        posidonius_postulate__rah by blast
+    ultimately
+    show ?thesis 
       by auto
   qed
-  moreover have "Postulate27 \<longrightarrow> Postulate24" 
-    using Postulate24_def Postulate27_def rah__thales_postulate by presburger
-  moreover have "Postulate24 \<longrightarrow> Postulate25" 
-    by (simp add: Postulate24_def Postulate25_def thales_postulate__thales_converse_postulate)
-  moreover have "Postulate25 \<longrightarrow> Postulate26" 
-    using Postulate25_def Postulate26_def thales_converse_postulate__thales_existence by fastforce
-  moreover have "Postulate26 \<longrightarrow> Postulate27" 
-    using Postulate26_def Postulate30_def calculation(7) rah__rectangle_principle 
+  moreover
+  have "Postulate27 \<longrightarrow> Postulate24" 
+    using Postulate24_def Postulate27_def 
+      rah__thales_postulate by presburger
+  moreover
+  have "Postulate24 \<longrightarrow> Postulate25" 
+    by (simp add: Postulate24_def Postulate25_def 
+        thales_postulate__thales_converse_postulate)
+  moreover
+  have "Postulate25 \<longrightarrow> Postulate26" 
+    using Postulate25_def Postulate26_def 
+      thales_converse_postulate__thales_existence by fastforce
+  moreover
+  have "Postulate26 \<longrightarrow> Postulate27" 
+    using Postulate26_def Postulate30_def calculation(7)
+      rah__rectangle_principle 
       rectangle_principle__rectangle_existence thales_existence__rah by blast
-  moreover have "Postulate27 \<longleftrightarrow> Postulate23" 
+  moreover
+  have "Postulate27 \<longleftrightarrow> Postulate23" 
   proof -
     have "Postulate27 \<longrightarrow> Postulate23" 
       using Postulate23_def Postulate26_def calculation(10)
-        calculation(11) calculation(9) rah__similar thales_existence__rah by blast
-    moreover have "Postulate23 \<longrightarrow> Postulate27" 
-      using Postulate22_def Postulate23_def \<open>Postulate27 = Postulate22\<close> rah__posidonius 
+        calculation(11) calculation(9) rah__similar 
+        thales_existence__rah by blast
+    moreover
+    have "Postulate23 \<longrightarrow> Postulate27" 
+      using Postulate22_def Postulate23_def 
+        \<open>Postulate27 = Postulate22\<close> rah__posidonius 
         similar__rah by blast 
-    ultimately show ?thesis 
+    ultimately
+    show ?thesis 
       by auto
   qed
-  ultimately show ?thesis
-    by blast
+  ultimately
+  show ?thesis by blast
 qed
 
 lemma InterCycle1:
@@ -15742,7 +15839,8 @@ lemma InterCycle1:
 lemma InterCycle2:
   assumes "Postulate07"
   shows "Postulate03" 
-  using Postulate03_def Postulate07_def alternate_interior__triangle assms by blast
+  using Postulate03_def Postulate07_def 
+    alternate_interior__triangle assms by blast
 
 lemma InterCycle3:
   assumes "Postulate01"
@@ -15754,20 +15852,24 @@ lemma InterCycle4:
   assumes "Postulate09"
   shows "Postulate15" 
   using Postulate09_def Postulate15_def assms 
-    inter_dec_plus_par_perp_perp_imply_triangle_circumscription by auto
+    inter_dec_plus_par_perp_perp_imply_triangle_circumscription 
+  by auto
 
 lemma InterAx1_R1:
   assumes "Postulate13"
   shows "Axiom3" 
-  using proclus__aristotle Axiom3_def Postulate13_def assms by blast
+  using proclus__aristotle Axiom3_def 
+    Postulate13_def assms by blast
 
 lemma InterAx1:
   assumes "Postulate01"
   shows "Axiom3" 
   using InterAx1_R1 Postulate01_def Postulate13_def 
-    assms euclid_5__original_euclid inverse_projection_postulate__proclus_bis 
+    assms euclid_5__original_euclid 
+    inverse_projection_postulate__proclus_bis 
     original_euclid__original_spp original_spp__inverse_projection_postulate 
-    proclus_bis__proclus tarski_s_euclid_implies_euclid_5 by blast
+    proclus_bis__proclus 
+    tarski_s_euclid_implies_euclid_5 by blast
 
 lemma InterAx3:
   assumes "Axiom4" and "Postulate02"
@@ -15798,7 +15900,8 @@ proof -
   have "Postulate15" 
     using InterCycle4 Postulate02_def Postulate09_def 
       assms playfair__universal_posidonius_postulate 
-      universal_posidonius_postulate__perpendicular_transversal_postulate by blast
+      universal_posidonius_postulate__perpendicular_transversal_postulate
+    by blast
   thus ?thesis 
     using Postulate01_def Postulate15_def 
       triangle_circumscription_implies_tarski_s_euclid by blast
@@ -15807,7 +15910,8 @@ qed
 lemma PPR_Theorem_4_bis: 
   assumes "Postulate01"
   shows "Axiom4" 
-  using Axiom3_def Axiom4_def InterAx1 InterAx5 aristotle__greenberg assms by blast
+  using Axiom3_def Axiom4_def InterAx1 InterAx5 
+    aristotle__greenberg assms by blast
 
 lemma PPR_Proposition_6:
   assumes "Axiom2"
@@ -15817,7 +15921,8 @@ lemma PPR_Proposition_6:
 lemma Pambuccian:
   assumes "Axiom4"
   shows "Axiom3" 
-  using Axiom3_def Axiom4_def assms greenberg__aristotle by blast
+  using Axiom3_def Axiom4_def assms 
+    greenberg__aristotle by blast
 
 lemma InterCycle1bis: 
   assumes "Postulate01"
@@ -16045,8 +16150,7 @@ proof -
               moreover have "Col B P0 P"  
                 by (simp add: \<open>Col B P0 P\<close>)
               ultimately show ?thesis    
-                by (simp add: Tarski_neutral_dimensionless.l8_16_1 
-                    Tarski_neutral_dimensionless_axioms col_trivial_3 l8_2)
+                using col_trivial_3 l8_16_1 l8_2 by blast
             qed
             moreover have "Coplanar A B C P" 
               using \<open>Col B P0 P\<close> \<open>P0 InAngle A B C\<close> \<open>P0 \<noteq> B\<close> col_cop__cop 
@@ -16340,7 +16444,8 @@ proof -
       hence "X Y ReflectL B P" 
         using l10_4_spec by blast
       moreover hence "B Out C Y" 
-        using \<open>B Out A X\<close> \<open>P B A CongA P B C\<close> \<open>\<not> B Out A C\<close> \<open>Coplanar A B C P\<close> conga_cop_out_reflectl__out by blast
+        using \<open>B Out A X\<close> \<open>P B A CongA P B C\<close> \<open>\<not> B Out A C\<close> \<open>Coplanar A B C P\<close> 
+          conga_cop_out_reflectl__out by blast
       moreover have "Col T P X" 
         by (simp add: \<open>Col T P X\<close>)
       hence "Col P X T" 
@@ -16514,7 +16619,8 @@ proof -
             then obtain Q' where "Col Q' B C" and "Bet P Q' Q0"
               by blast
             have  "Col P Q Q'" 
-              using \<open>P \<noteq> Q\<close> \<open>Bet P Q' Q0\<close> \<open>Col Q P Q0\<close> bet_col bet_neq12__neq col2__eq col_permutation_4 by blast
+              using \<open>P \<noteq> Q\<close> \<open>Bet P Q' Q0\<close> \<open>Col Q P Q0\<close> bet_col bet_neq12__neq col2__eq 
+                col_permutation_4 by blast
             moreover have "Col B C Q'" 
               using \<open>Col Q' B C\<close> not_col_permutation_2 by blast
             ultimately show ?thesis
@@ -16708,6 +16814,36 @@ lemma P4_P34:
     weak_inverse_projection_postulate__bachmann_s_lotschnittaxiom 
     weak_tarski_s_parallel_postulate__weak_inverse_projection_postulate by blast
 
+lemma P01__P35:
+  assumes "Postulate01"
+  shows "Postulate35"  
+  using Postulate01_def Postulate35_def playfair__existential_playfair 
+    tarski_s_euclid_implies_playfair_s_postulate assms by blast
+
+lemma P35__P01:
+  assumes "Axiom4" and
+    "Postulate01" 
+  shows "Postulate35" 
+proof -
+  have "Postulate35 \<longrightarrow> Postulate27" 
+    by (simp add: Postulate27_def Postulate35_def existential_playfair__rah)
+  moreover 
+  have "Postulate27 \<longrightarrow> Postulate03" 
+    using Cycle_3 by blast 
+  moreover
+  have "Postulate03 \<longrightarrow> Postulate12" 
+    by (simp add: InterCycle1 assms(1))
+  moreover have "Postulate12 \<longrightarrow> Postulate09" 
+    by (simp add: Postulate09_def Postulate12_def playfair__universal_posidonius_postulate
+        playfair_bis__playfair 
+        universal_posidonius_postulate__perpendicular_transversal_postulate)
+  moreover
+  have "Postulate09 \<longrightarrow> Postulate01"
+    using Cycle_1 Cycle_2  by blast
+  ultimately show ?thesis 
+    using P01__P35 assms(2) by fastforce
+qed
+
 section "Legendre"
 
 theorem stronger_legendre_s_first_theorem:
@@ -16878,7 +17014,8 @@ proof -
         have "C B OS B1 C1" 
         proof -
           have "C B TS B1 A"                             
-            by (meson \<open>B \<noteq> B1\<close> \<open>Bet A B B1\<close> \<open>\<not> Col A B C\<close> bet__ts invert_two_sides l9_2 not_col_permutation_1)
+            by (meson \<open>B \<noteq> B1\<close> \<open>Bet A B B1\<close> \<open>\<not> Col A B C\<close> bet__ts invert_two_sides
+                l9_2 not_col_permutation_1)
           moreover have "C B TS C1 A"                            
             using Col_cases \<open>Bet A C C1\<close> \<open>C \<noteq> C1\<close> \<open>\<not> Col A B C\<close> bet__ts l9_2 by blast
           ultimately show ?thesis
@@ -16947,7 +17084,8 @@ proof -
     then obtain J' K' L' where "M N O0 A' B' C' SumA J' K' L'"
       using \<open>A' \<noteq> B'\<close> \<open>C' \<noteq> B'\<close> \<open>M \<noteq> N\<close> ex_suma by presburger
     have "SAMS G H I J K L \<and> G H I J K L SumA S T U" 
-      using assms \<open>Bet A C C1\<close> t22_16_1bis \<open>Defect A B1 C G H I\<close> \<open>Defect A B1 C1 S T U\<close> \<open>Defect B1 C C1 J K L\<close> by force
+      using assms \<open>Bet A C C1\<close> t22_16_1bis \<open>Defect A B1 C G H I\<close> \<open>Defect A B1 C1 S T U\<close>
+        \<open>Defect B1 C C1 J K L\<close> by force
     hence "SAMS G H I J K L" 
       by blast
     have "G H I J K L SumA S T U" 
@@ -17048,7 +17186,8 @@ proof -
           \<open>P Q R P Q R SumA V W X\<close> \<open>P Q R J' K' L' SumA G' H' I'\<close> 
           sams_lea456_suma2__lea by blast
       moreover have "G' H' I' LeA S T U" 
-        using \<open>G' H' I' D' E' F' SumA S T U\<close> \<open>SAMS G' H' I' D' E' F'\<close> sams_suma__lea123789 by blast
+        using \<open>G' H' I' D' E' F' SumA S T U\<close> \<open>SAMS G' H' I' D' E' F'\<close> 
+          sams_suma__lea123789 by blast
       ultimately show ?thesis 
         using lea_trans by blast
     qed
@@ -17170,6 +17309,738 @@ proof -
       by blast
   }
   thus ?thesis 
+    by blast
+qed
+
+lemma legendre_aux2:
+  assumes "\<not> hypothesis_of_obtuse_saccheri_quadrilaterals"
+  shows "\<forall> A B C.
+    \<not> Col A B C \<and> Acute B A C \<and>
+    (\<forall> T. T InAngle B A C \<longrightarrow> (\<exists> X Y. A Out B X \<and> A Out C Y \<and> Bet X T Y)) 
+       \<longrightarrow>
+    (\<forall> P Q R S T U. Defect A B C P Q R \<and> GradAExp P Q R S T U \<longrightarrow>
+      (\<exists> B' C' P' Q' R'. (A Out B B' \<and> A Out C C' \<and>
+         Defect A B' C' P' Q' R' \<and> S T U LeA P' Q' R')))" 
+proof -
+  {
+    fix A B C
+    assume "\<not> Col A B C" and 
+      "Acute B A C" and
+      "\<forall> T. T InAngle B A C \<longrightarrow> (\<exists> X Y. A Out B X \<and> A Out C Y \<and> Bet X T Y)" 
+    {
+      fix P Q R S T U
+      assume "Defect A B C P Q R" and
+        "GradAExp P Q R S T U"
+      let ?th = " (\<exists> B' C' P' Q' R'. (A Out B B' \<and> A Out C C' \<and>
+         Defect A B' C' P' Q' R' \<and> S T U LeA P' Q' R'))"
+      have ?th 
+      proof (rule GradAExp.induct [OF \<open>GradAExp P Q R S T U\<close>])
+        show "\<And>D E F.
+       P Q R CongA D E F \<Longrightarrow>
+       \<exists>B' C' P' Q' R'.
+          A Out B B' \<and>
+          A Out C C' \<and> Defect A B' C' P' Q' R'  \<and> D E F LeA P' Q' R'" 
+          by (metis \<open>Defect A B C P Q R\<close> bet_out_1 conga__lea456123 
+              defect_distincts not_bet_distincts)
+        {
+          fix S T U G H I
+          assume "GradAExp P Q R S T U" and
+            P1: "\<exists>B' C' P' Q' R'. A Out B B' \<and> A Out C C' \<and> Defect A B' C' P' Q' R' \<and> 
+                                  S T U LeA P' Q' R'" and
+            "SAMS S T U S T U" and
+            "S T U S T U SumA G H I" 
+          obtain B' C' P' Q' R' where "A Out B B'" and "A Out C C'" and 
+            "Defect A B' C' P' Q' R'" and "S T U LeA P' Q' R'" using P1 by blast
+          obtain D' where "D' InAngle B A C" and "A C' B' CongA C' B' D'" and
+            "Cong A C' B' D'" and "B' C' TS A D'" 
+            using legendre_aux1 \<open>A Out B B'\<close> \<open>A Out C C'\<close> \<open>\<not> Col A B C\<close> by blast
+          have "\<not> Col A B' C'" 
+            using TS_def \<open>B' C' TS A D'\<close> by presburger
+          obtain B'' C'' where "A Out B B''" and "A Out C C''" and "Bet B'' D' C''"
+            using \<open>D' InAngle B A C\<close> 
+              \<open>\<forall>T. T InAngle B A C \<longrightarrow> (\<exists>X Y. A Out B X \<and> A Out C Y \<and> Bet X T Y)\<close> by blast
+          have "Q' \<noteq> P'" 
+            using \<open>Defect A B' C' P' Q' R'\<close> defect_distincts by blast
+          have "Q' \<noteq> R'" 
+            using \<open>Defect A B' C' P' Q' R'\<close> defect_distincts by blast
+          have "A \<noteq> C''" 
+            using \<open>A Out C C''\<close> l6_3_1 by blast
+          have "A \<noteq> B''" 
+            using \<open>A Out B B''\<close> out_distinct by blast
+          have "B'' \<noteq> C''" 
+            by (metis Col_def Out_def \<open>A Out B B''\<close> \<open>A Out C C''\<close>
+                \<open>\<not> Col A B C\<close> between_symmetry l6_7)
+          then obtain P'' Q'' R'' where "Defect A B'' C'' P'' Q'' R''"
+            using ex_defect \<open>A \<noteq> B''\<close> \<open>A \<noteq> C''\<close> by presburger
+          moreover 
+          obtain V W X where "P' Q' R' P' Q' R' SumA V W X"
+            using ex_suma \<open>Q' \<noteq> P'\<close> \<open>Q' \<noteq> R'\<close> by presburger
+          have "SAMS P' Q' R' P' Q' R' \<and> V W X LeA P'' Q'' R''"
+          proof -
+            have "A Out B' B''" 
+              using \<open>A Out B B''\<close> \<open>A Out B B'\<close> l6_6 l6_7 by blast
+            moreover have "A Out C' C''" 
+              using \<open>A Out C C''\<close> \<open>A Out C C'\<close> l6_6 l6_7 by blast
+            ultimately show ?thesis
+              using assms \<open>\<not> Col A B' C'\<close> \<open>A C' B' CongA C' B' D'\<close> \<open>Cong A C' B' D'\<close>
+                \<open>B' C' TS A D'\<close> \<open>P' Q' R' P' Q' R' SumA V W X\<close> \<open>Bet B'' D' C''\<close>
+                \<open>Defect A B' C' P' Q' R'\<close> \<open>Defect A B'' C'' P'' Q'' R''\<close> legendre_aux by blast
+          qed
+          have "G H I LeA P'' Q'' R''" 
+          proof -
+            have "G H I LeA V W X" 
+              using sams_lea2_suma2__lea [where ?A="S" and ?B="T" and ?C="U" and
+                  ?D="S" and ?E="T" and ?F="U" and ?A'="P'" and ?B'="Q'" and ?C'="R'" and
+                  ?D'="P'" and ?E'="Q'" and ?F'="R'"] \<open>S T U LeA P' Q' R'\<close> \<open>S T U LeA P' Q' R'\<close>
+                \<open>SAMS P' Q' R' P' Q' R' \<and> V W X LeA P'' Q'' R''\<close> 
+                \<open>S T U S T U SumA G H I\<close> \<open>P' Q' R' P' Q' R' SumA V W X\<close>
+              by blast
+            moreover have "V W X LeA P'' Q'' R''" 
+              using \<open>SAMS P' Q' R' P' Q' R' \<and> V W X LeA P'' Q'' R''\<close> by blast
+            ultimately show ?thesis
+              using lea_trans by blast
+          qed
+          ultimately have "\<exists>B' C' P' Q' R'. A Out B B' \<and> A Out C C' \<and> 
+                               Defect A B' C' P' Q' R' \<and> G H I LeA P' Q' R'" 
+            using \<open>A Out B B''\<close> \<open>A Out C C''\<close> by blast
+        }
+        thus "\<And>D E F G H I.
+       GradAExp P Q R D E F \<Longrightarrow>
+       \<exists>B' C' P' Q' R'.
+          A Out B B' \<and> A Out C C' \<and> Defect A B' C' P' Q' R' \<and> D E F LeA P' Q' R' \<Longrightarrow>
+       SAMS D E F D E F \<Longrightarrow>
+       D E F D E F SumA G H I \<Longrightarrow>
+       \<exists>B' C' P' Q' R'.
+          A Out B B' \<and>
+          A Out C C' \<and> Defect A B' C' P' Q' R'  \<and> G H I LeA P' Q' R'" 
+          by blast
+      qed
+    }
+    hence "(\<forall> P Q R S T U.
+      Defect A B C P Q R \<and> GradAExp P Q R S T U \<longrightarrow>
+      (\<exists> B' C' P' Q' R'.
+        (A Out B B' \<and> A Out C C' \<and>
+         Defect A B' C' P' Q' R' \<and> S T U LeA P' Q' R')))" by blast
+  }
+  thus ?thesis
+    by blast
+qed
+
+lemma legendre_s_fourth_theorem_aux:
+  assumes "archimedes_axiom" and
+    "legendre_s_parallel_postulate"
+  shows "postulate_of_right_saccheri_quadrilaterals" 
+proof -
+  obtain A B C where "\<not> Col B A C" and "Acute B A C" and
+    "\<forall> T. (T InAngle B A C) \<longrightarrow> (\<exists> X Y. A Out B X \<and> A Out C Y \<and> Bet X T Y)" 
+    using assms(2) legendre_s_parallel_postulate_def by blast
+  have "A \<noteq> B" 
+    using \<open>Acute B A C\<close> acute_distincts by auto
+  have "A \<noteq> C" 
+    using \<open>\<not> Col B A C\<close> not_col_distincts by auto
+  have "B \<noteq> C" 
+    using \<open>\<not> Col B A C\<close> col_trivial_3 by auto
+  obtain P Q R where "Defect A B C P Q R" 
+    using \<open>A \<noteq> B\<close> \<open>A \<noteq> C\<close> \<open>B \<noteq> C\<close> ex_defect by presburger
+  {
+    assume "Col P Q R"
+    hence "\<not> hypothesis_of_obtuse_saccheri_quadrilaterals" 
+      using archi__obtuse_case_elimination assms(1) by presburger
+    moreover have "\<not> Col A B C" 
+      by (simp add: \<open>\<not> Col B A C\<close> not_col_permutation_4)
+    moreover have "Q Out P R" 
+    proof -
+      {
+        assume "Bet P Q R"
+        have "Defect B A C P Q R" 
+          using \<open>Defect A B C P Q R\<close> defect_perm_213 by blast
+        then obtain D E F G H I where "B A C A C B SumA G H I" and
+          "G H I C B A SumA D E F" and "D E F SuppA P Q R"
+          using Defect_def TriSumA_def by auto
+        have "Col B A C"
+        proof -
+          have "P Q R SuppA D E F" 
+            by (simp add: \<open>D E F SuppA P Q R\<close> suppa_sym)
+          hence "E Out D F"
+            using \<open>Bet P Q R\<close> bet_suppa__out by blast
+          moreover 
+          have "SAMS G H I C B A" 
+            using \<open>B A C A C B SumA G H I\<close> assms(1) legendre_s_first_theorem by blast
+          hence "C B A LeA D E F"
+            using \<open>G H I C B A SumA D E F\<close> sams_suma__lea456789 by blast
+          ultimately show ?thesis 
+            using l6_6 out_col out_lea__out by blast
+        qed
+        hence False 
+          by (simp add: \<open>\<not> Col B A C\<close>)
+      }
+      hence "\<not> Bet P Q R" 
+        by blast
+      thus ?thesis 
+        using \<open>Col P Q R\<close> l6_4_2 by blast
+    qed
+    ultimately
+    have "postulate_of_right_saccheri_quadrilaterals" 
+      using \<open>Defect A B C P Q R\<close> defect_ncol_out__rah 
+        existential_playfair__rah_1 by blast
+  }
+  moreover
+  {
+    assume "\<not> Col P Q R"
+    obtain S T U where "GradAExp P Q R S T U" and "Obtuse S T U" 
+      using  archi__gradaexp_destruction \<open>\<not> Col P Q R\<close> assms(1) by blast
+    have "\<not> hypothesis_of_obtuse_saccheri_quadrilaterals" 
+      by (simp add: archi__obtuse_case_elimination assms(1))
+    hence P2: "\<forall> A B C.
+    \<not> Col A B C \<and> Acute B A C \<and>
+    (\<forall> T. T InAngle B A C \<longrightarrow> (\<exists> X Y. A Out B X \<and> A Out C Y \<and> Bet X T Y)) 
+       \<longrightarrow>
+    (\<forall> P Q R S T U. Defect A B C P Q R \<and> GradAExp P Q R S T U \<longrightarrow>
+      (\<exists> B' C' P' Q' R'. (A Out B B' \<and> A Out C C' \<and>
+         Defect A B' C' P' Q' R' \<and> S T U LeA P' Q' R')))" 
+      using legendre_aux2 by blast
+    moreover have "\<not> Col A B C" 
+      by (simp add: \<open>\<not> Col B A C\<close> not_col_permutation_4)
+    ultimately have "\<exists> B' C' P' Q' R'. (A Out B B' \<and> A Out C C' \<and>
+         Defect A B' C' P' Q' R' \<and> S T U LeA P' Q' R')" 
+      using \<open>\<forall>T. T InAngle B A C \<longrightarrow> (\<exists>X Y. A Out B X \<and> A Out C Y \<and> Bet X T Y)\<close> \<open>Acute B A C\<close> 
+        \<open>Defect A B C P Q R\<close> \<open>GradAExp P Q R S T U\<close> by blast
+    then obtain B' C' P' Q' R' where "A Out B B'" and "A Out C C'" and  
+      "Defect A B' C' P' Q' R'" and " S T U LeA P' Q' R'" 
+      by blast
+    have "\<not> SAMS P' Q' R' P' Q' R'" 
+      using lea_obtuse_obtuse \<open>Obtuse S T U\<close> \<open>S T U LeA P' Q' R'\<close> obtuse__nsams by blast
+    obtain D' where "D' InAngle B A C" and "A C' B' CongA C' B' D'" and 
+      "Cong A C' B' D'" and "B' C' TS A D'" 
+      using legendre_aux1 \<open>A Out B B'\<close> \<open>A Out C C'\<close> \<open>\<not> Col A B C\<close> by blast
+    have "\<not> Col A B' C'" 
+      using TS_def \<open>B' C' TS A D'\<close> by auto
+    obtain B'' C'' where "A Out B B''" and "A Out C C''" and "Bet B'' D' C''" 
+      using \<open>D' InAngle B A C\<close> 
+        \<open>\<forall>T. T InAngle B A C \<longrightarrow> (\<exists>X Y. A Out B X \<and> A Out C Y \<and> Bet X T Y)\<close> 
+      by blast
+    have "A \<noteq> B''" 
+      using Out_def \<open>A Out B B''\<close> by auto
+    have "A \<noteq> C''" 
+      using \<open>A Out C C''\<close> l6_3_1 by blast
+    have "B'' \<noteq> C''" 
+      using \<open>A Out B B''\<close> \<open>A Out C C''\<close> \<open>\<not> Col A B C\<close> l6_6 l6_7 out_col by blast
+    then obtain S' T' U' where "Defect A B'' C'' S' T' U'" 
+      using ex_defect \<open>A \<noteq> B''\<close> \<open>A \<noteq> C''\<close> by presburger
+    have "P' \<noteq> Q'" 
+      using \<open>Defect A B' C' P' Q' R'\<close> defect_distincts by blast
+    have "R' \<noteq> Q'" 
+      using \<open>S T U LeA P' Q' R'\<close> lea_distincts by blast
+    then obtain V W X where "P' Q' R' P' Q' R' SumA V W X"
+      using ex_suma \<open>P' \<noteq> Q'\<close> by presburger
+    have " SAMS P' Q' R' P' Q' R'" 
+    proof -
+      have "A Out B' B''" 
+        using Out_cases \<open>A Out B B''\<close> \<open>A Out B B'\<close> l6_7 by blast
+      moreover have "A Out C' C''" 
+        using \<open>A Out C C''\<close> \<open>A Out C C'\<close> l6_6 l6_7 by blast
+      ultimately show ?thesis
+        using legendre_aux \<open>P' Q' R' P' Q' R' SumA V W X\<close> \<open>Defect A B' C' P' Q' R'\<close> 
+          \<open>Defect A B'' C'' S' T' U'\<close> \<open>\<not> Col A B' C'\<close> \<open>A C' B' CongA C' B' D'\<close>
+          \<open>Cong A C' B' D'\<close> \<open>B' C' TS A D'\<close> \<open>Bet B'' D' C''\<close>
+          \<open>\<not> HypothesisObtuseSaccheriQuadrilaterals\<close> by blast
+    qed
+    hence "False" using \<open>\<not> SAMS P' Q' R' P' Q' R'\<close> by blast
+    hence "\<forall> A B C D. Saccheri A B C D \<longrightarrow> Per A B C" 
+      by blast
+  }
+  ultimately show ?thesis 
+    using postulate_of_right_saccheri_quadrilaterals_def by blast
+qed
+
+theorem legendre_s_fourth_theorem:
+  assumes "archimedes_axiom" and
+    "legendre_s_parallel_postulate" 
+  shows "postulate_of_existence_of_a_triangle_whose_angles_sum_to_two_rights" 
+  using assms(1) assms(2) legendre_s_fourth_theorem_aux rah__triangle 
+    triangle__existential_triangle by blast
+
+lemma P34_P21:
+  assumes "archimedes_axiom" and 
+    "Postulate34"
+  shows "Postulate21"
+  using assms(1) assms(2) legendre_s_fourth_theorem Postulate21_def Postulate34_def by blast
+
+lemma P34_P27:
+  assumes "archimedes_axiom" and 
+    "Postulate34"
+  shows "Postulate27" 
+proof -
+  have "Postulate21"
+    using P34_P21 assms(1) assms(2) by blast
+  thus ?thesis
+    using Cycle_3 by blast
+qed
+
+lemma P25_33:
+  assumes "Postulate25"
+  shows "Postulate33" 
+  using Postulate25_def Postulate33_def assms 
+    thales_converse_postulate__weak_triangle_circumscription_principle by auto
+
+lemma P23_33:
+  assumes "Postulate23"
+  shows "Postulate33" 
+proof -
+  have "Postulate25" 
+    using assms(1) Cycle_3 by blast
+  thus ?thesis
+    using P25_33 by blast
+qed
+
+lemma P01_35:
+  assumes "Postulate01"
+  shows "Postulate35" 
+  using Postulate01_def Postulate35_def assms playfair__existential_playfair 
+    tarski_s_euclid_implies_playfair_s_postulate by blast
+
+lemma P35_27:
+  assumes "Postulate35"
+  shows "Postulate27"
+  using Postulate27_def Postulate35_def assms existential_playfair__rah by blast
+
+lemma Thm10_1:
+  assumes "archimedes_axiom" 
+  shows "(Postulate01 \<longleftrightarrow> Postulate02) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate03) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate04) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate05) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate06) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate07) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate08) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate09) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate10)" 
+  using InterAx5 InterCycle3 Postulate01_def Postulate03_def playfair__alternate_interior 
+    tarski_s_euclid_implies_playfair_s_postulate alternate_interior__triangle
+    Cycle_2 Postulate03_def Postulate20_def assms legendre_s_third_theorem InterAx5 
+    Cycle_3 P04_P33 P25_33 P34_P27 P4_P34 assms InterCycle1bis Postulate02_def 
+    Postulate12_def playfair_bis__playfair Postulate07_def Postulate08_def 
+    alternate_interior__consecutive_interior  consecutive_interior__alternate_interior 
+    equivalent_postulates_without_decidability_of_intersection_of_lines 
+    equivalent_postulates_without_decidability_of_intersection_of_lines
+  by blast
+
+lemma Thm10_2:
+  assumes "archimedes_axiom" 
+  shows "(Postulate01 \<longleftrightarrow> Postulate11) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate12) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate13) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate14) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate15) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate16) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate17) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate18) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate19) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate20)" 
+  using InterAx5 InterCycle1bis InterCycle3 Postulate02_def Postulate03_def
+    Postulate12_def playfair__alternate_interior alternate_interior__triangle 
+    playfair_bis__playfair equivalent_postulates_without_decidability_of_intersection_of_lines 
+    Cycle_2 Cycle_1 Postulate11_def Postulate15_def
+    inter_dec_plus_par_perp_perp_imply_triangle_circumscription 
+    universal_posidonius_postulate__perpendicular_transversal_postulate
+  by blast
+
+lemma Thm10_3:
+  assumes "archimedes_axiom" 
+  shows "(Postulate01 \<longleftrightarrow> Postulate21) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate22) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate23) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate24) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate25) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate26) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate27) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate28) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate29) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate30)" 
+  using Postulate03_def Postulate21_def legendre_s_second_theorem 
+    triangle__existential_triangle assms Thm10_1 Cycle_3 by blast
+
+lemma Thm10_4:
+  assumes "archimedes_axiom" 
+  shows "(Postulate01 \<longleftrightarrow> Postulate31) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate32) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate33) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate34) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate35)"
+  using assms Thm10_1 P31_P04 P31_P04 P31_P32 P04_P33 P4_P34 P34_P27 Thm10_3 
+    P01__P35 P35_27 by blast
+
+(*
+Pierre Boutry, Charly Gries, Julien Narboux, Pascal Schreck. Parallel postulates and continuity
+axioms: a mechanized study in intuitionistic logic using Coq. Journal of Automated Reasoning,
+Springer Verlag, 2019, 62 (1), pp.68. ff10.1007/s10817-017-9422-8ff. ffhal-01178236v2f
+
+Theorem 10 In Archimedean neutral geometry, Postulates 1-34 are equivalent
+*)
+theorem Thm10:
+  assumes "archimedes_axiom" 
+  shows "(Postulate01 \<longleftrightarrow> Postulate02) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate03) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate04) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate05) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate06) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate07) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate08) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate09) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate10) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate11) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate12) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate13) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate14) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate15) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate16) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate17) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate18) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate19) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate20) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate21) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate22) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate23) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate24) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate25) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate26) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate27) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate28) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate29) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate30) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate31) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate32) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate33) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate34) \<and>
+         (Postulate01 \<longleftrightarrow> Postulate35)"
+  using InterAx5 InterCycle3 Postulate01_def Postulate03_def playfair__alternate_interior 
+    tarski_s_euclid_implies_playfair_s_postulate alternate_interior__triangle
+    Cycle_2 Postulate03_def Postulate20_def assms legendre_s_third_theorem InterAx5 
+    Cycle_3 P04_P33 P25_33 P34_P27 P4_P34 assms InterCycle1bis Postulate02_def 
+    Postulate12_def playfair_bis__playfair Postulate07_def Postulate08_def 
+    alternate_interior__consecutive_interior  consecutive_interior__alternate_interior 
+    equivalent_postulates_without_decidability_of_intersection_of_lines 
+    equivalent_postulates_without_decidability_of_intersection_of_lines
+    InterAx5 InterCycle1bis InterCycle3 Postulate02_def Postulate03_def
+    Postulate12_def playfair__alternate_interior alternate_interior__triangle 
+    playfair_bis__playfair equivalent_postulates_without_decidability_of_intersection_of_lines 
+    Cycle_2 Cycle_1 Postulate11_def Postulate15_def
+    inter_dec_plus_par_perp_perp_imply_triangle_circumscription 
+    universal_posidonius_postulate__perpendicular_transversal_postulate
+    Postulate03_def Postulate21_def legendre_s_second_theorem 
+    triangle__existential_triangle assms Thm10_1 Cycle_3 assms Thm10_1 P31_P04 
+    P31_P04 P31_P32 P04_P33 P4_P34 P34_P27 Thm10_3 P01__P35 P35_27 by blast (* 3 sec *)
+
+section "Szmielew"
+
+subsection "Definition: hyperbolic plane postulate"
+
+definition hyperbolic_plane_postulate ::
+  "bool"
+  ("HyperbolicPlanePostulate") where
+  "hyperbolic_plane_postulate \<equiv>
+
+  \<forall> A1 A2 P.
+  \<not> Col A1 A2 P 
+\<longrightarrow> 
+  (\<exists> B1 B2 C1 C2. 
+   A1 A2 Par B1 B2 \<and> Col P B1 B2 \<and> A1 A2 Par C1 C2 \<and> Col P C1 C2 \<and> \<not> Col C1 B1 B2)"
+
+lemma hpp__nP35:
+  assumes "greenberg_s_axiom"
+  shows "hyperbolic_plane_postulate \<longleftrightarrow> \<not> Postulate35"
+proof -
+  have "hyperbolic_plane_postulate \<longrightarrow> \<not> existential_playfair_s_postulate" 
+    using existential_playfair_s_postulate_def hyperbolic_plane_postulate_def by blast
+  moreover
+  have "(greenberg_s_axiom \<and> \<not> existential_playfair_s_postulate) \<longrightarrow> hyperbolic_plane_postulate" 
+    using existential_playfair_s_postulate_def hyperbolic_plane_postulate_def 
+      col_permutation_5 par_right_comm by blast
+  ultimately show ?thesis 
+    using Postulate35_def assms by blast
+qed
+
+lemma aah__hpp:
+  assumes "hypothesis_of_acute_saccheri_quadrilaterals"
+  shows "hyperbolic_plane_postulate"
+proof -
+  {
+    fix A1 A2 P
+    assume "\<not> Col A1 A2 P"
+    then obtain Q where "Col A1 A2 Q" and "A1 A2 Perp P Q" 
+      using l8_18_existence \<open>\<not> Col A1 A2 P\<close> by blast
+    then obtain X where "A1 \<noteq> X" and "A2 \<noteq> X" and "Q \<noteq> X" and "Col A1 A2 X" 
+      using diff_col_ex3 by blast
+    obtain Y where "Bet X Q Y" and "Cong X Q Q Y" 
+      using cong_4312 segment_construction by blast
+    have "A1 \<noteq> A2" 
+      using \<open>A1 A2 Perp P Q\<close> perp_not_eq_1 by blast
+    have "Q \<noteq> Y" 
+      using \<open>Cong X Q Q Y\<close> \<open>Q \<noteq> X\<close> cong_identity_inv by auto
+    have "P \<noteq> Q" 
+      using \<open>Col A1 A2 Q\<close> \<open>\<not> Col A1 A2 P\<close> by auto
+    have "Col A1 A2 Y" 
+      by (metis \<open>Bet X Q Y\<close> \<open>Col A1 A2 Q\<close> \<open>Col A1 A2 X\<close> \<open>Q \<noteq> X\<close> bet_col colx)
+    have "Per P Q X" 
+      by (meson l8_16_1 \<open>A1 A2 Perp P Q\<close> \<open>Col A1 A2 Q\<close> \<open>Col A1 A2 X\<close>)
+    then obtain B1 where "Saccheri Q P B1 X" 
+      using \<open>P \<noteq> Q\<close> \<open>Q \<noteq> X\<close> per__ex_saccheri by blast
+    hence "Q X Par P B1" 
+      by (simp add: sac__par1423)
+    have "Per P Q Y" 
+      by (meson l8_16_1 \<open>A1 A2 Perp P Q\<close> \<open>Col A1 A2 Q\<close> \<open>Col A1 A2 Y\<close>)
+    then obtain C1 where "Saccheri Q P C1 Y" 
+      using \<open>P \<noteq> Q\<close> \<open>Q \<noteq> Y\<close> per__ex_saccheri by blast
+    hence "Q Y Par P C1" 
+      using sac__par1423 by blast
+    have "A1 A2 Par B1 P" 
+      using Par_cases \<open>A1 \<noteq> A2\<close> \<open>Col A1 A2 Q\<close> \<open>Col A1 A2 X\<close> \<open>Q X Par P B1\<close> 
+        par_col2_par_bis by blast
+    moreover have "Col P B1 P" 
+      using col_trivial_3 by auto
+    moreover have "A1 A2 Par C1 P" 
+      using Par_cases \<open>A1 \<noteq> A2\<close> \<open>Col A1 A2 Q\<close> \<open>Col A1 A2 Y\<close> \<open>Q Y Par P C1\<close> 
+        par_col2_par_bis by blast
+    moreover have "Col P C1 P" 
+      by (simp add: col_trivial_3)
+    moreover
+    {
+      assume "Col C1 B1 P" 
+      have "Q P ParStrict B1 X" 
+        by (simp add: \<open>Saccheri Q P B1 X\<close> sac__pars1234)
+      have "Q P ParStrict C1 Y" 
+        using \<open>Saccheri Q P C1 Y\<close> sac__pars1234 by auto
+      have "P Q TS Y X" 
+        by (metis NCol_perm invert_two_sides \<open>Bet X Q Y\<close> \<open>Col A1 A2 Q\<close> 
+            \<open>Col A1 A2 X\<close> \<open>Q \<noteq> X\<close> \<open>Q \<noteq> Y\<close> \<open>\<not> Col A1 A2 P\<close> bet__ts col_trivial_2 l6_21 l9_2)
+      hence "P Q TS X C1" 
+        by (meson Par_strict_cases l9_8_2 \<open>Q P ParStrict C1 Y\<close> l12_6 l9_2)
+      hence "P Q TS B1 C1" 
+        using \<open>Q P ParStrict B1 X\<close> l12_6 l9_8_2 par_strict_comm by blast
+      hence "Bet B1 P C1" 
+        using Col_cases \<open>Col C1 B1 P\<close> col_two_sides_bet by blast
+      have "B1 \<noteq> P" 
+        using calculation(1) par_distincts by auto
+      have "C1 \<noteq> P" 
+        using calculation(3) par_distinct by blast
+      have "\<not> B1 P C1 LtA X Q Y" 
+        using \<open>Bet B1 P C1\<close> \<open>Bet X Q Y\<close> bet2_lta__lta lta_distincts by blast
+      moreover
+      have "B1 P C1 LtA X Q Y"
+      proof -
+        have "\<not> Col P Q X" 
+          using TS_def \<open>P Q TS X C1\<close> not_col_permutation_1 by presburger
+        have "Q P TS X Y" 
+          using \<open>P Q TS Y X\<close> invert_two_sides l9_2 by blast
+        have "Acute B1 P Q" 
+          using \<open>Saccheri Q P B1 X\<close> acute_sym assms 
+            hypothesis_of_acute_saccheri_quadrilaterals_def by blast
+        hence "B1 P Q LtA P Q X" 
+          using acute_per__lta \<open>P \<noteq> Q\<close> \<open>Q \<noteq> X\<close> \<open>Per P Q X\<close> by blast
+        moreover have "Acute Q P C1" 
+          using \<open>Saccheri Q P C1 Y\<close> assms hypothesis_of_acute_saccheri_quadrilaterals_def by blast
+        hence "Q P C1 LtA P Q Y" 
+          using acute_per__lta \<open>P \<noteq> Q\<close> \<open>Per P Q Y\<close> \<open>Q \<noteq> Y\<close> by blast
+        moreover have "SAMS P Q X P Q Y" 
+          using \<open>P \<noteq> Q\<close> \<open>Per P Q X\<close> \<open>Per P Q Y\<close> \<open>Q \<noteq> X\<close> \<open>Q \<noteq> Y\<close> per2__sams by force
+        moreover have "B1 P Q Q P C1 SumA B1 P C1" 
+          using \<open>B1 \<noteq> P\<close> \<open>Bet B1 P C1\<close> \<open>C1 \<noteq> P\<close> \<open>P \<noteq> Q\<close> bet__suma by force
+        moreover have "P Q X P Q Y SumA X Q Y" 
+          using \<open>Bet X Q Y\<close> \<open>P \<noteq> Q\<close> \<open>Q \<noteq> X\<close> \<open>Q \<noteq> Y\<close> bet__suma suma_left_comm by presburger
+        ultimately show ?thesis 
+          using sams_lta2_suma2__lta by blast
+      qed
+      ultimately have False 
+        by blast
+    }
+    ultimately have "\<exists> B1 B2 C1 C2. 
+   A1 A2 Par B1 B2 \<and> Col P B1 B2 \<and> A1 A2 Par C1 C2 \<and> Col P C1 C2 \<and> \<not> Col C1 B1 B2" 
+      by blast
+  }
+  thus ?thesis 
+    using hyperbolic_plane_postulate_def by blast
+qed
+
+theorem equivalent_postulates_assuming_greenberg_s_axiom:
+  assumes "greenberg_s_axiom"
+  shows "(tarski_s_parallel_postulate \<longleftrightarrow> alternate_interior_angles_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> alternative_playfair_s_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> alternative_playfair_s_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> alternative_proclus_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> alternative_strong_parallel_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> consecutive_interior_angles_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> euclid_5) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> euclid_s_parallel_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> existential_playfair_s_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> existential_thales_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> inverse_projection_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> midpoint_converse_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> perpendicular_transversal_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_transitivity_of_parallelism) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> playfair_s_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> posidonius_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> universal_posidonius_postulate) \<and>
+         (tarski_s_parallel_postulate 
+              \<longleftrightarrow> postulate_of_existence_of_a_right_lambert_quadrilateral) \<and>
+         (tarski_s_parallel_postulate 
+              \<longleftrightarrow> postulate_of_existence_of_a_right_saccheri_quadrilateral) \<and>
+         (tarski_s_parallel_postulate 
+              \<longleftrightarrow> postulate_of_existence_of_a_triangle_whose_angles_sum_to_two_rights) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_existence_of_similar_triangles) \<and>
+         (tarski_s_parallel_postulate 
+              \<longleftrightarrow> postulate_of_parallelism_of_perpendicular_transversals) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_right_lambert_quadrilaterals) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_right_saccheri_quadrilaterals) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_transitivity_of_parallelism) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> proclus_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> strong_parallel_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> tarski_s_parallel_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> thales_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> thales_converse_postulate) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> triangle_circumscription_principle) \<and>
+         (tarski_s_parallel_postulate \<longleftrightarrow> triangle_postulate)" 
+proof -
+  have "Axiom4" 
+    by (simp add: Axiom4_def assms)
+  have "Axiom3" 
+    by (simp add: Axiom3_def assms greenberg__aristotle)
+  have "tarski_s_parallel_postulate \<longleftrightarrow> alternate_interior_angles_postulate" 
+    using InterAx5 Postulate01_def Postulate02_def alternate_interior__playfair_bis 
+      playfair__alternate_interior playfair_bis__playfair 
+      tarski_s_euclid_implies_playfair_s_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> alternative_playfair_s_postulate" 
+    using alternate_interior__playfair_bis calculation playfair__alternate_interior 
+      playfair_bis__playfair by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> alternative_proclus_postulate" 
+    using inverse_projection_postulate__proclus_bis original_euclid__original_spp 
+      original_spp__inverse_projection_postulate proclus_bis__proclus 
+      proclus_s_postulate_implies_strong_parallel_postulate 
+      strong_parallel_postulate_implies_tarski_s_euclid 
+      tarski_s_implies_euclid_s_parallel_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> alternative_strong_parallel_postulate" 
+    using calculation(3) inverse_projection_postulate__proclus_bis 
+      original_euclid__original_spp original_spp__inverse_projection_postulate 
+      tarski_s_implies_euclid_s_parallel_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> consecutive_interior_angles_postulate" 
+    using alternate_interior__consecutive_interior calculation(1) 
+      consecutive_interior__alternate_interior by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> euclid_5" 
+    using calculation(4) euclid_5__original_euclid original_euclid__original_spp 
+      tarski_s_euclid_implies_euclid_5 by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> euclid_s_parallel_postulate" 
+    using calculation(4) original_euclid__original_spp 
+      tarski_s_implies_euclid_s_parallel_postulate by linarith
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> existential_playfair_s_postulate" 
+    using Postulate35_def Cycle_3 InterCycle1 P01__P35 P35_27 Postulate01_def 
+      Postulate12_def \<open>Axiom4\<close> calculation(2) by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> existential_thales_postulate"  
+    using Postulate26_def Cycle_3  InterCycle1 P01__P35 P35_27 Postulate01_def 
+      Postulate12_def \<open>Axiom4\<close> calculation(2) by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> inverse_projection_postulate" 
+    using calculation(3) calculation(4) inverse_projection_postulate__proclus_bis 
+      original_spp__inverse_projection_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> midpoint_converse_postulate" 
+    using Postulate06_def calculation(2) calculation(8) 
+      midpoint_converse_postulate_implies_playfair playfair__existential_playfair 
+      playfair_bis__playfair playfair_s_postulate_implies_midpoint_converse_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> perpendicular_transversal_postulate"
+    using Postulate09_def inter_dec_plus_par_perp_perp_imply_triangle_circumscription 
+      playfair__universal_posidonius_postulate 
+      tarski_s_euclid_implies_playfair_s_postulate 
+      triangle_circumscription_implies_tarski_s_euclid 
+      universal_posidonius_postulate__perpendicular_transversal_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_transitivity_of_parallelism" 
+    using InterAx5 Postulate01_def Postulate02_def par_trans_implies_playfair 
+      playfair_implies_par_trans tarski_s_euclid_implies_playfair_s_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> playfair_s_postulate" 
+    using calculation(13) playfair_implies_par_trans 
+      tarski_s_euclid_implies_playfair_s_postulate by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> posidonius_postulate" 
+    using Postulate22_def Cycle_3 Postulate26_def calculation(9) by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> universal_posidonius_postulate" 
+    using Postulate11_def calculation(12) playfair__universal_posidonius_postulate 
+      tarski_s_euclid_implies_playfair_s_postulate 
+      universal_posidonius_postulate__perpendicular_transversal_postulate by blast
+  moreover have "tarski_s_parallel_postulate 
+       \<longleftrightarrow> postulate_of_existence_of_a_right_lambert_quadrilateral" 
+    using Cycle_3 Postulate22_def Postulate30_def calculation(15) by blast
+  moreover have "tarski_s_parallel_postulate 
+       \<longleftrightarrow> postulate_of_existence_of_a_right_saccheri_quadrilateral" 
+    using Cycle_3 Postulate28_def Postulate30_def calculation(17) by blast
+  moreover have "tarski_s_parallel_postulate 
+       \<longleftrightarrow> postulate_of_existence_of_a_triangle_whose_angles_sum_to_two_rights" 
+    using Cycle_3 Postulate21_def Postulate22_def calculation(15) by blast
+  moreover have "tarski_s_parallel_postulate 
+       \<longleftrightarrow> postulate_of_existence_of_similar_triangles" 
+    using Cycle_3 Postulate22_def Postulate23_def calculation(15) by blast
+  moreover have "tarski_s_parallel_postulate 
+       \<longleftrightarrow> postulate_of_parallelism_of_perpendicular_transversals" 
+    using calculation(12) par_perp_2_par_implies_par_perp_perp 
+      par_perp_perp_implies_par_perp_2_par by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_right_lambert_quadrilaterals" 
+    using Cycle_3 Postulate26_def Postulate29_def calculation(9) by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> postulate_of_right_saccheri_quadrilaterals" 
+    using calculation(18) calculation(9) rah__existential_saccheri thales_existence__rah by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> proclus_postulate" 
+    using Cycle_2 Postulate13_def Postulate01_def by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> strong_parallel_postulate" 
+    using calculation(24) proclus_s_postulate_implies_strong_parallel_postulate 
+      strong_parallel_postulate_implies_tarski_s_euclid by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> thales_postulate" 
+    using Cycle_3 Postulate24_def Postulate26_def calculation(9) by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> thales_converse_postulate" 
+    using Cycle_3 Postulate25_def Postulate30_def calculation(17) by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> triangle_circumscription_principle" 
+    using inter_dec_plus_par_perp_perp_imply_triangle_circumscription  calculation(12) 
+      triangle_circumscription_implies_tarski_s_euclid by blast
+  moreover have "tarski_s_parallel_postulate \<longleftrightarrow> triangle_postulate" 
+    using Cycle_3 Postulate03_def Postulate30_def calculation(17) by blast
+  ultimately show ?thesis 
+    by blast
+qed
+
+theorem szmielew_s_theorem:
+  assumes "aristotle_s_axiom"
+  shows "\<forall> P:: bool.
+         (playfair_s_postulate \<longrightarrow> P) \<and> (hyperbolic_plane_postulate \<longrightarrow> \<not> P) 
+          \<longrightarrow>
+         (P \<longleftrightarrow> playfair_s_postulate)" 
+proof -
+  {
+    fix P:: bool
+    assume "playfair_s_postulate \<longrightarrow> P" and
+      "hyperbolic_plane_postulate \<longrightarrow> \<not> P" 
+    have "hypothesis_of_acute_saccheri_quadrilaterals \<or> hypothesis_of_right_saccheri_quadrilaterals" 
+      by (simp add: aristotle__acute_or_right assms)
+    moreover
+    have "greenberg_s_axiom" 
+      by (simp add: aristotle__greenberg assms)
+    hence "playfair_s_postulate \<longleftrightarrow> postulate_of_existence_of_a_right_saccheri_quadrilateral" 
+      using equivalent_postulates_assuming_greenberg_s_axiom assms by blast
+    {
+      assume "hypothesis_of_acute_saccheri_quadrilaterals" 
+      hence "P \<longrightarrow> playfair_s_postulate" 
+        using \<open>HyperbolicPlanePostulate \<longrightarrow> \<not> P\<close> aah__hpp by blast
+    }
+    moreover
+    {
+      assume "hypothesis_of_right_saccheri_quadrilaterals" 
+      assume P
+      have "\<not> hyperbolic_plane_postulate" 
+        using \<open>HyperbolicPlanePostulate \<longrightarrow> \<not> P\<close> \<open>P\<close> by fastforce
+      hence "Postulate35" 
+        using hpp__nP35 assms by (simp add: \<open>GreenBergsAxiom\<close>)
+      hence "playfair_s_postulate" 
+        using equivalent_postulates_assuming_greenberg_s_axiom assms 
+          Postulate35_def \<open>GreenBergsAxiom\<close> by fastforce
+    }
+    ultimately
+    have "P \<longrightarrow> playfair_s_postulate" 
+      by blast
+    hence "P \<longleftrightarrow> playfair_s_postulate" 
+      using \<open>PlayfairSPostulate \<longrightarrow> P\<close> by blast
+  }
+  thus ?thesis
     by blast
 qed
 

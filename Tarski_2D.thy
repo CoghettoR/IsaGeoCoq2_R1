@@ -2,7 +2,8 @@
 
 Tarski_2D.thy
 
-Version 2.1.0 IsaGeoCoq2_R1
+Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
+Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
@@ -28,12 +29,6 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *)
-
-(*TODO
-j'ai un problème d'hiérarchie:
-un subsection
-et 2 sections 
-dont la section suite doit être renommée *)
 
 (*<*)
 theory Tarski_2D

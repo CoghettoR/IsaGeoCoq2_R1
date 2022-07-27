@@ -2,7 +2,8 @@
 
 Tarski_Euclidean.thy
 
-Version 2.1.0 IsaGeoCoq2_R1
+Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
+Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
@@ -1128,9 +1129,20 @@ lemma plg_conga1:
     "A \<noteq> C" and
     "Plg A B C D" 
   shows "B A C CongA D C A" 
-  by (metis Cong_cases assms(1) assms(2) assms(3) cong_diff_2 
-      cong_pseudo_reflexivity conga_trivial_1 l11_51 plg_cong 
-      plg_to_parallelogram)
+proof -
+  have "Parallelogram A B C D" 
+    by (simp add: assms(3) plg_to_parallelogram)
+  moreover have "ParallelogramStrict A B C D \<longrightarrow> B A C CongA D C A" 
+    by (metis Cong_cases Tarski_neutral_dimensionless.plgs_diff 
+        Tarski_neutral_dimensionless_axioms \<open>Parallelogram A B C D\<close> 
+        cong_pseudo_reflexivity l11_51 plg_cong)
+  moreover have "ParallelogramFlat A B C D \<longrightarrow> B A C CongA D C A" 
+    by (metis Tarski_neutral_dimensionless.cong_3421 Tarski_neutral_dimensionless_axioms
+        \<open>Parallelogram A B C D\<close> assms(1) assms(2) cong_diff_2 cong_pseudo_reflexivity 
+        conga_trivial_1 l11_51 plg_cong)
+  ultimately show ?thesis 
+    using Parallelogram_def by blast
+qed
 
 lemma os_cong_par_cong_par:
   assumes "A A' OS B B'" and 
@@ -1281,9 +1293,16 @@ lemma plg_conga:
     "B \<noteq> C" and
     "Parallelogram A B C D" 
   shows "A B C CongA C D A \<and> B C D CongA D A B" 
-  by (metis Cong_cases assms(1) assms(2) assms(3) cong_identity 
-      cong_pseudo_reflexivity conga_trivial_1 l11_51 plg_cong)
-
+proof 
+  show "A B C CongA C D A" 
+    by (metis assms(1) assms(2) assms(3) cong_pseudo_reflexivity 
+        conga_trivial_1 l11_51 plg_cong plg_not_comm_R2 plg_permut) 
+  show "B C D CongA D A B" 
+    by (metis Cong_cases Tarski_neutral_dimensionless.conga_distinct 
+        Tarski_neutral_dimensionless_axioms \<open>A B C CongA C D A\<close> assms(3) 
+        cong_pseudo_reflexivity conga_trivial_1 l11_51 plg_cong)
+qed
+  
 lemma half_plgs_R1:
   assumes "ParallelogramStrict A B C D" and
     "P Midpoint A B" and
@@ -2766,8 +2785,8 @@ next
             using H1 by fastforce
         qed
         have "Cong A E B F" 
-          by (metis Cong_cases \<open>A D E CongA B C F\<close> \<open>Cong A D C B\<close> 
-              \<open>Cong C F D E\<close> cong2_conga_cong)
+          using \<open>A D E CongA B C F\<close> \<open>Cong A D C B\<close> \<open>Cong C F D E\<close> 
+            cong2_conga_cong not_cong_1243 not_cong_3412 by blast
         hence "E A D Cong3 F B C" 
           by (meson Cong3_def \<open>Cong A D C B\<close> \<open>Cong C F D E\<close> 
               cong_4321 cong_right_commutativity)
@@ -3227,6 +3246,65 @@ proof -
     by (simp add: sac_rectangle)
   thus ?thesis 
     by (meson Cong_cases Square_def \<open>Cong B C A B\<close> rect_permut)
+qed
+
+subsection "For Gupta Model"
+
+lemma euclidT:
+  assumes "Bet A D T" and
+    "Bet B D C" and 
+    "A \<noteq> D" 
+  shows "\<exists> X Y. Bet A B X \<and> Bet A C Y \<and> Bet X T Y" 
+proof -
+  {
+    assume "B \<noteq> D"
+    {
+      assume "Col A B C" 
+      {
+        assume "Bet A B C"
+        {
+          assume "A \<noteq> B"
+          moreover have "Bet A B C" 
+            using \<open>Bet A B C\<close> by blast
+          moreover have "Bet A B T" 
+            using assms(1) assms(2) between_exchange4 
+              between_inner_transitivity calculation(2) by blast
+          moreover have "Bet B C T \<longrightarrow> ?thesis" 
+            using calculation(3) not_bet_distincts by blast
+          moreover have "Bet B T C \<longrightarrow> ?thesis" 
+            using not_bet_distincts by blast
+          ultimately have ?thesis using l5_2 by blast
+        }
+        hence ?thesis 
+          using between_symmetry between_trivial by blast
+      }
+      moreover have "Bet B C A \<longrightarrow> ?thesis" 
+        using assms(1) assms(2) assms(3) tarski_s_parallel_postulate by presburger
+      moreover have "Bet C A B \<longrightarrow> ?thesis" 
+        using assms(1) assms(2) assms(3) tarski_s_parallel_postulate by presburger
+      ultimately have ?thesis 
+        using Col_def \<open>Col A B C\<close> by blast
+    }
+    moreover
+    {
+      assume "\<not> Col A B C" 
+      {
+        {
+          assume "D \<noteq> C"
+          hence ?thesis 
+            using assms(1) assms(2) assms(3) tarski_s_parallel_postulate by blast
+        }
+        hence ?thesis 
+          using assms(1) not_bet_distincts by blast
+      }
+      hence ?thesis 
+        by blast
+    }
+    ultimately have ?thesis 
+      by blast
+  }
+  thus ?thesis 
+    using assms(1) between_symmetry between_trivial by blast
 qed
 
 end

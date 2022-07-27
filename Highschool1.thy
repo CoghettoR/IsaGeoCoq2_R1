@@ -2,7 +2,8 @@
 
 Highschool1.thy
 
-Version 2.1.0 IsaGeoCoq2_R1
+Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
+Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
@@ -96,11 +97,17 @@ next
   hence "A' C' B CongA C' A' B" 
     by (metis False \<open>Bet B A C'\<close> \<open>Bet B C A'\<close> assms(1) assms(2) bet_col1 
         bet_neq12__neq cong_3421 cong_reflexivity l11_51 not_col_permutation_4 not_cong_2134)
-  have "Cong I B I B \<and> (I \<noteq> B \<longrightarrow> (C' I B CongA A' I B \<and> C' B I CongA A' B I))" 
-    by (metis CongA_def \<open>A' C' B CongA C' A' B\<close> \<open>Cong B C' A' B\<close> \<open>I Midpoint A' C'\<close> 
-        cong_3421 cong_reflexivity l11_51 midpoint_cong midpoint_distinct_1 not_cong_2134)
-  hence "C' I B CongA A' I B \<and> C' B I CongA A' B I" 
-    using \<open>I \<noteq> B\<close> by blast
+  have "C' I B CongA A' I B \<and> C' B I CongA A' B I" 
+  proof -
+    have "Cong I B I B" 
+      by (simp add: cong_reflexivity) 
+    hence "(I \<noteq> B \<longrightarrow> (C' I B CongA A' I B \<and> C' B I CongA A' B I))" 
+      by (metis Cong_cases conga_distinct l11_51 Tarski_neutral_dimensionless.midpoint_cong 
+          Tarski_neutral_dimensionless_axioms \<open>A' C' B CongA C' A' B\<close> 
+          \<open>Cong B C' A' B\<close> \<open>I Midpoint A' C'\<close>)
+    thus ?thesis
+      using \<open>I \<noteq> B\<close> by blast
+  qed
   have "I InAngle A B C" 
   proof -
     have "A \<noteq> B" 

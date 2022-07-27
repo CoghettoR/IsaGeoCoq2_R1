@@ -2,7 +2,13 @@
 
 Tarski_Archimedes.thy
 
-Version 2.1.0 IsaGeoCoq2_R1
+Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
+[X] equivalence Grad (function) \<longleftrightarrow> GradI (induction)
+[X] local: smt \<longrightarrow> metis/meson
+[x] angle_archimedes.v
+
+Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
+
 Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
@@ -36,7 +42,7 @@ imports
   Tarski_Neutral
 
 begin
-(*>*)
+  (*>*)
 
 context Tarski_neutral_dimensionless
 
@@ -46,16 +52,16 @@ subsection "Graduation"
 
 subsubsection "Définitions"
 
-definition PreGrad :: "'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> bool" where
+definition PreGrad :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" where
   "PreGrad A B C D \<equiv> (A \<noteq> B \<and> Bet A B C \<and> Bet A C D \<and> Cong A B C D)"
 
-fun Sym :: "'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> 'p" where
+fun Sym :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint" where
   "Sym A B C = (if (A \<noteq> B \<and> Bet A B C) then
-      (SOME x::'p. PreGrad A B C x)
+      (SOME x::TPoint. PreGrad A B C x)
          else
        A)"
 
-fun Gradn :: "['p,'p] \<Rightarrow> nat \<Rightarrow>'p"where
+fun Gradn :: "[TPoint,TPoint] \<Rightarrow> nat \<Rightarrow>TPoint"where
   "Gradn A B n = (if (A = B) then 
                     A
                       else 
@@ -67,19 +73,19 @@ fun Gradn :: "['p,'p] \<Rightarrow> nat \<Rightarrow>'p"where
                           else 
                         (Sym A B (Gradn A B (n-1))))))"
 
-definition Grad :: "['p,'p,'p] \<Rightarrow> bool" where
+definition Grad :: "[TPoint,TPoint,TPoint] \<Rightarrow> bool" where
   "Grad A B C \<equiv> \<exists> n. (n \<noteq> 0) \<and> (C = Gradn A B n)"
 
-definition Reach :: "['p,'p,'p,'p] \<Rightarrow> bool" where
+definition Reach :: "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" where
   "Reach A B C D \<equiv> \<exists> B'. Grad A B B' \<and> C D Le A B'"
 
-definition Grad2 :: "['p,'p,'p,'p,'p,'p] \<Rightarrow> bool" where
+definition Grad2 :: "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" where
   "Grad2 A B C D E F \<equiv> \<exists> n. (n \<noteq> 0) \<and> (C = Gradn A B n) \<and> (F = Gradn D E n)"
 
-fun SymR :: "'p \<Rightarrow> 'p \<Rightarrow> 'p" where
-  "SymR A B = (SOME x::'p. B Midpoint A x)"
+fun SymR :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint" where
+  "SymR A B = (SOME x::TPoint. B Midpoint A x)"
 
-fun GradExpn :: "'p \<Rightarrow> 'p \<Rightarrow> nat \<Rightarrow> 'p" where
+fun GradExpn :: "TPoint \<Rightarrow> TPoint \<Rightarrow> nat \<Rightarrow> TPoint" where
   "(GradExpn A B n) = (if (A = B) then 
                          A 
                            else
@@ -91,13 +97,13 @@ fun GradExpn :: "'p \<Rightarrow> 'p \<Rightarrow> nat \<Rightarrow> 'p" where
                                  else 
                                (SymR A (GradExpn A B (n-1))))))"
 
-definition GradExp :: "'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> bool" where
+definition GradExp :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" where
   "GradExp A B C \<equiv>  \<exists> n. (n \<noteq> 0) \<and> C = GradExpn A B n"
 
-definition GradExp2 :: "['p,'p,'p,'p,'p,'p] \<Rightarrow> bool" where
+definition GradExp2 :: "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" where
   "GradExp2 A B C D E F \<equiv> \<exists> n. (n \<noteq> 0) \<and> (C = GradExpn A B n) \<and> (F = GradExpn D E n)"
 
-fun MidR :: "'p \<Rightarrow> 'p \<Rightarrow> 'p" where
+fun MidR :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint" where
   "MidR A B = (SOME x. x Midpoint A B)"
 
 (* Je peux encore reduire
@@ -107,7 +113,7 @@ par
 (if (n = 1) then (MidR A (GradExpInvn A B (n-1))))))"
 car si n - 1 =0 alors = MidR A B
 *)
-fun GradExpInvn :: "'p \<Rightarrow> 'p \<Rightarrow> nat \<Rightarrow> 'p" where
+fun GradExpInvn :: "TPoint \<Rightarrow> TPoint \<Rightarrow> nat \<Rightarrow> TPoint" where
   "(GradExpInvn A B n) = (if (A = B) then 
                             A 
                               else
@@ -119,7 +125,7 @@ fun GradExpInvn :: "'p \<Rightarrow> 'p \<Rightarrow> nat \<Rightarrow> 'p" wher
                                     else 
                                   (MidR A (GradExpInvn A B (n-1))))))"
 
-definition GradExpInv :: "'p \<Rightarrow> 'p \<Rightarrow> 'p \<Rightarrow> bool" where
+definition GradExpInv :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" where
   "GradExpInv A B C \<equiv>  \<exists> n. B = GradExpInvn A C n"
 
 subsubsection "Continuity Axioms"
@@ -180,8 +186,16 @@ lemma Diff_Mid_Mid_PreGrad:
     "B Midpoint A C" and
     "C Midpoint B D" 
   shows "PreGrad A B C D"
-  by (metis PreGrad_def midpoint_distinct_2 assms(1) assms(2) assms(3) 
-      cong_transitivity midpoint_bet midpoint_cong outer_transitivity_between2) 
+proof -
+  have "Bet A B C" 
+    using Midpoint_def assms(2) by presburger
+  moreover have "Bet A C D" 
+    using Midpoint_def assms(3) calculation is_midpoint_id outer_transitivity_between2 by blast
+  moreover have "Cong A B C D" 
+    using assms(2) assms(3) cong_transitivity midpoint_cong by blast
+  ultimately show ?thesis 
+    by (simp add: assms(1) PreGrad_def)
+qed
 
 lemma Sym_Diff__Diff:
   assumes "Sym A B C = D" and 
@@ -219,7 +233,7 @@ lemma Sym_Bet__Bet_Bet:
     "Bet A B C" 
   shows "Bet A B D \<and> Bet A C D"
 proof -
-  have "(SOME x::'p. PreGrad A B C x) = D"
+  have "(SOME x::TPoint. PreGrad A B C x) = D"
     using assms(1) assms(2) assms(3) by auto
   hence "PreGrad A B C D"
     by (metis PreGrad_lem1 assms(2) assms(3) someI2) 
@@ -233,7 +247,7 @@ lemma Sym_Bet__Cong:
     "Bet A B C" 
   shows "Cong A B C D"
 proof -
-  have "(SOME x::'p. PreGrad A B C x) = D"
+  have "(SOME x::TPoint. PreGrad A B C x) = D"
     using assms(1) assms(2) assms(3) by auto
   hence "PreGrad A B C D"
     by (metis PreGrad_lem1 assms(2) assms(3) someI2) 
@@ -1411,7 +1425,7 @@ proof -
     by (simp add: assms(2))
   have "... = (Sym A B B)"
     by (simp add: assms(1)) 
-  hence "(SOME x::'p. PreGrad A B B x) = C"
+  hence "(SOME x::TPoint. PreGrad A B B x) = C"
     using assms(1) by (metis Gradn_aux_1_0 Sym.simps 
         \<open>C = Sym A B (Gradn A B (Suc 0))\<close> assms(2)) 
   hence "PreGrad A B B C"
@@ -4158,8 +4172,8 @@ proof -
     using \<open>A \<noteq> M\<close> \<open>N \<noteq> M\<close> assms(4) assms(7) l7_3_2 
       symmetry_preserves_conga by blast
   hence "Cong A N B L \<and> M A N CongA M B L \<and> M N A CongA M L B" 
-    using per23_preserves_bet 
-    by (metis Cong_cases l11_49 \<open>A \<noteq> N\<close> assms(4) assms(7) midpoint_cong)
+    using per23_preserves_bet Cong_cases l11_49 \<open>A \<noteq> N\<close> assms(4) 
+      assms(7) midpoint_cong by meson
   have "Lambert N L B C" 
   proof -
     {
@@ -4971,6 +4985,1743 @@ proof -
   }
   thus ?thesis
     by (simp add: aristotle_s_axiom_def)
+qed
+
+subsection "Equivalence Grad / GradI (inductive)"
+
+inductive GradI :: "[TPoint,TPoint,TPoint] \<Rightarrow> bool" for A B
+  where
+    gradi_init : "GradI A B B" 
+  | gradi_stab : "GradI A B C'" if 
+    "GradI A B C" 
+    and "Bet A C C'" 
+    and "Cong A B C C'" 
+
+lemma Grad1__GradI:
+  shows "GradI A B (Gradn A B 1)"
+proof -
+  have "B = Gradn A B 1" 
+    by force
+  thus ?thesis 
+    using gradi_init by auto
+qed
+
+lemma Gradn__GradI:
+  shows "GradI A B (Gradn A B (Suc n))" 
+proof (induction n)
+  show "GradI A B (Gradn A B (Suc 0))" 
+    by (simp add: gradi_init)
+  {
+    fix n
+    assume "GradI A B (Gradn A B (Suc n))"
+    have "GradI A B (Gradn A B (Suc (Suc n)))" 
+    proof(rule GradI.induct [where ?A ="A" and ?B="B"])
+      show "GradI A B (Gradn A B (Suc (Suc n)))" 
+        using Bet_Gradn_Gradn_Suc Cong_Gradn_Gradn_Suc GradI.simps 
+          \<open>GradI A B (Gradn A B (Suc n))\<close> by blast
+      show "GradI A B B" 
+        by (simp add: gradi_init)
+      show "\<And>C C'. GradI A B C \<Longrightarrow> GradI A B C \<Longrightarrow> Bet A C C' \<Longrightarrow> Cong A B C C' \<Longrightarrow> GradI A B C'" 
+        using gradi_stab by blast
+    qed
+  }
+  thus "\<And>n. GradI A B (Gradn A B (Suc n)) \<Longrightarrow> GradI A B (Gradn A B (Suc (Suc n)))" 
+    by blast
+qed
+
+lemma Grad__GradI:
+  assumes "Grad A B C"
+  shows "GradI A B C" 
+proof (cases "B = C")
+  case True
+  thus ?thesis 
+    by (simp add: gradi_init)
+next
+  case False
+  obtain n where "n \<noteq> 0" and "C = Gradn A B n" 
+    using Grad_def assms by blast
+  then obtain m where "n = Suc m" 
+    using not0_implies_Suc by blast
+  hence "C = Gradn A B (Suc m)"
+    using \<open>C = Gradn A B n\<close> by blast
+  thus ?thesis 
+    using Gradn__GradI by blast
+qed
+
+lemma GradIAAB__not:
+  assumes "GradI A A B" 
+  shows "A = B"
+proof (rule GradI.induct [OF assms])
+  show "A = A" 
+    by blast
+  show "\<And>C C'. GradI A A C \<Longrightarrow> A = C \<Longrightarrow> Bet A C C' \<Longrightarrow> Cong A A C C' \<Longrightarrow> A = C'"
+    using between_cong by presburger
+qed
+
+lemma GradI__Grad:
+  assumes "GradI A B C"
+  shows "Grad A B C" 
+proof (cases "A = B")
+  case True
+  hence "A = C" 
+    using GradIAAB__not assms by blast
+  thus ?thesis 
+    using True grad_equiv_coq_1 by blast
+next
+  case False
+  show ?thesis 
+  proof (rule GradI.induct [where ?A="A" and ?B="B"])
+    show "GradI A B C" 
+      by (simp add: assms)
+    show "Grad A B B" 
+      by (simp add: grad_equiv_coq_1)
+    show "\<And>C C'. GradI A B C \<Longrightarrow> Grad A B C \<Longrightarrow> Bet A C C' \<Longrightarrow> Cong A B C C' \<Longrightarrow> Grad A B C'" 
+      using grad_stab by blast
+  qed
+qed
+
+theorem Grad_GradI:
+  shows "Grad A B C \<longleftrightarrow> GradI A B C" 
+  using GradI__Grad Grad__GradI by blast
+
+subsection "GradA"
+
+inductive GradA :: "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" for A B C
+  where
+    grada_init : "GradA A B C D E F" if 
+    "A B C CongA D E F" 
+  | grada_stab : "GradA A B C G H I" if 
+    "GradA A B C D E F" 
+    and "SAMS D E F A B C" 
+    and "D E F A B C SumA G H I" 
+
+inductive GradAExp :: "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" for A B C 
+  where
+    gradaexp_init : "GradAExp A B C D E F" if 
+    "A B C CongA D E F" 
+  | gradaexp_stab : "GradAExp A B C G H I" if 
+    "GradAExp A B C D E F" 
+    and "SAMS D E F D E F" 
+    and "D E F D E F SumA G H I" 
+
+lemma grada_distincts:
+  assumes "GradA A B C D E F" 
+  shows "A \<noteq> B \<and> C \<noteq> B \<and> D \<noteq> E \<and> F \<noteq> E"
+proof(induction rule: GradA.induct [OF assms(1)])
+  show "\<And>D E F. A B C CongA D E F \<Longrightarrow> A \<noteq> B \<and> C \<noteq> B \<and> D \<noteq> E \<and> F \<noteq> E" 
+    by (simp add: CongA_def)
+  show "\<And>D E F G H I.
+       GradA A B C D E F \<Longrightarrow>
+       A \<noteq> B \<and> C \<noteq> B \<and> D \<noteq> E \<and> F \<noteq> E \<Longrightarrow>
+       SAMS D E F A B C \<Longrightarrow>
+       D E F A B C SumA G H I \<Longrightarrow> A \<noteq> B \<and> C \<noteq> B \<and> G \<noteq> H \<and> I \<noteq> H" 
+    using suma_distincts by blast
+qed
+
+lemma grada_ABC:
+  assumes "A \<noteq> B" and
+    "B \<noteq> C"
+  shows "GradA A B C A B C" 
+proof -
+  have "A B C CongA A B C" 
+    using assms(1) assms(2) conga_refl by force
+  thus ?thesis 
+    using grada_init 
+    by force
+qed
+
+lemma gradaexp_distincts:
+  assumes "GradAExp A B C D E F" 
+  shows "A \<noteq> B \<and> C \<noteq> B \<and> D \<noteq> E \<and> F \<noteq> E"
+proof(induction rule: GradAExp.induct [OF assms(1)])
+  show "\<And>D E F. A B C CongA D E F \<Longrightarrow> A \<noteq> B \<and> C \<noteq> B \<and> D \<noteq> E \<and> F \<noteq> E" 
+    by (simp add: CongA_def)
+  show "\<And>D E F G H I.
+       GradAExp A B C D E F \<Longrightarrow>
+       A \<noteq> B \<and> C \<noteq> B \<and> D \<noteq> E \<and> F \<noteq> E \<Longrightarrow>
+       SAMS D E F D E F \<Longrightarrow> D E F D E F SumA G H I \<Longrightarrow> A \<noteq> B \<and> C \<noteq> B \<and> G \<noteq> H \<and> I \<noteq> H"
+    using suma_distincts by blast
+qed
+
+lemma gradaexp_ABC:
+  assumes "A \<noteq> B" and
+    "B \<noteq> C"
+  shows "GradAExp A B C A B C" 
+proof -
+  have "A B C CongA A B C" 
+    using assms(1) assms(2) conga_refl by force
+  thus ?thesis 
+    using gradaexp_init 
+    by force
+qed
+
+lemma conga2_grada__grada_aux1: 
+  assumes "GradA A B C D E F" and
+    "A B C CongA A' B' C'" 
+  shows "GradA A' B' C' D E F" 
+proof (induction rule: GradA.cases [OF assms(1)])
+  { 
+    assume "A B C CongA D E F"
+    hence "GradA A' B' C' D E F" 
+      using grada_init 
+      by (meson assms(2) not_conga not_conga_sym)
+  }
+  thus "\<And>Da Ea Fa.
+       D = Da \<Longrightarrow>
+       E = Ea \<Longrightarrow> F = Fa \<Longrightarrow> A B C CongA Da Ea Fa \<Longrightarrow> GradA A' B' C' D E F" 
+    by blast
+  {
+    fix Da Ea Fa
+    assume 1: "GradA A B C Da Ea Fa" and
+      2: "SAMS Da Ea Fa A B C" and
+      3: "Da Ea Fa A B C SumA D E F" 
+    have "GradA A' B' C' D E F" 
+    proof (rule grada_stab)
+      let ?D = "Da"
+      let ?E = "Ea"
+      let ?F = "Fa"
+      show "GradA A' B' C' ?D ?E ?F" 
+      proof (rule GradA.inducts)
+        show "GradA A B C Da Ea Fa" 
+          by (simp add: "1")
+        show "\<And>D E F. A B C CongA D E F \<Longrightarrow> GradA A' B' C' D E F" 
+          by (meson Tarski_neutral_dimensionless.conga_trans Tarski_neutral_dimensionless.not_conga_sym Tarski_neutral_dimensionless_axioms assms(2) grada_init)
+        {
+          fix D E F G H I
+          assume "GradA A B C D E F" and
+            A:  "GradA A' B' C' D E F" and
+            B:  "SAMS D E F A B C" and
+            C:  "D E F A B C SumA G H I"
+          have "GradA A' B' C' G H I"  
+          proof (rule grada_stab)
+            show "GradA A' B' C' D E F" 
+              by (simp add: A)
+            show "SAMS D E F A' B' C'" using B 
+              by (meson C conga2_sams__sams assms(2) sams2_suma2__conga123)
+            show "D E F A' B' C' SumA G H I" using C 
+              by (meson B conga3_suma__suma sams2_suma2__conga123 suma2__conga assms(2))
+          qed
+        }
+        thus "\<And>D E F G H I.
+       GradA A B C D E F \<Longrightarrow>
+       GradA A' B' C' D E F \<Longrightarrow>
+       SAMS D E F A B C \<Longrightarrow>
+       D E F A B C SumA G H I \<Longrightarrow> GradA A' B' C' G H I" 
+          by blast
+      qed
+      show "SAMS ?D ?E ?F A' B' C'" using 2 
+        by (meson "3" sams2_suma2__conga123 assms(2) conga2_sams__sams)
+      show "?D ?E ?F A' B' C' SumA D E F" using 3 
+        by (meson "2" sams2_suma2__conga123 assms(2) conga3_suma__suma suma2__conga)
+    qed
+  }
+  thus "\<And>Da Ea Fa G H I.
+       D = G \<Longrightarrow>
+       E = H \<Longrightarrow>
+       F = I \<Longrightarrow>
+       GradA A B C Da Ea Fa \<Longrightarrow>
+       SAMS Da Ea Fa A B C \<Longrightarrow>
+       Da Ea Fa A B C SumA G H I \<Longrightarrow> GradA A' B' C' D E F " 
+    by blast
+qed
+
+lemma conga2_grada__grada_aux2: 
+  assumes "GradA A B C D E F" and
+    "D E F CongA D' E' F'" 
+  shows "GradA A B C D' E' F'" 
+proof (induction rule: GradA.cases [OF assms(1)])
+  {
+    assume "A B C CongA D E F"
+    hence "A B C CongA D' E' F'" 
+      by (metis conga_trans assms(2))
+    hence "GradA A B C D' E' F'" 
+      by (simp add: grada_init)
+  }
+  thus "\<And>Da Ea Fa.
+       D = Da \<Longrightarrow>
+       E = Ea \<Longrightarrow> F = Fa \<Longrightarrow> A B C CongA Da Ea Fa \<Longrightarrow> GradA A B C D' E' F'" 
+    by blast
+  {
+    fix Da Ea Fa
+    assume 1: "GradA A B C Da Ea Fa" and
+      2: "SAMS Da Ea Fa A B C" and
+      3: "Da Ea Fa A B C SumA D E F"
+    have  "GradA A B C D' E' F'" 
+    proof (rule grada_stab)
+      show "GradA A B C Da Ea Fa" 
+        by (simp add: "1")
+      show "SAMS Da Ea Fa A B C" 
+        by (simp add: "2")
+      show "Da Ea Fa A B C SumA D' E' F'" 
+        by (meson "2" "3" sams2_suma2__conga123 assms(2) 
+            conga3_suma__suma sams2_suma2__conga456)
+    qed
+  }
+  thus "\<And>Da Ea Fa G H I.
+       D = G \<Longrightarrow>
+       E = H \<Longrightarrow>
+       F = I \<Longrightarrow>
+       GradA A B C Da Ea Fa \<Longrightarrow>
+       SAMS Da Ea Fa A B C \<Longrightarrow>
+       Da Ea Fa A B C SumA G H I \<Longrightarrow> GradA A B C D' E' F'" 
+    by blast
+qed
+
+lemma conga2_grada__grada: 
+  assumes "GradA A B C D E F" and
+    "A B C CongA A' B' C'" and
+    "D E F CongA D' E' F'"
+  shows "GradA A' B' C' D' E' F'" 
+  using assms(1) assms(2) assms(3) 
+    conga2_grada__grada_aux1 conga2_grada__grada_aux2 by blast
+
+lemma grada__lea:
+  assumes "GradA A B C D E F"
+  shows "A B C LeA D E F" 
+proof (induction rule: GradA.cases [OF assms(1)])
+  case (1 D E F)
+  then show ?case 
+    by (simp add: conga__lea)
+next
+  case (2 D E F G H I)
+  thus ?case 
+    by (metis sams_suma__lea456789)
+qed
+
+lemma grada_out__out:
+  assumes "E Out D F" and 
+    "GradA A B C D E F" 
+  shows "B Out A C" 
+proof (induction rule: GradA.cases [OF assms(2)])
+  case (1 D E F)
+  then show ?case 
+    by (metis not_conga_sym assms(1) l11_21_a)
+next
+  case (2 D E F G H I)
+  then show ?case 
+    by (metis sams_suma__lea456789 assms(1) out_lea__out)
+qed
+
+lemma grada2_sams_suma__grada_aux:
+  shows "\<forall> A B C D E F G H I K L M. 
+              GradA A B C D E F \<and> GradA A B C G H I \<and> 
+              SAMS D E F G H I \<and> D E F G H I SumA K L M \<longrightarrow> GradA A B C K L M"
+proof -
+  {
+    fix A B C D E F G' H' I' K L M
+    assume K1: "GradA A B C D E F" and
+      K2: "GradA A B C G' H' I'" 
+    have "\<forall> K L M. (SAMS D E F G' H' I' \<and> D E F G' H' I' SumA K L M) \<longrightarrow> GradA A B C K L M" 
+    proof(induction rule: GradA.induct [OF K2])
+      {
+        fix Da Ea Fa
+        assume "A B C CongA Da Ea Fa"
+        {
+          fix K L M
+          assume "SAMS D E F Da Ea Fa" and "D E F Da Ea Fa SumA K L M"
+          have "SAMS D E F A B C" 
+            by (meson Tarski_neutral_dimensionless.conga2_sams__sams Tarski_neutral_dimensionless.not_conga_sym Tarski_neutral_dimensionless.sams2_suma2__conga123 Tarski_neutral_dimensionless_axioms \<open>A B C CongA Da Ea Fa\<close> \<open>D E F Da Ea Fa SumA K L M\<close> \<open>SAMS D E F Da Ea Fa\<close>)
+          moreover have "D E F A B C SumA K L M" 
+            by (meson Tarski_neutral_dimensionless.conga3_suma__suma Tarski_neutral_dimensionless.not_conga_sym Tarski_neutral_dimensionless.sams2_suma2__conga123 Tarski_neutral_dimensionless_axioms \<open>A B C CongA Da Ea Fa\<close> \<open>D E F Da Ea Fa SumA K L M\<close> \<open>SAMS D E F Da Ea Fa\<close> suma2__conga)
+          ultimately have "GradA A B C K L M" 
+            using K1 grada_stab by blast
+        }
+        hence "\<forall>K L M. (SAMS D E F Da Ea Fa \<and> D E F Da Ea Fa SumA K L M) \<longrightarrow> GradA A B C K L M" 
+          by blast
+      }
+      thus "\<And>Da Ea Fa.
+       A B C CongA Da Ea Fa \<Longrightarrow>
+       \<forall>K L M. (SAMS D E F Da Ea Fa \<and> D E F Da Ea Fa SumA K L M) \<longrightarrow> GradA A B C K L M" 
+        by blast
+      {
+        fix G H I 
+        {
+          fix Da Ea Fa
+          assume "GradA A B C Da Ea Fa" and
+            "SAMS Da Ea Fa A B C" and
+            "Da Ea Fa A B C SumA G H I" and
+            P1: "\<forall>K L M. SAMS D E F Da Ea Fa \<and> D E F Da Ea Fa SumA K L M \<longrightarrow> GradA A B C K L M"
+          {
+            fix K0 L0 M0
+            assume "SAMS D E F G H I" and
+              "D E F G H I SumA K0 L0 M0"
+            have "Da \<noteq> Ea" 
+              using \<open>SAMS Da Ea Fa A B C\<close> sams_distincts by auto
+            have "Fa \<noteq> Ea" 
+              using \<open>GradA A B C Da Ea Fa\<close> grada_distincts by blast
+            have "D \<noteq> E" 
+              using \<open>SAMS D E F G H I\<close> sams_distincts by blast
+            have "E \<noteq> F" 
+              using \<open>SAMS D E F G H I\<close> sams_distincts by blast
+            obtain K L M where "D E F Da Ea Fa SumA K L M" 
+              using ex_suma \<open>D \<noteq> E\<close> \<open>Da \<noteq> Ea\<close> \<open>E \<noteq> F\<close> \<open>Fa \<noteq> Ea\<close> by presburger
+            have "SAMS D E F Da Ea Fa" 
+            proof (rule sams_lea2__sams [where ?A'="D" and ?B'="E" and ?C'="F" and
+                  ?D'="G" and ?E'="H" and ?F'="I"]) 
+              show "SAMS D E F G H I" 
+                using \<open>SAMS D E F G H I\<close> by blast
+              show "D E F LeA D E F" 
+                using \<open>D \<noteq> E\<close> \<open>E \<noteq> F\<close> lea_refl by force
+              show "Da Ea Fa LeA G H I"
+              proof (rule sams_suma__lea123789 [where ?D="A" and ?E="B" and ?F="C"])
+                show "Da Ea Fa A B C SumA G H I" 
+                  using \<open>Da Ea Fa A B C SumA G H I\<close> by blast
+                show "SAMS Da Ea Fa A B C"
+                  by (simp add: \<open>SAMS Da Ea Fa A B C\<close>)
+              qed
+            qed
+            have "GradA A B C K0 L0 M0" 
+            proof (rule grada_stab [where ?D = "K" and ?E = "L" and ?F = "M"])
+              show "GradA A B C K L M" 
+                using P1 \<open>D E F Da Ea Fa SumA K L M\<close> \<open>SAMS D E F Da Ea Fa\<close> by blast
+              show "SAMS K L M A B C" 
+                using sams_assoc_2 [where ?A="D" and ?B="E" and ?C="F" and
+                    ?D="Da" and ?E="Ea" and ?F="Fa" and ?D'="G" and ?E'="H" and ?F'="I"] 
+                using \<open>D E F Da Ea Fa SumA K L M\<close> \<open>Da Ea Fa A B C SumA G H I\<close> 
+                  \<open>SAMS D E F Da Ea Fa\<close> \<open>SAMS D E F G H I\<close> \<open>SAMS Da Ea Fa A B C\<close> by blast
+              show "K L M A B C SumA K0 L0 M0" 
+                by (meson suma_assoc_2 \<open>D E F Da Ea Fa SumA K L M\<close> 
+                    \<open>D E F G H I SumA K0 L0 M0\<close> \<open>Da Ea Fa A B C SumA G H I\<close> \<open>SAMS D E F Da Ea Fa\<close> 
+                    \<open>SAMS Da Ea Fa A B C\<close>)
+            qed
+          }
+          hence "\<forall>K L M. SAMS D E F G H I \<and> D E F G H I SumA K L M \<longrightarrow> GradA A B C K L M" 
+            by blast
+        }
+        hence "\<And> Da Ea Fa. GradA A B C Da Ea Fa \<and> SAMS Da Ea Fa A B C \<and>
+                            Da Ea Fa A B C SumA G H I \<and>
+     (\<forall>K L M. SAMS D E F Da Ea Fa \<and> D E F Da Ea Fa SumA K L M \<longrightarrow> GradA A B C K L M) \<longrightarrow>
+     (\<forall>K L M. SAMS D E F G H I \<and> D E F G H I SumA K L M \<longrightarrow> GradA A B C K L M)" 
+          by blast
+      }
+        (*      hence "\<And>G H I. (\<And> Da Ea Fa.
+       GradA A B C Da Ea Fa \<Longrightarrow>
+       (\<forall>K L M. SAMS D E F Da Ea Fa \<and> D E F Da Ea Fa SumA K L M \<longrightarrow> GradA A B C K L M) \<Longrightarrow>
+       SAMS Da Ea Fa A B C \<Longrightarrow>
+       Da Ea Fa A B C SumA G H I \<Longrightarrow>
+       (\<forall>K L M. SAMS D E F G H I \<and> D E F G H I SumA K L M \<longrightarrow> GradA A B C K L M))" 
+        by blast*)
+        (*      hence "\<And>G H I Da Ea Fa.
+       GradA A B C Da Ea Fa \<Longrightarrow>
+       (\<forall>K L M. SAMS D E F Da Ea Fa \<and> D E F Da Ea Fa SumA K L M \<longrightarrow> GradA A B C K L M) \<Longrightarrow>
+       SAMS Da Ea Fa A B C \<Longrightarrow>
+       Da Ea Fa A B C SumA G H I \<Longrightarrow>
+       (\<forall>K L M. SAMS D E F G H I \<and> D E F G H I SumA K L M \<longrightarrow> GradA A B C K L M)" 
+        by blast*)
+      thus "\<And>Da Ea Fa G H I.
+       GradA A B C Da Ea Fa \<Longrightarrow>
+       (\<forall>K L M. SAMS D E F Da Ea Fa \<and> D E F Da Ea Fa SumA K L M \<longrightarrow> GradA A B C K L M) \<Longrightarrow>
+       SAMS Da Ea Fa A B C \<Longrightarrow>
+       Da Ea Fa A B C SumA G H I \<Longrightarrow>
+       (\<forall>K L M. SAMS D E F G H I \<and> D E F G H I SumA K L M \<longrightarrow> GradA A B C K L M)" 
+        by blast
+    qed
+  }
+  thus ?thesis by blast
+qed
+
+lemma grada2_sams_suma__grada:
+  assumes "GradA A B C D E F" and
+    "GradA A B C G H I" and
+    "SAMS D E F G H I" and 
+    "D E F G H I SumA K L M"
+  shows "GradA A B C K L M" 
+  using assms(1) assms(2) assms(3) assms(4) grada2_sams_suma__grada_aux by blast
+
+lemma gradaexp__grada:
+  assumes "GradAExp A B C D E F"
+  shows "GradA A B C D E F" 
+proof (rule GradAExp.induct [OF assms])
+  show "\<And>D E F. A B C CongA D E F \<Longrightarrow> GradA A B C D E F" 
+    by (simp add: grada_init)
+  show " \<And>D E F G H I.
+       GradAExp A B C D E F \<Longrightarrow>
+       GradA A B C D E F \<Longrightarrow> SAMS D E F D E F \<Longrightarrow> D E F D E F SumA G H I \<Longrightarrow> GradA A B C G H I" 
+    using grada2_sams_suma__grada_aux by blast
+qed
+
+lemma acute_archi_aux:
+  assumes "Per PO A B" and
+    "PO \<noteq> A" and
+    "B \<noteq> A" and
+    "C \<noteq> D" and
+    "D \<noteq> E" and
+    "Bet A C D" and
+    "Bet C D E" and
+    "Bet D E B" and
+    "C PO D CongA D PO E"
+  shows "C D Lt D E"
+proof -
+  have "D \<noteq> A" 
+    using assms(4) assms(6) between_identity by blast
+  have "C \<noteq> PO" 
+    using assms(9) conga_diff1 by auto
+  have "D \<noteq> PO" 
+    using assms(9) conga_diff45 by blast
+  have "\<not> Col PO A B" 
+    by (metis assms(1) assms(2) assms(3) l8_8 not_col_permutation_2 per_col)
+  hence "\<not> Col PO A D" 
+    by (metis Col_def \<open>D \<noteq> A\<close> assms(4) assms(5) assms(6) assms(7) assms(8) l6_16_1)
+  have "\<not> Col PO D E" 
+    by (metis Col_def \<open>\<not> Col PO A D\<close> assms(4) assms(5) assms(6) assms(7) l6_16_1)
+  then obtain P where "A D PO CongA PO D P" and "PO D OS P E" 
+    using \<open>\<not> Col PO A D\<close> angle_construction_1 not_col_permutation_1 by blast
+  have "Acute A D PO" 
+    by (metis \<open>D \<noteq> A\<close> assms(1) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) 
+        assms(8) bet_col1 between_trivial l11_43 outer_transitivity_between per_col)
+  hence "Acute A D PO \<longleftrightarrow> A D PO LtA E D PO" 
+    by (metis acute_chara_1 assms(4) assms(5) assms(6) assms(7) outer_transitivity_between2)
+  have "A D PO LeA E D PO" 
+    by (metis lta__lea outer_transitivity_between2 \<open>Acute A D PO\<close> acute_chara_1 
+        assms(4) assms(5) assms(6) assms(7))
+  hence "PO D P LeA PO D E" 
+    by (meson lea_right_comm lea_trans \<open>A D PO CongA PO D P\<close> conga__lea456123)
+  hence "P InAngle PO D E" 
+    using \<open>PO D OS P E\<close> lea_in_angle one_side_symmetry by presburger
+  have "P \<noteq> D" 
+    using \<open>PO D OS P E\<close> os_distincts by blast
+  obtain F where "Bet PO F E" and "D Out F P" 
+    using InAngle_def \<open>P InAngle PO D E\<close> \<open>\<not> Col PO D E\<close> bet_col by auto
+  have "A D PO CongA PO D F" 
+    by (metis out2__conga \<open>A D PO CongA PO D P\<close> \<open>D Out F P\<close> \<open>D \<noteq> PO\<close> 
+        bet_out_1 conga_trans not_bet_distincts)
+  have "D Out A C" 
+    by (simp add: assms(4) assms(6) bet_out_1 l6_6)
+  have "D Out PO PO" 
+    using \<open>D \<noteq> PO\<close> out_trivial by auto
+  have "PO D C CongA A D PO"
+    by (simp add: out2__conga \<open>D Out A C\<close> \<open>D Out PO PO\<close> conga_left_comm)
+  have "\<not> Col PO D F" 
+    using \<open>D Out F P\<close> \<open>D Out PO PO\<close> \<open>PO D OS P E\<close> col_out2_col col_trivial_3 l9_19 by blast
+  have "PO \<noteq> F" 
+    using \<open>\<not> Col PO D F\<close> col_trivial_3 by auto
+  have "\<not> Col PO D C" 
+    using \<open>\<not> Col PO A D\<close> assms(4) assms(6) bet_col col2__eq col_permutation_5 by blast
+  have "PO Out D D" 
+    by (simp add: \<open>D \<noteq> PO\<close> out_trivial)
+  have "PO Out C C" 
+    by (simp add: \<open>C \<noteq> PO\<close> out_trivial)
+  have "PO Out F E" 
+    using \<open>Bet PO F E\<close> \<open>PO \<noteq> F\<close> bet_out by auto
+  hence "D PO C CongA D PO F" 
+    using l11_10 \<open>PO Out C C\<close> \<open>PO Out D D\<close> assms(9) conga_left_comm by blast
+  have "PO D C CongA PO D F" 
+    by (meson conga_trans \<open>A D PO CongA PO D F\<close> \<open>PO D C CongA A D PO\<close>)
+  have "Cong PO D PO D" 
+    by (simp add: cong_reflexivity)
+  have "Cong PO C PO F \<and> Cong D C D F \<and> PO C D CongA PO F D" 
+    using l11_50_1 \<open>Cong PO D PO D\<close> \<open>D PO C CongA D PO F\<close> \<open>PO D C CongA PO D F\<close>
+      \<open>\<not> Col PO D C\<close> by blast
+  hence "Cong D F C D" 
+    using not_cong_4312 by blast
+  moreover
+  {
+    assume "Col E D F"
+    {
+      assume "E = F"
+      have "D \<noteq> C" 
+        using assms(4) by auto
+      moreover have "Per PO D C" 
+        using \<open>E = F\<close> \<open>PO D C CongA PO D F\<close> assms(7) l11_18_2 by auto
+      moreover have "Col D C A" 
+        using \<open>D Out A C\<close> not_col_permutation_5 out_col by blast
+      ultimately have "Per A D PO" 
+        by (meson l11_17 \<open>PO D C CongA A D PO\<close>)
+      hence False 
+        using acute_not_per \<open>Acute A D PO\<close> by blast
+    }
+    moreover
+    {
+      assume "E \<noteq> F" 
+      hence False
+        by (metis col_permutation_1 \<open>Bet PO F E\<close> \<open>Col E D F\<close> \<open>\<not> Col PO D F\<close> bet_col col2__eq)
+    }
+    ultimately have False 
+      by blast
+  }
+  hence "\<not> Col E D F" 
+    by blast
+  have "E \<noteq> F" 
+    using \<open>\<not> Col E D F\<close> not_col_distincts by blast
+  have "D E F LtA D F E" 
+  proof (rule lta_trans [where ?A1.0 = "F" and ?B1.0 = "D" and ?C1.0 = "PO"])
+    have "D PO E LtA PO D C \<and> D E PO LtA PO D C" 
+      by (metis l11_41 not_col_permutation_1 one_side_not_col124 
+          \<open>\<And>thesis. (\<And>P. \<lbrakk>A D PO CongA PO D P; PO D OS P E\<rbrakk> \<Longrightarrow> thesis) \<Longrightarrow> thesis\<close> 
+          assms(4) assms(7) between_symmetry)
+    show "D E F LtA F D PO" 
+    proof -
+      have "D E PO CongA D E F" 
+        by (metis bet_out_1 out2__conga \<open>Bet PO F E\<close> \<open>E \<noteq> F\<close> assms(5) out_trivial)
+      moreover have "PO D C CongA F D PO" 
+        by (simp add: \<open>PO D C CongA PO D F\<close> conga_right_comm)
+      ultimately show ?thesis
+        by (simp add: conga_preserves_lta \<open>D PO E LtA PO D C \<and> D E PO LtA PO D C\<close>)
+    qed
+    show "F D PO LtA D F E"     
+      by (metis bet_col col_lta__bet l11_41_aux not_col_permutation_2 
+          \<open>Bet PO F E\<close> \<open>D PO E LtA PO D C \<and> D E PO LtA PO D C\<close> \<open>E \<noteq> F\<close> \<open>PO D C CongA A D PO\<close> 
+          \<open>PO D C CongA PO D F\<close> 
+          \<open>\<And>thesis. (\<And>P. \<lbrakk>A D PO CongA PO D P; PO D OS P E\<rbrakk> \<Longrightarrow> thesis) \<Longrightarrow> thesis\<close> 
+          bet_conga__bet col123__nos ncol_conga_ncol)
+  qed
+  hence "D F Lt D E" 
+    using l11_44_2_b by blast
+  ultimately show ?thesis 
+    using cong2_lt__lt 
+    using cong_reflexivity by blast
+qed
+
+lemma acute_archi_aux1:
+  assumes "Per PO A0 B" and
+    "B \<noteq> A0" and
+    "Bet A0 A1 B" and
+    "GradA A0 PO A1 P Q R" and
+    "A0 \<noteq> A1" 
+  shows "A0 PO B LeA P Q R \<or> (\<exists> A. Bet A0 A1 A \<and> Bet A0 A B \<and> P Q R CongA A0 PO A)" 
+proof -
+  have "A0 \<noteq> PO" 
+    using assms(4) grada_distincts by auto
+  have "A1 \<noteq> PO"  
+    using assms(4) grada_distincts by auto
+  have "P \<noteq> Q" 
+    using assms(4) grada_distincts by auto
+  have "R \<noteq> Q" 
+    using assms(4) grada_distincts by auto
+  have "\<not> Col PO A0 B" 
+    by (metis per_not_col \<open>A0 \<noteq> PO\<close> assms(1) assms(2))
+  have "PO \<noteq> B" 
+    using assms(1) assms(2) per_distinct_1 by blast
+  {
+    assume "P Q R LeA A0 PO B"
+    {
+      assume "Col P Q R" 
+      {
+        assume "Q Out P R"
+        hence "PO Out A0 A1"
+          using grada_out__out [where ?D = "P" and ?E = "Q" and ?F = "R"] assms(4) by blast
+        hence False 
+          using \<open>\<not> Col PO A0 B\<close> assms(3) assms(4) assms(5) bet_col col_trivial_2 
+            colx out_col by blast
+      }
+      hence "\<not> Q Out P R" 
+        by blast
+      hence "Bet P Q R" 
+        using \<open>Col P Q R\<close> not_out_bet by blast
+      hence "Bet A0 PO B" 
+        using \<open>P Q R LeA A0 PO B\<close> bet_lea__bet [where ?A = "P" and ?B = "Q" and ?C = "R"]
+        by blast
+      hence False 
+        using \<open>\<not> Col PO A0 B\<close> bet_col not_col_permutation_4 by blast
+    }
+    hence "\<not> Col P Q R" 
+      by blast
+    then obtain C where "P Q R CongA A0 PO C" and "A0 PO OS C B" 
+      by (metis NCol_cases \<open>\<not> Col PO A0 B\<close> angle_construction_1)
+    have "C InAngle A0 PO B" 
+    proof (rule lea_in_angle)
+      have "A0 PO B CongA A0 PO B" 
+        using \<open>A0 \<noteq> PO\<close> \<open>PO \<noteq> B\<close> conga_refl by auto
+      thus "A0 PO C LeA A0 PO B" 
+        using l11_30 [where ?A="P" and ?B="Q" and ?C="R" and ?D="A0" and ?E="PO" and ?F="B"]
+          \<open>P Q R LeA A0 PO B\<close> \<open>P Q R CongA A0 PO C\<close> by blast
+      show "A0 PO OS B C" 
+        by (simp add: \<open>A0 PO OS C B\<close> one_side_symmetry)
+    qed
+    have "C \<noteq> PO" 
+      using \<open>A0 PO OS C B\<close> os_distincts by blast
+    obtain A where "Bet A0 A B" and "A = PO \<or> PO Out A C" 
+      using InAngle_def \<open>C InAngle A0 PO B\<close> by blast
+    hence "PO Out A C" 
+      using Bet_cases Col_def \<open>\<not> Col PO A0 B\<close> by blast
+    have "P Q R CongA A0 PO A" 
+    proof (rule l11_10 [where ?A ="P" and ?C="R" and ?D="A0" and ?F="C"],
+        insert \<open>P Q R CongA A0 PO C\<close> \<open>PO Out A C\<close>) 
+      show "Q Out P P" 
+        by (simp add: \<open>P \<noteq> Q\<close> out_trivial)
+      show "Q Out R R" 
+        using \<open>R \<noteq> Q\<close> out_trivial by auto
+      show "PO Out A0 A0" 
+        by (simp add: \<open>A0 \<noteq> PO\<close> out_trivial)
+    qed
+    have "Bet A0 A1 A" 
+    proof (cases "A0 = A1")
+      case True
+      thus ?thesis
+        using assms(5) by auto
+    next
+      case False
+      hence "\<not> Col A0 PO A" 
+        by (metis Col_perm \<open>A0 PO OS C B\<close> \<open>PO Out A C\<close> l6_16_1 
+            one_side_not_col123 out_col out_distinct)
+      have "A1 InAngle A0 PO A" 
+      proof (rule lea_in_angle)
+        show "A0 PO A1 LeA A0 PO A"
+        proof (rule l11_30 [where ?A="A0" and ?B="PO" and ?C="A1" and ?D="P" and ?E="Q" and ?F="R"])
+          show "A0 PO A1 LeA P Q R" 
+            by (simp add: assms(4) grada__lea)
+          show "A0 PO A1 CongA A0 PO A1" 
+            by (simp add: \<open>A0 \<noteq> PO\<close> \<open>A1 \<noteq> PO\<close> conga_refl)
+          show "P Q R CongA A0 PO A"
+            by (simp add: \<open>P Q R CongA A0 PO A\<close>)
+        qed
+        show "A0 PO OS A A1"
+          using False \<open>Bet A0 A B\<close> \<open>\<not> Col A0 PO A\<close> assms(3) bet2__out 
+            not_col_distincts out_one_side by presburger
+      qed
+      obtain X where "Bet A0 X A" and "X = PO \<or> PO Out X A1" 
+        using InAngle_def \<open>A1 InAngle A0 PO A\<close> by blast
+      hence "PO Out X A1" 
+        using \<open>\<not> Col A0 PO A\<close> bet_col by blast
+      have "X = A1 \<longrightarrow> Bet A0 A1 A" 
+        using \<open>Bet A0 X A\<close> by blast
+      moreover
+      have "X \<noteq> A1 \<longrightarrow> Bet A0 A1 A" 
+        by (meson \<open>Bet A0 A B\<close> \<open>Bet A0 X A\<close> \<open>PO Out X A1\<close> \<open>\<not> Col A0 PO A\<close> 
+            assms(3) bet_col bet_col1 col_permutation_2 colx out_col)
+      ultimately
+      show ?thesis 
+        by blast
+    qed
+    moreover have "Bet A0 A B" 
+      by (simp add: \<open>Bet A0 A B\<close>)
+    ultimately have  "A0 PO B LeA P Q R \<or> (\<exists> A. Bet A0 A1 A \<and> Bet A0 A B \<and> P Q R CongA A0 PO A)" 
+      using \<open>P Q R CongA A0 PO A\<close> by blast
+  }
+  thus ?thesis 
+    by (metis \<open>A0 \<noteq> PO\<close> \<open>P \<noteq> Q\<close> \<open>PO \<noteq> B\<close> \<open>R \<noteq> Q\<close> lea_total)
+qed
+
+
+lemma acute_archi_aux2_1_a:
+  assumes "Per PO A0 B" and
+    "PO \<noteq> A0" and
+    "B \<noteq> A0" and
+    "Bet A0 A1 B" and
+    "A0 \<noteq> A1" and "\<not> Col PO A0 B" and "\<not> Col A0 PO A1" and "PO \<noteq> A1" and "PO \<noteq> B"
+  shows "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+                  (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 A1 Le A0 A' \<and>
+                  (\<exists> A. Bet A0 A A' \<and> A0 PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+proof -
+  let ?P = "A0"
+  let ?Q = "PO"
+  let ?R = "A1"
+  have "(GradA A0 PO A1 ?P ?Q ?R \<and> (A0 PO B LeA ?P ?Q ?R \<or>
+                  (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> ?P ?Q ?R CongA A0 PO A' \<and> A0 A1 Le A0 A' \<and>
+                  (\<exists> A. Bet A0 A A' \<and> A0 PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+    by (metis assms(2) assms(4) assms(8) bet__le1213 conga_refl grada_init not_bet_distincts)
+  thus ?thesis by blast
+qed
+
+lemma acute_archi_aux2_1:
+  assumes "Per PO A B" and
+    "PO \<noteq> A" and
+    "B \<noteq> A" and
+    "Bet A B0 B" and
+    "A \<noteq> B0" and "\<not> Col PO A B" and "\<not> Col A PO B0" and "PO \<noteq> B0" and "PO \<noteq> B"
+  shows "\<exists> P Q R. (GradA A PO B0 P Q R \<and> (A PO B LeA P Q R \<or>
+                  (\<exists> A'. Bet A B0 A' \<and> Bet A A' B \<and> P Q R CongA A PO A' \<and> A B0 Le A A' \<and>
+                  (\<exists> A0. Bet A A0 A' \<and> A0 PO A' CongA A PO B0 \<and> A B0 Le A0 A'))))" 
+proof -
+  let ?A0 = "A"
+  let ?A1 = "B0"
+  have "\<exists> P Q R. (GradA ?A0 PO ?A1 P Q R \<and> (?A0 PO B LeA P Q R \<or>
+                  (\<exists> A'. Bet ?A0 ?A1 A' \<and> Bet ?A0 A' B \<and> P Q R CongA ?A0 PO A' \<and> ?A0 ?A1 Le ?A0 A' \<and>
+                  (\<exists> A. Bet ?A0 A A' \<and> ?A0 PO A' CongA ?A0 PO ?A1 \<and> ?A0 ?A1 Le A A'))))" 
+    using acute_archi_aux2_1_a assms(1) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) 
+      assms(8) assms(9) by blast
+  thus ?thesis 
+    by (metis not_bet_distincts)
+qed
+
+lemma acute_archi_aux2_2:
+  assumes "Per PO A0 B" and
+    "PO \<noteq> A0" and
+    "B \<noteq> A0" and
+    "Bet A0 A1 B" and
+    "A0 \<noteq> A1" and
+    "Grad A0 A1 C" and
+    "Bet A0 C C'" and
+    "Cong A0 A1 C C'" and
+    "\<not> Col PO A0 B" and
+    "\<not> Col A0 PO A1" and
+    "PO \<noteq> A1" and
+    "PO \<noteq> B" and
+    "Per PO A0 B \<and> PO \<noteq> A0 \<and>
+       B \<noteq> A0 \<and> Bet A0 A1 B \<and>
+       A0 \<noteq> A1 \<and>
+       \<not> Col PO A0 B \<and>
+       \<not> Col A0 PO A1 \<and>
+       PO \<noteq> A1 \<longrightarrow> (\<exists> P Q R.
+         (GradA A0 PO A1 P Q R \<and>
+         (A0 PO B LeA P Q R \<or>
+          (\<exists> A'.
+             Bet A0 A1 A' \<and>
+             Bet A0 A' B \<and>
+             P Q R CongA A0 PO A' \<and>
+             A0 C Le A0 A' \<and> (\<exists> A. ( Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))))"
+  shows "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> 
+(A0 PO B LeA P Q R \<or>
+(\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C' Le A0 A' \<and>
+                     (\<exists> A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+proof -
+  have "\<exists> P Q R.
+         (GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+          (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and>
+             A0 C Le A0 A' \<and> (\<exists> A. ( Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A')))))"
+    using assms(13) assms(1) assms(10) assms(11) assms(2) assms(3) assms(4) 
+      assms(5) assms(9) by blast
+  then obtain P Q R where "GradA A0 PO A1 P Q R" and
+    P2:  "A0 PO B LeA P Q R \<or>
+          (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C Le A0 A' \<and> 
+             (\<exists> A. ( Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A')))"
+    by blast
+  {
+    assume "A0 PO B LeA P Q R" 
+    hence "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+               (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C' Le A0 A' \<and>
+                     (\<exists> A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+      using \<open>GradA A0 PO A1 P Q R\<close> by blast
+  }
+  moreover
+  {
+    assume "\<not> A0 PO B LeA P Q R" 
+    assume "\<exists> A'.
+             Bet A0 A1 A' \<and>
+             Bet A0 A' B \<and>
+             P Q R CongA A0 PO A' \<and>
+             A0 C Le A0 A' \<and> (\<exists> A. ( Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))"
+    then obtain A' where "Bet A0 A1 A'" and
+      "Bet A0 A' B" and
+      "P Q R CongA A0 PO A'" and
+      "A0 C Le A0 A'" and 
+      P3: "(\<exists> A. ( Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))"
+      by blast
+    then obtain A where "Bet A0 A A'" and "A PO A' CongA A0 PO A1" and "A0 A1 Le A A'"
+      by blast
+    have "SAMS P Q R A0 PO A1" 
+    proof (rule sams_lea2__sams [where ?A'="A0" and ?B'="PO" and ?C'="B" and 
+          ?D'="A0" and ?E'="PO" and ?F'="B"])
+      show "SAMS A0 PO B A0 PO B" 
+        by (metis acute_chara_1 lea_right_comm lta__lea assms(1) assms(2) assms(3) l11_43 
+            point_construction_different sams_chara)
+      show "P Q R LeA A0 PO B"
+      proof (rule l11_30 [where ?A="A0" and ?B="PO" and ?C="A'" and 
+            ?D="A0" and ?E="PO" and ?F="B"])
+        have "A' InAngle A0 PO B" 
+          by (metis InAngle_def Out_def \<open>A PO A' CongA A0 PO A1\<close> 
+              \<open>Bet A0 A' B\<close> assms(12) assms(2) between_trivial conga_diff2)
+        thus "A0 PO A' LeA A0 PO B" 
+          using inangle__lea by force
+        show "A0 PO A' CongA P Q R" 
+          using \<open>P Q R CongA A0 PO A'\<close> conga_sym_equiv by auto
+        show "A0 PO B CongA A0 PO B" 
+          using assms(12) assms(2) conga_refl by force
+      qed
+      have "A1 InAngle A0 PO B" 
+        using InAngle_def assms(11) assms(12) assms(2) assms(4) out_trivial by auto
+      thus "A0 PO A1 LeA A0 PO B" 
+        by (simp add: inangle__lea)
+    qed
+    have "A0 \<noteq> A'" 
+      using \<open>Bet A0 A1 A'\<close> assms(5) between_identity by blast
+    have "A \<noteq> A'" 
+      using Le_def \<open>A0 A1 Le A A'\<close> assms(5) between_identity cong_identity_inv by blast
+    have "PO \<noteq> A" 
+      using \<open>A PO A' CongA A0 PO A1\<close> conga_diff1 by blast
+    have "P \<noteq> Q" 
+      using \<open>P Q R CongA A0 PO A'\<close> conga_diff1 by blast
+    have "PO \<noteq> A'" 
+      using P3 conga_diff2 by blast
+    have "Q \<noteq> R" 
+      using \<open>P Q R CongA A0 PO A'\<close> conga_diff2 by blast
+    then obtain P' Q' R' where "P Q R A0 PO A1 SumA P' Q' R'" 
+      using ex_suma \<open>P \<noteq> Q\<close> assms(11) assms(2) by fastforce
+    have "GradA A0 PO A1 P' Q' R'" 
+      using grada_stab [where ?D="P" and ?E="Q" and ?F="R"]
+        \<open>GradA A0 PO A1 P Q R\<close> \<open>SAMS P Q R A0 PO A1\<close> \<open>P Q R A0 PO A1 SumA P' Q' R'\<close> by blast
+    moreover
+    have "A0 PO B LeA P' Q' R' \<or> (\<exists> A. Bet A0 A1 A \<and> Bet A0 A B \<and> P' Q' R' CongA A0 PO A)"
+      using acute_archi_aux1 assms(1) assms(3) assms(4) assms(5) calculation by blast 
+    moreover
+    {
+      assume "A0 PO B LeA P' Q' R'"
+      hence "GradA A0 PO A1 P' Q' R'" 
+        using calculation by auto
+      hence "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> 
+(A0 PO B LeA P Q R \<or>
+(\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C' Le A0 A' \<and>
+                     (\<exists> A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+        using \<open>A0 PO B LeA P' Q' R'\<close> by blast
+    }
+    moreover
+    {
+      assume "\<exists> A. Bet A0 A1 A \<and> Bet A0 A B \<and> P' Q' R' CongA A0 PO A"
+      then obtain A'' where "Bet A0 A1 A''" and "Bet A0 A'' B" and "P' Q' R' CongA A0 PO A''" 
+        by blast
+      have "\<not> Col A PO A'" 
+        by (meson \<open>A \<noteq> A'\<close> \<open>Bet A0 A A'\<close> \<open>Bet A0 A' B\<close> \<open>Bet A0 A1 A'\<close> assms(10) assms(4) 
+            bet_col1 colx not_col_permutation_5)
+      have "\<not> Col A0 PO A'" 
+        by (meson \<open>A0 \<noteq> A'\<close> \<open>Bet A0 A' B\<close> assms(10) assms(4) bet_col1 col_trivial_3 colx)
+      {
+        assume "Col A' PO A''" 
+        have "A' \<noteq> A'' \<longrightarrow> False" 
+          by (meson \<open>Bet A0 A1 A''\<close> \<open>Bet A0 A1 A'\<close> \<open>Col A' PO A''\<close> assms(10) 
+              bet_col col_permutation_5 colx)
+        moreover
+        {
+          assume "A' = A''"
+          have "A0 PO A' A0 PO A1 SumA A0 PO A'" 
+            using conga3_suma__suma [where ?A="P" and ?B="Q" and ?C="R" and
+                ?D="A0" and ?E="PO" and ?F="A1" and ?G="P'" and ?H="Q'" and ?I="R'"]
+            using \<open>A' = A''\<close> \<open>P Q R A0 PO A1 SumA P' Q' R'\<close> \<open>P Q R CongA A0 PO A'\<close> 
+              \<open>P' Q' R' CongA A0 PO A''\<close> assms(11) assms(2) conga_refl by force
+          have "\<not> Col A0 PO A''" 
+            using \<open>A' = A''\<close> \<open>\<not> Col A0 PO A'\<close> by auto
+          have "Bet A0 A' A''" 
+            by (simp add: \<open>A' = A''\<close> between_trivial)
+          have "SAMS A0 PO A' A0 PO A1" 
+            using conga2_sams__sams [where ?A="P" and ?B="Q" and ?C="R" and
+                ?D="A0" and ?E="PO" and ?F="A1"] 
+            using \<open>P Q R CongA A0 PO A'\<close> \<open>SAMS P Q R A0 PO A1\<close> assms(11) assms(2) 
+              conga_refl by presburger
+          hence "Col A0 PO A1"
+            using sams_suma__out546
+            by (meson not_col_permutation_4 \<open>A0 PO A' A0 PO A1 SumA A0 PO A'\<close> out_col)
+          hence False 
+            using assms(10) by blast
+        }
+        ultimately have False 
+          by blast
+      }
+      hence "\<not> Col A' PO A''" 
+        by blast
+      have "\<not> Col A0 PO A''" 
+        by (metis \<open>Bet A0 A'' B\<close> \<open>Bet A0 A1 A''\<close> assms(10) assms(4) bet_col1 
+            between_identity colx not_col_distincts)
+      have "Bet A0 A' A''" 
+      proof (rule col_two_sides_bet [where ?B="PO"])
+        show "Col A' A0 A''" 
+          using \<open>Bet A0 A' B\<close> \<open>Bet A0 A'' B\<close> bet_col1 not_col_permutation_1 by blast
+        have "A' InAngle A0 PO A''" 
+        proof (rule lea_in_angle)
+          show "A0 PO A' LeA A0 PO A''" 
+            using l11_30 [where ?A="P" and ?B="Q" and ?C="R" and
+                ?D="P'" and ?E="Q'" and ?F="R'"] 
+            by (meson sams_suma__lea123789 \<open>P Q R A0 PO A1 SumA P' Q' R'\<close> 
+                \<open>P Q R CongA A0 PO A'\<close> \<open>P' Q' R' CongA A0 PO A''\<close> \<open>SAMS P Q R A0 PO A1\<close>)
+          show "A0 PO OS A'' A'" 
+            by (metis \<open>A0 \<noteq> A'\<close> \<open>Bet A0 A' B\<close> \<open>Bet A0 A'' B\<close> \<open>Bet A0 A1 A''\<close> 
+                \<open>\<not> Col A0 PO A'\<close> assms(5) bet2__out between_identity out_one_side)
+        qed
+        thus "A' PO TS A0 A''" 
+          by (simp add: \<open>\<not> Col A' PO A''\<close> \<open>\<not> Col A0 PO A'\<close> in_angle_two_sides 
+              not_col_permutation_1 not_col_permutation_4)
+      qed
+      have "A PO A' CongA A' PO A''" 
+      proof (rule conga_trans [where ?A'="A0" and ?B'="PO" and ?C'="A1"])
+        have "PO \<noteq> A''" 
+          using \<open>\<not> Col A' PO A''\<close> not_col_distincts by blast
+        have "A' \<noteq> A''" 
+          using \<open>\<not> Col A' PO A''\<close> not_col_distincts by blast
+        have "\<not> PO A' OS A0 A''" 
+          using \<open>Bet A0 A' A''\<close> col_trivial_3 one_side_chara by force
+        show "A PO A' CongA A0 PO A1" 
+          by (simp add: \<open>A PO A' CongA A0 PO A1\<close>)
+        show "A0 PO A1 CongA A' PO A''" 
+        proof (rule sams2_suma2__conga456 [where ?A="P" and ?B="Q" and ?C="R" 
+              and ?G="P'" and ?H="Q'" and ?I="R'"])
+          show "SAMS P Q R A0 PO A1" 
+            using \<open>SAMS P Q R A0 PO A1\<close> by auto
+          show "SAMS P Q R A' PO A''" 
+          proof (rule conga2_sams__sams [where ?A="A0" and ?B="PO" and ?C="A'" and 
+                ?D="A'" and ?E="PO" and ?F="A''"])
+            show "A0 PO A' CongA P Q R" 
+              using \<open>P Q R CongA A0 PO A'\<close> conga_sym_equiv by blast
+            show "A' PO A'' CongA A' PO A''" 
+              using \<open>PO \<noteq> A''\<close> \<open>PO \<noteq> A'\<close> conga_refl by auto
+            show "SAMS A0 PO A' A' PO A''" 
+              by (metis Col_cases bet_out bet_out_1 os2__sams out_one_side 
+                  \<open>A' \<noteq> A''\<close> \<open>A0 \<noteq> A'\<close> \<open>Bet A0 A' A''\<close> \<open>\<not> Col A0 PO A''\<close>)
+          qed
+          show "P Q R A0 PO A1 SumA P' Q' R'" 
+            by (simp add: \<open>P Q R A0 PO A1 SumA P' Q' R'\<close>)
+          show "P Q R A' PO A'' SumA P' Q' R'"
+          proof (rule conga3_suma__suma [where ?A="A0" and ?B="PO" and ?C="A'" and
+                ?D="A'" and ?E="PO" and ?F="A''" and ?G="A0" and ?H="PO" and ?I="A''"])
+            show "A0 PO A' A' PO A'' SumA A0 PO A''" 
+            proof -
+              have "A' PO A'' CongA A' PO A''"                 
+                using \<open>PO \<noteq> A''\<close> \<open>PO \<noteq> A'\<close> conga_refl by auto
+              moreover have "\<not> PO A' OS A0 A''"                   
+                using \<open>\<not> PO A' OS A0 A''\<close> by auto
+              moreover have "Coplanar A0 PO A' A''"                   
+                using \<open>Bet A0 A' A''\<close> bet_col ncop__ncols by blast
+              moreover have "A0 PO A'' CongA A0 PO A''"       
+                using \<open>PO \<noteq> A''\<close> assms(2) conga_refl by auto
+              ultimately show ?thesis
+                using SumA_def by blast
+            qed
+            show "A0 PO A' CongA P Q R" 
+              using \<open>P Q R CongA A0 PO A'\<close> conga_sym_equiv by auto
+            show "A' PO A'' CongA A' PO A''" 
+              using \<open>PO \<noteq> A''\<close> \<open>PO \<noteq> A'\<close> conga_refl by auto
+            show "A0 PO A'' CongA P' Q' R'"
+              using \<open>P' Q' R' CongA A0 PO A''\<close> conga_sym_equiv by auto
+          qed
+        qed
+      qed
+      have "A A' Lt A' A''" 
+        using acute_archi_aux [where ?PO="PO" and ?A="A0" and ?B="B"] 
+        by (metis ncol_conga_ncol not_col_distincts not_conga_sym 
+            \<open>A PO A' CongA A' PO A''\<close> \<open>A PO A' CongA A0 PO A1\<close> \<open>Bet A0 A A'\<close>
+            \<open>Bet A0 A' A''\<close> \<open>Bet A0 A'' B\<close> assms(1) assms(10) assms(3) between_exchange3)
+      hence "A A' Le A' A''" 
+        using Lt_def by blast
+      hence "A0 A1 Le A' A''" 
+        by (meson le_transitivity \<open>A0 A1 Le A A'\<close>)
+      have "Bet A0 A1 A''" 
+        by (simp add: \<open>Bet A0 A1 A''\<close>)
+      moreover have "Bet A0 A'' B" 
+        by (simp add: \<open>Bet A0 A'' B\<close>)
+      moreover have "P' Q' R' CongA A0 PO A''" 
+        by (simp add: \<open>P' Q' R' CongA A0 PO A''\<close>)
+      moreover have "A0 C' Le A0 A''" 
+        by (meson bet2_le2__le1346 \<open>A0 A1 Le A' A''\<close> \<open>A0 C Le A0 A'\<close>
+            \<open>Bet A0 A' A''\<close> assms(7) assms(8) cong_reflexivity l5_6)
+      moreover
+      have "\<exists> A. Bet A0 A A'' \<and> A PO A'' CongA A0 PO A1 \<and> A0 A1 Le A A''" 
+      proof -
+        have "Bet A0 A' A''" 
+          using \<open>Bet A0 A' A''\<close> by fastforce
+        moreover have "A' PO A'' CongA A0 PO A1" 
+          by (meson not_conga not_conga_sym \<open>A PO A' CongA A' PO A''\<close> 
+              \<open>A PO A' CongA A0 PO A1\<close>)
+        moreover have "A0 A1 Le A' A''" 
+          using \<open>A0 A1 Le A' A''\<close> by auto
+        ultimately show ?thesis by blast
+      qed
+      ultimately
+      have "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or> 
+                  (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C' Le A0 A' \<and>
+                     (\<exists> A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+        using \<open>GradA A0 PO A1 P' Q' R'\<close> by blast
+    }
+    ultimately
+    have "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or> 
+                  (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C' Le A0 A' \<and>
+                     (\<exists> A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+      using \<open>GradA A0 PO A1 P Q R\<close> by blast
+  }
+  ultimately
+  show ?thesis 
+    using P2 by blast
+qed
+
+lemma acute_archi_aux2:
+  assumes "Per PO A0 B" and
+    "PO \<noteq> A0" and
+    "B \<noteq> A0" and
+    "Bet A0 A1 B" and
+    "A0 \<noteq> A1" and
+    "Grad A0 A1 C"
+  shows "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+                  (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C Le A0 A' \<and>
+                  (\<exists> A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+proof -
+  have "\<not> Col PO A0 B" 
+    by (metis assms(1) assms(2) assms(3) col_permutation_1 l8_8 per_col)
+  have "\<not> Col A0 PO A1" 
+    by (metis \<open>\<not> Col PO A0 B\<close> assms(4) assms(5) bet_col col_trivial_3 colx not_col_permutation_2)
+  have "PO \<noteq> A1" 
+    using \<open>\<not> Col A0 PO A1\<close> assms(4) bet_col1 by blast
+  have "PO \<noteq> B" 
+    using assms(1) assms(3) per_distinct_1 by auto
+  have "GradI A0 A1 C" 
+    by (simp add: Grad__GradI assms(6))
+  let ?th = "\<exists> P Q R. (GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+                  (\<exists> A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and> A0 C Le A0 A' \<and>
+                  (\<exists> A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+  have ?th
+  proof (rule GradI.induct [where ?A="A0" and ?B="A1" and ?x="C"])
+    show "GradI A0 A1 C" 
+      using \<open>GradI A0 A1 C\<close> by blast
+    show "\<exists>P Q R.
+       GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+        (\<exists>A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and>
+              A0 A1 Le A0 A' \<and> (\<exists>A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A')))" 
+      by (metis bet_col assms(1) assms(2) assms(3) assms(4) assms(5) cong2_per2__cong_conga2 
+          cong_reflexivity grada_init le_reflexivity not_bet_distincts
+          not_col_permutation_5 per_col)
+    {
+      fix C0 C'
+      assume H1: "GradI A0 A1 C0" and
+        H2: "\<exists>P Q R. GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+         (\<exists>A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and>
+           A0 C0 Le A0 A' \<and> (\<exists>A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A')))" and
+        H3: "Bet A0 C0 C'" and
+        H4: "Cong A0 A1 C0 C'" 
+      have "\<exists>P Q R. GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+           (\<exists>A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and>
+                 A0 C' Le A0 A' \<and> (\<exists>A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A')))"
+      proof (rule acute_archi_aux2_2 [where ?C="C0"])
+        show "Per PO A0 B"
+          using assms(1) by auto
+        show "PO \<noteq> A0" 
+          by (simp add: assms(2))
+        show "B \<noteq> A0" 
+          by (simp add: assms(3))
+        show "Bet A0 A1 B" 
+          by (simp add: assms(4))
+        show "A0 \<noteq> A1"
+          by (simp add: assms(5))
+        show "Grad A0 A1 C0" 
+          by (simp add: Grad_GradI H1)
+        show "Bet A0 C0 C'" 
+          using H3 by auto
+        show "Cong A0 A1 C0 C'" 
+          using H4 by auto
+        show "\<not> Col PO A0 B" 
+          using \<open>\<not> Col PO A0 B\<close> by auto
+        show "\<not> Col A0 PO A1" 
+          by (simp add: \<open>\<not> Col A0 PO A1\<close>)
+        show "PO \<noteq> A1" 
+          by (simp add: \<open>PO \<noteq> A1\<close>)
+        show "PO \<noteq> B" 
+          using \<open>PO \<noteq> B\<close> by auto
+        show "Per PO A0 B \<and> PO \<noteq> A0 \<and> B \<noteq> A0 \<and> Bet A0 A1 B \<and> A0 \<noteq> A1 \<and> 
+               \<not> Col PO A0 B \<and> \<not> Col A0 PO A1 \<and> PO \<noteq> A1 \<longrightarrow>
+               (\<exists>P Q R. GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+                  (\<exists>A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and>
+               A0 C0 Le A0 A' \<and> (\<exists>A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))))" 
+          using H2 by blast
+      qed
+    }
+    thus "\<And>C C'.
+       GradI A0 A1 C \<Longrightarrow>
+       \<exists>P Q R. GradA A0 PO A1 P Q R \<and> (A0 PO B LeA P Q R \<or>
+           (\<exists>A'. Bet A0 A1 A' \<and> Bet A0 A' B \<and> P Q R CongA A0 PO A' \<and>
+                 A0 C Le A0 A' \<and> (\<exists>A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A'))) \<Longrightarrow>
+       Bet A0 C C' \<Longrightarrow>
+       Cong A0 A1 C C' \<Longrightarrow>
+       \<exists>P Q R.
+          GradA A0 PO A1 P Q R \<and>
+          (A0 PO B LeA P Q R \<or>
+           (\<exists>A'. Bet A0 A1 A' \<and>
+                 Bet A0 A' B \<and>
+                 P Q R CongA A0 PO A' \<and>
+                 A0 C' Le A0 A' \<and> (\<exists>A. Bet A0 A A' \<and> A PO A' CongA A0 PO A1 \<and> A0 A1 Le A A')))" 
+      by blast
+  qed
+  thus ?thesis by blast
+qed
+
+lemma archi_in_acute_angles:
+  assumes "archimedes_axiom" 
+  shows "\<forall> A B C D E F. \<not> Col A B C \<and> Acute D E F 
+                        \<longrightarrow> (\<exists> P Q R. GradA A B C P Q R \<and> D E F LeA P Q R)" 
+proof -
+  {
+    fix A B C D E F
+    assume "\<not> Col A B C" and
+      "Acute D E F"
+    have "A \<noteq> B"  
+      using \<open>\<not> Col A B C\<close> col_trivial_1 by fastforce
+    have "C \<noteq> B" 
+      using \<open>\<not> Col A B C\<close> col_trivial_2 by force
+    have "E \<noteq> D" 
+      using \<open>Acute D E F\<close> acute_distincts by blast
+    have "E \<noteq> F" 
+      using \<open>Acute D E F\<close> acute_distincts by blast
+    have "\<exists> P Q R. GradA A B C P Q R \<and> D E F LeA P Q R" 
+    proof (cases "Col D E F")
+      case True
+      thus ?thesis 
+        by (metis Col_def Out_cases bet_out bet_out_1 l11_31_1  \<open>A \<noteq> B\<close> 
+            \<open>Acute D E F\<close> \<open>C \<noteq> B\<close> \<open>E \<noteq> D\<close> \<open>E \<noteq> F\<close> acute_not_bet grada_ABC)
+    next
+      case False
+      {
+        assume "D E F LeA A B C"
+        hence "\<exists> P Q R. GradA A B C P Q R \<and> D E F LeA P Q R" 
+          by (metis \<open>A \<noteq> B\<close> \<open>C \<noteq> B\<close> grada_ABC)
+      }
+      moreover
+      {
+        assume "A B C LeA D E F"
+        obtain D0 where "Col D E D0" and "D E Perp F D0" 
+          using False l8_18_existence by blast
+        have "E Out D0 D" 
+        proof (rule acute_col_perp__out [where ?A="F"])
+          show "Acute F E D"             
+            using \<open>Acute D E F\<close> acute_sym by blast
+          show "Col E D D0" 
+            using \<open>Col D E D0\<close> not_col_permutation_4 by blast
+          show "E D Perp F D0" 
+            using \<open>D E Perp F D0\<close> perp_left_comm by blast
+        qed
+        have "D0 \<noteq> F" 
+          using \<open>D E Perp F D0\<close> perp_not_eq_2 by blast
+        have "D0 \<noteq> E" 
+          using \<open>E Out D0 D\<close> out_diff1 by auto
+        have "D E F CongA D0 E F" 
+          by (metis acute_col_perp__out acute_sym out2__conga out_trivial
+              perp_left_comm \<open>Acute D E F\<close> \<open>Col D E D0\<close> \<open>D E Perp F D0\<close> \<open>E \<noteq> F\<close> not_col_permutation_4)
+        have "Acute D0 E F" 
+          by (meson acute_conga__acute \<open>Acute D E F\<close> \<open>D E F CongA D0 E F\<close>)
+        have "A B C LeA D0 E F" 
+          by (meson conga__lea lea_trans \<open>A B C LeA D E F\<close> \<open>D E F CongA D0 E F\<close>)
+        have "\<not> Col D E F" 
+          by (simp add: False)
+        have "Per E D0 F" 
+          by (meson Per_cases l8_16_1 \<open>Col D E D0\<close> \<open>D E Perp F D0\<close> col_trivial_2)
+        obtain D1' where "A B C CongA D0 E D1'" and "D0 E OS D1' F" 
+          by (metis Col_cases False angle_construction_1 \<open>Col D E D0\<close> 
+              \<open>D0 \<noteq> E\<close> \<open>\<not> Col A B C\<close> col2__eq)
+        have "D0 E F CongA D0 E F" 
+          using \<open>D0 \<noteq> E\<close> \<open>E \<noteq> F\<close> conga_refl by auto
+        hence "D0 E D1' LeA D0 E F" 
+          using l11_30 [where ?A="A" and ?B="B" and ?C="C" and ?D="D0" and ?E="E" and ?F="F"]
+            \<open>A B C LeA D0 E F\<close> \<open>A B C CongA D0 E D1'\<close> by blast
+        have "D0 E OS F D1'" 
+          by (simp add: \<open>D0 E OS D1' F\<close> one_side_symmetry)
+        hence "D1' InAngle D0 E F" 
+          using lea_in_angle \<open>D0 E D1' LeA D0 E F\<close> by blast
+        then obtain D1 where "Bet D0 D1 F" and "D1 = E \<or> E Out D1 D1'" 
+          using InAngle_def by force
+        have "D1 = E \<longrightarrow> (\<exists> P Q R. GradA A B C P Q R \<and> D E F LeA P Q R)" 
+          using \<open>Acute D0 E F\<close> \<open>Bet D0 D1 F\<close> acute_not_bet by blast
+        moreover
+        {
+          assume "E Out D1 D1'"
+          have "A B C CongA D0 E D1"
+          proof (rule l11_10 [where ?A="A" and ?C="C" and ?D="D0" and ?F="D1'"], 
+              insert \<open>A B C CongA D0 E D1'\<close> \<open>E Out D1 D1'\<close>)
+            show "B Out A A" 
+              using \<open>A \<noteq> B\<close> out_trivial by auto
+            show "B Out C C" 
+              by (simp add: \<open>C \<noteq> B\<close> out_trivial)
+            show "E Out D0 D0" 
+              by (simp add: \<open>D0 \<noteq> E\<close> out_trivial)
+          qed
+          have "\<not> Col D0 E D1'" 
+            using \<open>D0 E OS D1' F\<close> col123__nos by force
+          have "D0 \<noteq> D1" 
+            using Col_cases \<open>E Out D1 D1'\<close> \<open>\<not> Col D0 E D1'\<close> out_col by blast
+          obtain F' where "Bet D0 F F'" and "Cong F F' D0 F" 
+            using segment_construction by blast
+          obtain G where "Grad D0 D1 G" and "D0 F' Le D0 G" 
+            using Reach_def \<open>D0 \<noteq> D1\<close> archimedes_axiom_def assms by blast
+          have "GradI D0 D1 G" 
+            by (simp add: Grad__GradI \<open>Grad D0 D1 G\<close>)
+          have "\<exists> P Q R. (GradA D0 E D1 P Q R \<and> (D0 E F LeA P Q R \<or>
+            (\<exists> A'. Bet D0 D1 A' \<and> Bet D0 A' F \<and> P Q R CongA D0 E A' \<and>
+              D0 G Le D0 A' \<and> (\<exists> A. Bet D0 A A' \<and> A E A' CongA D0 E D1 \<and> D0 D1 Le A A'))))" 
+            using acute_archi_aux2 \<open>Bet D0 D1 F\<close> \<open>D0 \<noteq> D1\<close> \<open>D0 \<noteq> E\<close> \<open>D0 \<noteq> F\<close> 
+              \<open>Grad D0 D1 G\<close> \<open>Per E D0 F\<close> by blast
+          then obtain P Q R where
+            "GradA D0 E D1 P Q R" and
+            "D0 E F LeA P Q R \<or> (\<exists> A'. Bet D0 D1 A' \<and> Bet D0 A' F \<and>
+                 P Q R CongA D0 E A' \<and> D0 G Le D0 A' \<and> 
+                 (\<exists> A. Bet D0 A A' \<and> A E A' CongA D0 E D1 \<and> D0 D1 Le A A'))" by blast
+          have "D0 \<noteq> E"  
+            using grada_distincts [where ?A="D0" and ?B="E" and ?C="D1" and 
+                ?D="P" and ?E="Q" and ?F="R"] \<open>GradA D0 E D1 P Q R\<close> by blast
+          have "D1 \<noteq> E" 
+            using grada_distincts [where ?A="D0" and ?B="E" and ?C="D1" and 
+                ?D="P" and ?E="Q" and ?F="R"] \<open>GradA D0 E D1 P Q R\<close> by blast
+          have "P \<noteq> Q"
+            using grada_distincts [where ?A="D0" and ?B="E" and ?C="D1" and 
+                ?D="P" and ?E="Q" and ?F="R"] \<open>GradA D0 E D1 P Q R\<close> by blast
+          have "R \<noteq> Q" 
+            using grada_distincts [where ?A="D0" and ?B="E" and ?C="D1" and 
+                ?D="P" and ?E="Q" and ?F="R"] \<open>GradA D0 E D1 P Q R\<close> by blast
+          have "GradA A B C P Q R"
+          proof (rule conga2_grada__grada [where ?A="D0" and ?B="E" and ?C="D1" 
+                and ?D="P" and ?E="Q" and ?F="R"], insert \<open>GradA D0 E D1 P Q R\<close>)
+            show "D0 E D1 CongA A B C" 
+              using \<open>A B C CongA D0 E D1\<close> conga_sym_equiv by auto
+            show "P Q R CongA P Q R" 
+              by (simp add: \<open>P \<noteq> Q\<close> \<open>R \<noteq> Q\<close> conga_refl)
+          qed
+          moreover 
+          have "D E F LeA P Q R" 
+          proof -
+            {
+              assume "D0 E F LeA P Q R"
+              have "D E F LeA P Q R" 
+              proof (rule l11_30 [where ?A="D0" and ?B="E" and ?C="F" and 
+                    ?D="P" and ?E="Q" and ?F="R"])
+                show "D0 E F LeA P Q R" 
+                  by (simp add: \<open>D0 E F LeA P Q R\<close>)
+                show "D0 E F CongA D E F" 
+                  using \<open>D E F CongA D0 E F\<close> conga_sym_equiv by auto
+                show "P Q R CongA P Q R" 
+                  using \<open>P \<noteq> Q\<close> \<open>R \<noteq> Q\<close> conga_refl by auto
+              qed
+            }
+            moreover
+            {
+              assume "\<exists> A'. Bet D0 D1 A' \<and> Bet D0 A' F \<and> P Q R CongA D0 E A' \<and>
+                D0 G Le D0 A' \<and> (\<exists> A. Bet D0 A A' \<and> A E A' CongA D0 E D1 \<and> D0 D1 Le A A')"
+              then obtain A' where "Bet D0 D1 A'" and "Bet D0 A' F" and
+                "P Q R CongA D0 E A'" and "D0 G Le D0 A'" and 
+                "\<exists> A. Bet D0 A A' \<and> A E A' CongA D0 E D1 \<and> D0 D1 Le A A'"
+                by blast
+              have "D0 A' Le D0 F"         
+                by (simp add: \<open>Bet D0 A' F\<close> bet__le1213)
+              hence "D0 G Le D0 F"
+                using \<open>D0 G Le D0 A'\<close> le_transitivity by blast
+              moreover have "D0 F Lt D0 F'" 
+                using \<open>Bet D0 F F'\<close> \<open>Cong F F' D0 F\<close> \<open>D0 \<noteq> F\<close> 
+                  bet__lt1213 cong_diff_3 by presburger
+              ultimately have "D0 G Lt D0 F'" 
+                using le1234_lt__lt by blast
+              hence False 
+                using \<open>D0 F' Le D0 G\<close> le__nlt by auto
+              hence "D E F LeA P Q R" 
+                by blast
+            }
+            ultimately show ?thesis 
+              using \<open>D0 E F LeA P Q R \<or> (\<exists>A'. Bet D0 D1 A' \<and> Bet D0 A' F \<and> 
+                P Q R CongA D0 E A' \<and> D0 G Le D0 A' \<and> 
+                (\<exists>A. Bet D0 A A' \<and> A E A' CongA D0 E D1 \<and> D0 D1 Le A A'))\<close> by blast
+          qed
+          ultimately have "\<exists> P Q R. GradA A B C P Q R \<and> D E F LeA P Q R" 
+            by blast
+        }
+        ultimately have "\<exists> P Q R. GradA A B C P Q R \<and> D E F LeA P Q R" 
+          using \<open>D1 = E \<or> E Out D1 D1'\<close> by blast
+      }
+      ultimately show ?thesis using lea_total 
+        by (metis \<open>A \<noteq> B\<close> \<open>C \<noteq> B\<close> \<open>E \<noteq> D\<close> \<open>E \<noteq> F\<close>)
+    qed
+  }
+  thus ?thesis 
+    by blast
+qed
+
+lemma angles_archi_aux:
+  assumes "GradA A B C D E F" and 
+    "GradA A B C G H I" and
+    "\<not> SAMS D E F G H I" 
+  shows "\<exists> P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C" 
+proof -
+  have "\<not> SAMS D E F G H I \<longrightarrow> (\<exists> P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
+  proof (rule GradA.induct [OF assms(2)])
+    show "\<And>Da Ea Fa.
+       A B C CongA Da Ea Fa \<Longrightarrow> \<not> SAMS D E F Da Ea Fa \<longrightarrow> (\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
+      by (metis Tarski_neutral_dimensionless.conga_refl Tarski_neutral_dimensionless_axioms 
+          assms(1) conga2_sams__sams grada_distincts)
+    {
+      fix Da Ea Fa G H I
+      assume "GradA A B C Da Ea Fa" and
+        "\<not> SAMS D E F Da Ea Fa \<longrightarrow> (\<exists> P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" and
+        "SAMS Da Ea Fa A B C" and
+        "Da Ea Fa A B C SumA G H I"
+      {
+        assume "\<not> SAMS D E F G H I"
+        {
+          assume "SAMS D E F Da Ea Fa"
+          have "E \<noteq> D" 
+            using \<open>SAMS D E F Da Ea Fa\<close> sams_distincts by blast
+          have "E \<noteq> F" 
+            using \<open>SAMS D E F Da Ea Fa\<close> sams_distincts by blast
+          have "Ea \<noteq> Da" 
+            using \<open>SAMS D E F Da Ea Fa\<close> sams_distincts by blast
+          have "Ea \<noteq> Fa" 
+            using \<open>SAMS D E F Da Ea Fa\<close> sams_distincts by blast
+          obtain P Q R where "D E F Da Ea Fa SumA P Q R"
+            using ex_suma \<open>E \<noteq> D\<close> \<open>E \<noteq> F\<close> \<open>Ea \<noteq> Da\<close> \<open>Ea \<noteq> Fa\<close> by presburger
+          have "GradA A B C P Q R" 
+            using grada2_sams_suma__grada [where ?D="D" and ?E="E" and ?F="F" and
+                ?G="Da" and ?H="Ea" and ?I="Fa"]
+              assms(1) \<open>GradA A B C Da Ea Fa\<close> \<open>SAMS D E F Da Ea Fa\<close> \<open>D E F Da Ea Fa SumA P Q R\<close>
+            by blast
+          moreover 
+          {
+            assume "SAMS P Q R A B C"
+            have "SAMS D E F G H I"
+              using \<open>SAMS D E F Da Ea Fa\<close> \<open>SAMS Da Ea Fa A B C\<close> \<open>D E F Da Ea Fa SumA P Q R\<close>
+                \<open>Da Ea Fa A B C SumA G H I\<close> \<open>SAMS P Q R A B C\<close> sams_assoc_1 by blast
+            hence False 
+              using \<open>\<not> SAMS D E F G H I\<close> by blast
+          }
+          ultimately have "\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C" 
+            by blast
+        }
+        hence "\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C" 
+          using \<open>\<not> SAMS D E F Da Ea Fa \<longrightarrow> (\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)\<close> 
+          by blast
+      }
+      hence "\<not> SAMS D E F G H I \<longrightarrow> (\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
+        by blast
+    }
+    thus "\<And>Da Ea Fa G H I.
+       GradA A B C Da Ea Fa \<Longrightarrow>
+       \<not> SAMS D E F Da Ea Fa \<longrightarrow> (\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C) \<Longrightarrow>
+       SAMS Da Ea Fa A B C \<Longrightarrow> Da Ea Fa A B C SumA G H I \<Longrightarrow> 
+       \<not> SAMS D E F G H I \<longrightarrow> (\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
+      by blast
+  qed
+  thus ?thesis 
+    using assms(3) by blast
+qed
+
+lemma angles_archi_aux1:
+  assumes "archimedes_axiom"
+  shows "\<forall> A B C D E F.
+\<not> Col A B C \<and> \<not> Bet D E F \<longrightarrow>
+(\<exists> P Q R. GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C))" 
+proof -
+  {
+    fix A B C D E F
+    assume "\<not> Col A B C" and
+      "\<not> Bet D E F"
+    have "D \<noteq> E" 
+      using \<open>\<not> Bet D E F\<close> between_trivial2 by auto
+    have "F \<noteq> E" 
+      using \<open>\<not> Bet D E F\<close> not_bet_distincts by blast
+    obtain F1 where "F1 InAngle D E F" and "F1 E D CongA F1 E F" 
+      using angle_bisector \<open>D \<noteq> E\<close> \<open>F \<noteq> E\<close> by blast
+    have "F1 \<noteq> E" 
+      using \<open>F1 E D CongA F1 E F\<close> conga_distinct by auto
+    have "\<not> E F1 OS D F"
+    proof (cases "Col D E F1")
+      case True
+      thus ?thesis
+        using NCol_perm col123__nos by blast
+    next
+      case False
+      thus ?thesis
+        by (meson \<open>F1 InAngle D E F\<close> col124__nos col_permutation_4 col_permutation_5 
+            in_angle_two_sides invert_one_side l9_9)
+    qed
+    have "D E F1 D E F1 SumA D E F" 
+      by (meson conga_refl \<open>D \<noteq> E\<close> \<open>F \<noteq> E\<close> \<open>F1 E D CongA F1 E F\<close> 
+          \<open>F1 InAngle D E F\<close> \<open>F1 \<noteq> E\<close> conga3_suma__suma 
+          conga_left_comm inangle__suma not_conga_sym)
+    have "SAMS D E F1 D E F1" 
+    proof -
+      {
+        assume "Bet D E F1" 
+        hence False 
+          using bet_in_angle_bet \<open>F1 InAngle D E F\<close> \<open>\<not> Bet D E F\<close> by blast
+      }
+      hence "E Out D F1 \<or> \<not> Bet D E F1" 
+        by blast
+      moreover 
+      have "\<exists> J. F1 E J CongA D E F1 \<and> \<not> E F1 OS D J \<and> \<not> D E TS F1 J \<and> Coplanar D E F1 J" 
+      proof -
+        have "F1 E F CongA D E F1" 
+          using \<open>F1 E D CongA F1 E F\<close> conga_left_comm conga_sym_equiv by blast
+        moreover have "\<not> E F1 OS D F" 
+          by (simp add: \<open>\<not> E F1 OS D F\<close>)
+        moreover have "\<not> D E TS F1 F" 
+        proof (cases "Col D E F1")
+          case True
+          thus ?thesis 
+            using TS_def col_permutation_2 by blast
+        next
+          case False
+          thus ?thesis
+            by (metis Col_cases TS_def \<open>F1 InAngle D E F\<close> in_angle_one_side l9_9)
+        qed
+        moreover have "Coplanar D E F1 F" 
+          by (meson inangle__coplanar \<open>F1 InAngle D E F\<close> coplanar_perm_8)
+        ultimately show ?thesis 
+          by blast
+      qed
+      ultimately show ?thesis 
+        using SAMS_def \<open>D \<noteq> E\<close> by auto
+    qed
+    hence "Acute D E F1" 
+      by (metis nbet_sams_suma__acute \<open>D E F1 D E F1 SumA D E F\<close> \<open>\<not> Bet D E F\<close>)
+    then obtain P1 Q1 R1 where "GradA A B C P1 Q1 R1" and "D E F1 LeA P1 Q1 R1"  
+      using archi_in_acute_angles \<open>\<not> Col A B C\<close> assms by blast
+    have "P1 \<noteq> Q1"
+      using \<open>GradA A B C P1 Q1 R1\<close> grada_distincts by blast
+    have "Q1 \<noteq> R1" 
+      using \<open>GradA A B C P1 Q1 R1\<close> grada_distincts by blast
+    {
+      assume "SAMS P1 Q1 R1 P1 Q1 R1"
+      obtain P Q R where "P1 Q1 R1 P1 Q1 R1 SumA P Q R" 
+        using ex_suma \<open>P1 \<noteq> Q1\<close> \<open>Q1 \<noteq> R1\<close> by presburger
+      have "GradA A B C P Q R" 
+        using grada2_sams_suma__grada [where ?D="P1" and ?E="Q1" and ?F="R1" and 
+            ?G="P1" and ?H="Q1" and ?I="R1"] \<open>GradA A B C P1 Q1 R1\<close> \<open>GradA A B C P1 Q1 R1\<close> 
+          \<open>SAMS P1 Q1 R1 P1 Q1 R1\<close> \<open>P1 Q1 R1 P1 Q1 R1 SumA P Q R\<close> by blast
+      moreover have "D E F LeA P Q R" 
+        using sams_lea2_suma2__lea [where ?A="D" and ?B="E" and ?C="F1" and 
+            ?D="D" and ?E="E" and ?F="F1" and
+            ?A'="P1" and ?B'="Q1" and ?C'="R1" and ?D'="P1" and ?E'="Q1" and ?F'="R1"]
+          \<open>D E F1 LeA P1 Q1 R1\<close> \<open>SAMS P1 Q1 R1 P1 Q1 R1\<close> \<open>D E F1 D E F1 SumA D E F\<close>
+          \<open>P1 Q1 R1 P1 Q1 R1 SumA P Q R\<close> by blast
+      ultimately have "\<exists> P Q R. GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C)" 
+        by blast
+    }
+    moreover
+    {
+      assume "\<not> SAMS P1 Q1 R1 P1 Q1 R1"
+      hence "\<exists> P Q R. GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C)" 
+        using angles_archi_aux \<open>GradA A B C P1 Q1 R1\<close> calculation by blast
+    }
+    ultimately have "\<exists> P Q R. GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C)" 
+      by blast
+  }
+  thus ?thesis
+    by blast
+qed
+
+(** Inspired by Hartshorne's demonstration of Lemma 35.1 in Geometry Euclid and Beyond *)
+lemma archi_in_angles:
+  assumes "archimedes_axiom" 
+  shows "\<forall> A B C. \<forall> D ::TPoint. \<forall> E ::TPoint. \<forall> F ::TPoint. (\<not> Col A B C \<and> D \<noteq> E \<and> F \<noteq> E) \<longrightarrow>
+    (\<exists> P Q R. GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C))" 
+proof -
+  {
+    fix A B C 
+    fix D::TPoint
+    fix E::TPoint
+    fix F::TPoint
+    assume "\<not> Col A B C" and 
+      "D \<noteq> E" and 
+      "F \<noteq> E"
+    have "\<exists> P Q R. (GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C))" 
+    proof (cases "Bet D E F")
+      case True
+      obtain A0 where "Bet A B A0" and "Cong B A0 A B" 
+        using segment_construction by blast
+      have "A \<noteq> B" 
+        using \<open>\<not> Col A B C\<close> not_col_distincts by blast
+      have "C \<noteq> B" 
+        using \<open>\<not> Col A B C\<close> col_trivial_2 by auto
+      have "B \<noteq> A0" 
+        using \<open>A \<noteq> B\<close> \<open>Cong B A0 A B\<close> cong_reverse_identity by blast
+      have "\<not> Col A0 B C" 
+        by (meson \<open>B \<noteq> A0\<close> \<open>Bet A B A0\<close> \<open>\<not> Col A B C\<close> bet_col col2__eq col_permutation_3)
+      obtain P1 Q1 R1 where "GradA A B C P1 Q1 R1" and 
+        "C B A0 LeA P1 Q1 R1 \<or> \<not> SAMS P1 Q1 R1 A B C" 
+        using angles_archi_aux1 
+        by (metis Col_def \<open>\<not> Col A B C\<close> \<open>\<not> Col A0 B C\<close> assms between_symmetry)
+      {
+        assume "SAMS P1 Q1 R1 A B C"
+        hence "C B A0 LeA P1 Q1 R1" 
+          using \<open>C B A0 LeA P1 Q1 R1 \<or> \<not> SAMS P1 Q1 R1 A B C\<close> by auto
+        have "P1 \<noteq> Q1" 
+          using \<open>SAMS P1 Q1 R1 A B C\<close> 
+          by (simp add: sams_distincts)
+        have "R1 \<noteq> Q1" 
+          using \<open>C B A0 LeA P1 Q1 R1\<close> lea_distincts by blast
+        obtain P Q R where "P1 Q1 R1 A B C SumA P Q R" 
+          using ex_suma \<open>A \<noteq> B\<close> \<open>C \<noteq> B\<close> \<open>P1 \<noteq> Q1\<close> \<open>R1 \<noteq> Q1\<close> by presburger
+        have "GradA A B C P Q R"
+          using grada_stab [where ?D="P1" and ?E="Q1" and ?F="R1"]
+            \<open>GradA A B C P1 Q1 R1\<close> \<open>SAMS P1 Q1 R1 A B C\<close> \<open>P1 Q1 R1 A B C SumA P Q R\<close> by auto
+        moreover 
+        have "P \<noteq> Q" 
+          using calculation grada_distincts by blast
+        have "R \<noteq> Q" 
+          using calculation grada_distincts by blast
+        have "A B A0 LeA P Q R"
+        proof (rule sams_lea2_suma2__lea [where 
+              ?A="A0" and ?B="B" and ?C="C" and ?D="A" and ?E="B" and ?F="C" 
+              and ?A'="P1" and ?B'="Q1" and ?C'="R1" and ?D'="A" and ?E'="B" and ?F'="C"])
+          show "A0 B C LeA P1 Q1 R1" 
+            using \<open>C B A0 LeA P1 Q1 R1\<close> lea_left_comm by blast
+          show "A B C LeA A B C" 
+            using \<open>A \<noteq> B\<close> \<open>C \<noteq> B\<close> lea_refl by force
+          show "SAMS P1 Q1 R1 A B C" 
+            using \<open>SAMS P1 Q1 R1 A B C\<close> by auto
+          show "A0 B C A B C SumA A B A0" 
+            by (metis Bet_cases \<open>A \<noteq> B\<close> \<open>B \<noteq> A0\<close> \<open>Bet A B A0\<close> \<open>C \<noteq> B\<close> 
+                bet__suma suma_middle_comm suma_right_comm)
+          show "P1 Q1 R1 A B C SumA P Q R" 
+            using \<open>P1 Q1 R1 A B C SumA P Q R\<close> by auto
+        qed
+        hence "Bet P Q R" 
+          using \<open>Bet A B A0\<close> bet_lea__bet by blast
+        hence "D E F LeA P Q R" 
+          using l11_31_2 \<open>D \<noteq> E\<close> \<open>F \<noteq> E\<close> \<open>P \<noteq> Q\<close> \<open>R \<noteq> Q\<close> by blast
+        ultimately have "\<exists> P Q R. (GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C))" 
+          by blast
+      }
+      moreover
+      {
+        assume "\<not> SAMS P1 Q1 R1 A B C"
+        hence "\<exists> P Q R. (GradA A B C P Q R \<and> (D E F LeA P Q R \<or> \<not> SAMS P Q R A B C))" 
+          using \<open>GradA A B C P1 Q1 R1\<close> by blast
+      }
+      ultimately show ?thesis 
+        by blast
+    next
+      case False
+      thus ?thesis 
+        using \<open>\<not> Col A B C\<close> angles_archi_aux1 assms by blast
+    qed
+  }
+  thus ?thesis
+    by blast
+qed
+
+(** If Archimedes' postulate holds, every nondegenerate angle can be repeated until exceeding 180\<degree> *)
+lemma archi__grada_destruction:
+  assumes "archimedes_axiom" 
+  shows "\<forall> A B C. \<not> Col A B C \<longrightarrow>
+(\<exists> P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
+proof -
+  {
+    fix A B C
+    assume "\<not> Col A B C"
+    obtain A0 where "Bet A B A0" and "Cong B A0 A B" 
+      using segment_construction by blast
+    have "A \<noteq> B" 
+      using \<open>\<not> Col A B C\<close> col_trivial_1 by blast
+    have "B \<noteq> A0" 
+      using \<open>A \<noteq> B\<close> \<open>Cong B A0 A B\<close> cong_reverse_identity by blast
+    obtain P Q R where "GradA A B C P Q R" and "A B A0 LeA P Q R \<or> \<not> SAMS P Q R A B C"
+      using archi_in_angles \<open>A \<noteq> B\<close> \<open>B \<noteq> A0\<close> \<open>\<not> Col A B C\<close> assms by metis
+    {
+      assume "A B A0 LeA P Q R"
+      assume "SAMS P Q R A B C"
+      hence "B Out A C \<or> \<not> Bet P Q R"
+        using SAMS_def by blast
+      have "B Out A C \<longrightarrow> False" 
+        using Col_cases \<open>\<not> Col A B C\<close> out_col by blast
+      moreover
+      {
+        assume "\<not> Bet P Q R"
+        have "Bet A B A0" 
+          by (simp add: \<open>Bet A B A0\<close>)
+        hence False 
+          using bet_lea__bet \<open>A B A0 LeA P Q R\<close> \<open>B Out A C \<or> \<not> Bet P Q R\<close> calculation by blast
+      }
+      hence "\<not> Bet P Q R \<longrightarrow> False" 
+        by blast
+      ultimately have False 
+        using \<open>B Out A C \<or> \<not> Bet P Q R\<close> by fastforce
+    }
+    hence "A B A0 LeA P Q R \<longrightarrow> \<not> SAMS P Q R A B C" 
+      by blast
+    hence "\<not> SAMS P Q R A B C" 
+      using \<open>A B A0 LeA P Q R \<or> \<not> SAMS P Q R A B C\<close> by blast
+    hence "\<exists> P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C" 
+      using \<open>GradA A B C P Q R\<close> by blast
+  }
+  thus ?thesis 
+    by blast
+qed
+
+lemma gradaexp_destruction_aux:
+  assumes "GradA A B C P Q R"
+  shows "\<exists> S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> P Q R LeA S T U)" 
+proof (rule GradA.induct [OF assms(1)])
+  show "\<And>D E F. A B C CongA D E F \<Longrightarrow> \<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> D E F LeA S T U)" 
+    by (metis conga__lea456123 conga_diff1 conga_diff2 gradaexp_ABC)
+  {
+    fix D E F G H I
+    assume "GradA A B C D E F" and
+      "\<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> D E F LeA S T U)" and
+      "SAMS D E F A B C" and
+      "D E F A B C SumA G H I"
+    then obtain P Q R where "GradAExp A B C P Q R" and "Obtuse P Q R \<or> D E F LeA P Q R" 
+      by blast
+    have "P \<noteq> Q" 
+      using \<open>GradAExp A B C P Q R\<close> gradaexp_distincts by blast
+    have "R \<noteq> Q" 
+      using \<open>GradAExp A B C P Q R\<close> gradaexp_distincts by blast
+    {
+      assume "SAMS P Q R P Q R"
+      {
+        assume "Obtuse P Q R" 
+        hence "\<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> G H I LeA S T U)" 
+          using \<open>GradAExp A B C P Q R\<close> by blast
+      }
+      moreover
+      {
+        assume  "D E F LeA P Q R" 
+        obtain S T U where "P Q R P Q R SumA S T U" 
+          using ex_suma \<open>P \<noteq> Q\<close> \<open>R \<noteq> Q\<close> by presburger
+        have "GradAExp A B C S T U"
+        proof (rule gradaexp_stab [where ?D="P" and ?E="Q" and ?F="R"])
+          show "GradAExp A B C P Q R" 
+            by (simp add: \<open>GradAExp A B C P Q R\<close>)
+          show "SAMS P Q R P Q R" 
+            by (simp add: \<open>SAMS P Q R P Q R\<close>)
+          show "P Q R P Q R SumA S T U"
+            using \<open>P Q R P Q R SumA S T U\<close> by auto
+        qed
+        moreover
+        have "GradA A B C P Q R" 
+          using \<open>GradAExp A B C P Q R\<close> gradaexp__grada by auto
+        hence "G H I LeA S T U" 
+          by (meson \<open>D E F A B C SumA G H I\<close> \<open>D E F LeA P Q R\<close> \<open>P Q R P Q R SumA S T U\<close>
+              \<open>SAMS P Q R P Q R\<close> grada__lea sams_lea2_suma2__lea)
+        ultimately have "\<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> G H I LeA S T U)" 
+          by blast
+      }
+      ultimately have "\<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> G H I LeA S T U)" 
+        using \<open>Obtuse P Q R \<or> D E F LeA P Q R\<close> by blast
+    }
+    moreover
+    {
+      assume "\<not> SAMS P Q R P Q R"
+      hence "Obtuse P Q R" 
+        using \<open>P \<noteq> Q\<close> \<open>R \<noteq> Q\<close> nsams__obtuse by auto
+      hence "\<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> G H I LeA S T U)" 
+        using \<open>GradAExp A B C P Q R\<close> by blast
+    }
+    ultimately have "\<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> G H I LeA S T U)" 
+      by blast
+  }
+  thus "\<And>D E F G H I.
+       GradA A B C D E F \<Longrightarrow>
+       \<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> D E F LeA S T U) \<Longrightarrow>
+       SAMS D E F A B C \<Longrightarrow>
+       D E F A B C SumA G H I \<Longrightarrow> \<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> G H I LeA S T U)" 
+    by blast
+qed
+
+(** If Archimedes' postulate holds, every nondegenerate angle can be doubled until exceeding 90\<degree> *)
+lemma archi__gradaexp_destruction:
+  assumes "archimedes_axiom"
+  shows "\<forall> A B C. \<not> Col A B C \<longrightarrow> (\<exists> P Q R. GradAExp A B C P Q R \<and> Obtuse P Q R)" 
+proof -
+  {
+    fix A B C
+    assume "\<not> Col A B C"
+    obtain D E F where "GradA A B C D E F" and "\<not> SAMS D E F A B C" 
+      using archi__grada_destruction \<open>\<not> Col A B C\<close> assms by blast
+    obtain P Q R where "GradAExp A B C P Q R" and "Obtuse P Q R \<or> D E F LeA P Q R" 
+      using \<open>GradA A B C D E F\<close> gradaexp_destruction_aux by blast
+    have "P \<noteq> Q" 
+      using \<open>GradAExp A B C P Q R\<close> gradaexp_distincts by blast
+    have "R \<noteq> Q" 
+      using \<open>GradAExp A B C P Q R\<close> gradaexp_distincts by blast
+    {
+      assume "D E F LeA P Q R" 
+      {
+        assume "SAMS P Q R P Q R" 
+        have "A B C LeA P Q R" 
+          using \<open>GradAExp A B C P Q R\<close> grada__lea gradaexp__grada by blast
+        hence "SAMS D E F A B C" 
+          using sams_lea2__sams [where ?A'="P" and ?B'="Q" and ?C'="R" and 
+              ?D'="P" and ?E'="Q" and ?F'="R"]
+            \<open>SAMS P Q R P Q R\<close> \<open>D E F LeA P Q R\<close> by blast
+        hence False 
+          using \<open>\<not> SAMS D E F A B C\<close> by blast
+      }
+      hence "\<not> SAMS P Q R P Q R" 
+        by blast
+      hence "Obtuse P Q R" 
+        using \<open>P \<noteq> Q\<close> \<open>R \<noteq> Q\<close> nsams__obtuse by auto
+    }
+    hence "\<exists> P Q R. GradAExp A B C P Q R \<and> Obtuse P Q R" 
+      using \<open>GradAExp A B C P Q R\<close> \<open>Obtuse P Q R \<or> D E F LeA P Q R\<close> by blast
+  }
+  thus ?thesis
+    by blast
 qed
 
 end

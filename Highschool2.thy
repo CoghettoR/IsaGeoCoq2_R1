@@ -2,7 +2,8 @@
 
 Highschool2.thy
 
-Version 2.1.0 IsaGeoCoq2_R1
+Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
+Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
@@ -927,7 +928,7 @@ proof -
 qed
 
 definition IsCircumcenter ::
-  "['a,'a,'a,'a] \<Rightarrow> bool"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ IsCircumcenter _ _ _" [99,99,99,99] 50)
   where
     "G IsCircumcenter A B C \<equiv>
@@ -1587,10 +1588,8 @@ next
                       bet_cop__cop between_symmetry coplanar_perm_13 
                       coplanar_perm_2 midpoint_bet)
                 hence "Coplanar A B G1 G2" 
-                  by (metis (mono_tags, lifting) Tarski_Euclidean.IsCircumcenter_def 
-                      Tarski_Euclidean_axioms True \<open>B' Midpoint A C\<close> assms(5)
-                      bet_cop2__cop coplanar_perm_9 midpoint_bet
-                      ncop_distincts)
+                  using \<open>B' Midpoint A C\<close> assms(5) IsCircumcenter_def
+                  by (metis True bet_cop__cop midpoint_bet ncoplanar_perm_10 ncoplanar_perm_8)
                 moreover
                 have "C' G1 Perp A B" 
                   using \<open>G1 C' PerpBisect A B\<close> perp_bisect_perp 
@@ -2031,7 +2030,7 @@ proof -
 qed
 
 definition IsOrthocenter ::
-  "['a,'a,'a,'a] \<Rightarrow> bool"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ IsOrthocenter _ _ _" [99,99,99,99] 50)
   where
     "H IsOrthocenter A B C \<equiv> \<not> Col A B C \<and> 
@@ -2521,7 +2520,7 @@ lemma intersection_two_medians_unique_R1:
     assms(4) assms(5) assms(6) assms(7) by blast
 
 definition IsGravityCenter ::
-  "['a,'a,'a,'a] \<Rightarrow> bool"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ IsGravityCenter _ _ _" [99,99,99,99] 50)
   where
     "G IsGravityCenter A B C \<equiv> \<not> Col A B C \<and> 
@@ -2995,7 +2994,7 @@ proof -
         using f1 by meson
       have f8: "A' \<noteq> G' \<and> Col A' G' I \<longrightarrow> Col G' I I"
         using col_transitivity_2 by auto
-      obtain aa :: 'a where
+      obtain aa :: TPoint where
         f9: "\<forall>a. a Midpoint B C \<longrightarrow> aa = a"
         by (metis (no_types) MidR_uniq_aux)
       then have f10: "A'' = aa"
@@ -3386,7 +3385,7 @@ lemma is_gravity_center_cases:
   using assms is_gravity_center_perm by blast
 
 definition Concyclic ::
-  "['a,'a,'a,'a] \<Rightarrow> bool"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("Concyclic _ _ _ _" [99,99,99,99] 50)
   where
     "Concyclic A B C D \<equiv>
@@ -4163,7 +4162,7 @@ qed
 
 (*
 definition isosceles::
-"['a,'a,'a] \<Rightarrow> bool"
+"[TPoint,TPoint,TPoint] \<Rightarrow> bool"
 ("isosceles _ _ _" [99,99,99] 50)
 where
 "isosceles A B C \<equiv>
