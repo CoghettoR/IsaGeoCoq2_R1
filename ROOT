@@ -2,11 +2,9 @@ chapter GeometrieTarski
 
 session IsaGeoCoq2_R1 (GeometrieTarski) = HOL +
   description \<open>Géométrie synthétique (Tarski - Hilbert)\<close>
-  options [timeout = 600, 
-           document = pdf, 
-           document_output="document_output",
-           document_variants="document:outline=/proof"]
-  theories 
+  options [timeout = 600]
+
+theories 
          Tarski_Neutral
          Tarski_2D
          Tarski_3D
@@ -34,7 +32,4 @@ session IsaGeoCoq2_R1 (GeometrieTarski) = HOL +
          Hilbert_Tarski_Model
          Tarski_Hilbert_Model
 
-  document_files
-    "root.bib"
-    "root.tex"
    
