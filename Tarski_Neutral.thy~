@@ -736,10 +736,10 @@ definition AngFlat ::
 QCongA a \<and>
 (\<forall> A B C. (a A B C \<longrightarrow> Bet A B C))"
 
-definition EqLTarski ::
-  "([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("_ EqLTarski _" [99,99] 50)
+definition EqL ::
+  "([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("_ EqL _" [99,99] 50)
   where
-    "l1 EqLTarski l2 \<equiv> \<forall> A B. l1 A B \<longleftrightarrow> l2 A B"
+    "l1 EqL l2 \<equiv> \<forall> A B. l1 A B \<longleftrightarrow> l2 A B"
 
 definition EqA ::
   "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
@@ -39569,13 +39569,13 @@ qed
 lemma all_eql:
   assumes "TarskiLen A B l1" and
     "TarskiLen A B l2"
-  shows "l1 EqLTarski l2" 
-  by (metis EqLTarski_def assms(1) assms(2) ex_eql)
+  shows "l1 EqL l2" 
+  by (metis EqL_def assms(1) assms(2) ex_eql)
 
 lemma null_len:
   assumes "TarskiLen A A la" and
     "TarskiLen B B lb"
-  shows "la EqLTarski lb" 
+  shows "la EqL lb" 
   using all_eql assms(1) assms(2) cong_trivial_identity is_len_cong_is_len by blast
 
 lemma eqL_equivalence:
@@ -39591,15 +39591,15 @@ lemma ex_lg:
 
 lemma lg_eql_lg:
   assumes "QCong l1" and
-    "l1 EqLTarski l2"
+    "l1 EqL l2"
   shows "QCong l2" 
-  using EqLTarski_def QCong_def assms(1) assms(2) by force
+  using EqL_def QCong_def assms(1) assms(2) by force
 
 lemma ex_eqL:
   assumes "QCong l1" and
     "QCong l2" and
     "\<exists> A B. (l1 A B \<and> l2 A B)"
-  shows "l1 EqLTarski l2" 
+  shows "l1 EqL l2" 
   using TarskiLen_def all_eql assms(1) assms(2) assms(3) by force
 
 paragraph "Angles"
