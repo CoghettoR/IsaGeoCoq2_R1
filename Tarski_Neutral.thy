@@ -528,7 +528,8 @@ definition Obtuse ::
 \<exists> A' B' C'. (Per A' B' C' \<and> A' B' C' LtA A B C)"
 
 definition OrthAt ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ OrthAt _ _ _ _ _" [99,99,99,99,99,99] 50)
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+("_ OrthAt _ _ _ _ _" [99,99,99,99,99,99] 50)
   where "X OrthAt A B C U V \<equiv>
 \<not> Col A B C \<and> U \<noteq> V \<and> Coplanar A B C X \<and> Col U V X \<and>
 (\<forall> P Q. (Coplanar A B C P \<and> Col U V Q) \<longrightarrow> Per P X Q)"
@@ -547,7 +548,8 @@ A \<noteq> B \<and> (\<exists> A'. Bet A B A' \<and>  D E F CongA C B A')"
 subsubsection "Sum of angles"
 
 definition SumA ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ _ _ _ SumA _ _ _" 
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+("_ _ _ _ _ _ SumA _ _ _" 
     [99,99,99,99,99,99,99,99,99] 50)
   where
     "A B C D E F SumA G H I \<equiv>
@@ -555,7 +557,8 @@ definition SumA ::
 \<exists> J. (C B J CongA D E F \<and> \<not> B C OS A J \<and> Coplanar A B C J \<and> A B J CongA G H I)"
 
 definition TriSumA ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ TriSumA _ _ _" [99,99,99,99,99,99] 50)
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+("_ _ _ TriSumA _ _ _" [99,99,99,99,99,99] 50)
   where
     "A B C TriSumA D E F \<equiv>
 
@@ -662,7 +665,8 @@ definition QCongA ::
 \<exists> A B C. (A \<noteq> B \<and> C \<noteq> B \<and> (\<forall> X Y Z. A B C CongA X Y Z \<longleftrightarrow> a X Y Z))"
 
 definition Ang ::
-  "[TPoint,TPoint,TPoint, ([TPoint, TPoint, TPoint] \<Rightarrow> bool) ] \<Rightarrow> bool" ("_ _ _ Ang _" [99,99,99,99] 50)
+  "[TPoint,TPoint,TPoint, ([TPoint, TPoint, TPoint] \<Rightarrow> bool) ] \<Rightarrow> bool" 
+("_ _ _ Ang _" [99,99,99,99] 50)
   where
     "A B C Ang a \<equiv>
 
@@ -677,7 +681,8 @@ definition QCongAAcute ::
 \<exists> A B C. (Acute A B C \<and> (\<forall> X Y Z. (A B C CongA X Y Z \<longleftrightarrow> a X Y Z)))"
 
 definition AngAcute ::
-  "[TPoint,TPoint,TPoint, ([TPoint,TPoint,TPoint] \<Rightarrow> bool)] \<Rightarrow> bool" ("_ _ _ AngAcute _" [99,99,99,99] 50)
+  "[TPoint,TPoint,TPoint, ([TPoint,TPoint,TPoint] \<Rightarrow> bool)] \<Rightarrow> bool" 
+("_ _ _ AngAcute _" [99,99,99,99] 50)
   where
     "A B C AngAcute a \<equiv>
 
@@ -731,6 +736,17 @@ definition AngFlat ::
 QCongA a \<and>
 (\<forall> A B C. (a A B C \<longrightarrow> Bet A B C))"
 
+definition EqL ::
+  "([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("_ EqL _" [99,99] 50)
+  where
+    "l1 EqL l2 \<equiv> \<forall> A B. l1 A B \<longleftrightarrow> l2 A B"
+
+definition EqA ::
+  "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("_ EqA _" [99,99] 50)
+  where
+    "a1 EqA a2 \<equiv> \<forall> A B C. a1 A B C \<longleftrightarrow> a2 A B C"
+
 subsubsection "Saccheri"
 
 definition hypothesis_of_right_saccheri_quadrilaterals ::
@@ -755,7 +771,8 @@ definition hypothesis_of_obtuse_saccheri_quadrilaterals ::
 \<forall> A B C D. Saccheri A B C D \<longrightarrow> Obtuse A B C"
 
 definition Defect ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Defect _ _ _ _ _ _ " [99,99,99,99,99,99] 50)
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+("Defect _ _ _ _ _ _ " [99,99,99,99,99,99] 50)
   where
     "Defect A B C D E F\<equiv>
 (\<exists> G H I. (A B C TriSumA G H I \<and> G H I SuppA D E F))"
@@ -17522,7 +17539,7 @@ lemma acute_not_per:
   assumes "Acute A B C"
   shows "\<not> Per A B C"
 proof -
-  obtain A' B' C' where P1: "Per A' B' C' \<and> A B C LtA A' B' C'"
+  obtain A' B' C' where "Per A' B' C' \<and> A B C LtA A' B' C'"
     using Acute_def assms by auto
   thus ?thesis
     using acute_distincts acute_per__lta assms nlta by fastforce
@@ -39552,15 +39569,14 @@ qed
 lemma all_eql:
   assumes "TarskiLen A B l1" and
     "TarskiLen A B l2"
-  shows "l1 = l2"
-  using assms(1) assms(2) ex_eql by auto
+  shows "l1 EqL l2" 
+  by (metis EqL_def assms(1) assms(2) ex_eql)
 
 lemma null_len:
   assumes "TarskiLen A A la" and
     "TarskiLen B B lb"
-  shows "la = lb"
-  by (metis TarskiLen_def all_eql assms(1) assms(2) lg_null_instance 
-      lg_null_trivial)
+  shows "la EqL lb" 
+  using all_eql assms(1) assms(2) cong_trivial_identity is_len_cong_is_len by blast
 
 lemma eqL_equivalence:
   assumes "QCong la" and
@@ -39575,16 +39591,16 @@ lemma ex_lg:
 
 lemma lg_eql_lg:
   assumes "QCong l1" and
-    "l1 = l2"
-  shows "QCong l2"
-  using assms(1) assms(2) by auto
+    "l1 EqL l2"
+  shows "QCong l2" 
+  using EqL_def QCong_def assms(1) assms(2) by force
 
 lemma ex_eqL:
   assumes "QCong l1" and
     "QCong l2" and
     "\<exists> A B. (l1 A B \<and> l2 A B)"
-  shows "l1 = l2"
-  using TarskiLen_def all_eql assms(1) assms(2) assms(3) by auto
+  shows "l1 EqL l2" 
+  using TarskiLen_def all_eql assms(1) assms(2) assms(3) by force
 
 paragraph "Angles"
 
@@ -39822,13 +39838,39 @@ lemma not_cong_is_anga1:
 
 lemma ex_eqaa:
   assumes "\<exists> A B C. (A B C AngAcute a1 \<and> A B C AngAcute a2)"
-  shows "a1 = a2"
-  using all_eqa assms is_anga_to_is_ang by blast
+  shows "a1 EqA a2" 
+proof -
+  obtain A B C where "A B C AngAcute a1" and "A B C AngAcute a2"
+    using assms by blast
+  {
+    fix A0 B0 C0
+    assume "a1 A0 B0 C0"
+    hence "A B C CongA A0 B0 C0"
+      using is_ang_conga \<open>A B C AngAcute a1\<close> not_conga_is_anga by blast
+    hence "A0 B0 C0 Ang a2" 
+      using \<open>A B C AngAcute a2\<close> is_anga_conga_is_anga is_anga_to_is_ang by blast
+    hence "a2 A0 B0 C0" 
+      by (simp add: Ang_def)
+  }
+  moreover
+  {
+    fix A0 B0 C0
+    assume "a2 A0 B0 C0"
+    hence "A B C CongA A0 B0 C0"
+      using is_ang_conga \<open>A B C AngAcute a2\<close> not_conga_is_anga by blast
+    hence "A0 B0 C0 Ang a1" 
+      using \<open>A B C AngAcute a1\<close> is_anga_conga_is_anga is_anga_to_is_ang by blast
+    hence "a1 A0 B0 C0" 
+      by (simp add: Ang_def)
+  }
+  ultimately show ?thesis 
+    using EqA_def by blast
+qed
 
 lemma all_eqaa:
   assumes "A B C AngAcute a1" and
     "A B C AngAcute a2"
-  shows "a1 = a2"
+  shows "a1 EqA a2"
   using assms(1) assms(2) ex_eqaa by blast
 
 lemma is_anga_distinct:
@@ -39839,8 +39881,18 @@ lemma is_anga_distinct:
 lemma null_anga:
   assumes "A B A AngAcute a1" and
     "C D C AngAcute a2"
-  shows "a1 = a2"
-  using assms(1) assms(2) is_anga_to_is_ang null_ang by blast
+  shows "a1 EqA a2" 
+proof (rule all_eqaa [where ?A="A" and ?B="B" and ?C="A"])
+  show "A B A AngAcute a1" 
+    using assms(1) by blast
+  show "A B A AngAcute a2"
+  proof (rule is_anga_conga_is_anga[where ?A="C" and ?B="D" and ?C="C"])
+    show "C D C AngAcute a2" 
+      using assms(2) by auto
+    show "C D C CongA A B A" 
+      using assms(1) assms(2) conga_trivial_1 is_anga_distinct by force
+  qed
+qed
 
 lemma anga_distinct:
   assumes "QCongAAcute a" and
@@ -40246,15 +40298,45 @@ lemma anga_col_null:
 
 lemma eqA_preserves_ang:
   assumes "QCongA a" and
-    "a = b"
-  shows "QCongA b"
-  using assms(1) assms(2) by auto
+    "a EqA b"
+  shows "QCongA b" 
+proof -
+  obtain x x0 x1 where "x \<noteq> x0" and "x1 \<noteq> x0" and "\<forall> X Y Z. x x0 x1 CongA X Y Z \<longleftrightarrow> a X Y Z" 
+    using QCongA_def assms(1) by auto
+  thus ?thesis 
+    using EqA_def QCongA_def assms(2) by auto
+qed
 
 lemma eqA_preserves_anga:
   assumes "QCongAAcute a" and
-    "a = b"
+    "a EqA b"
   shows "QCongAAcute b"
-  using assms(1) assms(2) by auto
-
+proof -
+  have "QCongA a" 
+    by (simp add: anga_is_ang assms(1))
+  obtain A B C where "a A B C" 
+    using assms(1) ex_points_anga by blast
+  hence "b A B C" 
+    using EqA_def assms(2) by fastforce
+  have "Acute A B C" 
+    using \<open>a A B C\<close> anga_acute assms(1) by blast
+    moreover
+    {
+      fix X Y Z
+      assume "A B C CongA X Y Z"
+      hence "b X Y Z" 
+        using EqA_def \<open>a A B C\<close> anga_conga_anga assms(1) assms(2) by fastforce
+    }
+    moreover
+    {
+      fix X Y Z
+      assume "b X Y Z" 
+      hence "A B C CongA X Y Z"
+        using EqA_def \<open>a A B C\<close> anga_conga assms(1) assms(2) by auto
+    }
+    ultimately show ?thesis 
+      by (metis QCongAAcute_def)
+qed
+ 
 end
 end
