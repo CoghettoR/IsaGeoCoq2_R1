@@ -186,7 +186,8 @@ lemma g2_5_b:
 lemma g2_5:
   assumes "CongG A B C D"
   shows "A = B \<longleftrightarrow> C = D" 
-  using Gupta_neutral_dimensionless.g2_5_a Gupta_neutral_dimensionless_axioms assms cong_identityG by blast
+  using Gupta_neutral_dimensionless.g2_5_a Gupta_neutral_dimensionless_axioms assms 
+    cong_identityG by blast
 
 lemma g2_6:
   shows "BetG A B B \<and> CongG B B A A" 
@@ -333,16 +334,19 @@ proof -
           have "ColG A B C \<longrightarrow> ?thesis" 
           proof -
             have "BetG A B C \<longrightarrow> ?thesis" 
-              using assms(2) between_inner_transitivityG between_symmetryG between_trivialT by blast
+              using assms(2) between_inner_transitivityG between_symmetryG 
+                between_trivialT by blast
             moreover have "BetG B C A \<longrightarrow> ?thesis" 
               using assms(1) assms(2) between_inner_transitivityG between_symmetryG by blast
             moreover have "BetG C A B \<longrightarrow> ?thesis" 
-              by (meson assms(1) between_inner_transitivityG between_symmetryG between_trivialT)
+              by (meson assms(1) between_inner_transitivityG between_symmetryG 
+                  between_trivialT)
             ultimately show ?thesis 
               using ColG_def by presburger
           qed
           moreover have "\<not> ColG A B C \<longrightarrow> ?thesis" 
-            using ColG_def \<open>A \<noteq> P\<close> \<open>B \<noteq> Q\<close> \<open>P \<noteq> C\<close> \<open>Q \<noteq> C\<close> assms(1) assms(2) inner_paschG by blast
+            using ColG_def \<open>A \<noteq> P\<close> \<open>B \<noteq> Q\<close> \<open>P \<noteq> C\<close> \<open>Q \<noteq> C\<close> assms(1) assms(2) 
+              inner_paschG by blast
           ultimately have ?thesis 
             by blast
         }
@@ -371,114 +375,9 @@ lemma upper_dimT :
     "CongG B P B Q" and
     "CongG C P C Q" 
   shows "BetG A B C \<or> BetG B C A \<or> BetG C A B" 
-  by (metis Gupta_neutral_2D.upper_dimG Gupta_neutral_2D_axioms assms(1) assms(2) assms(3) assms(4) between_trivialT)
+  by (metis Gupta_neutral_2D.upper_dimG Gupta_neutral_2D_axioms assms(1) assms(2) 
+      assms(3) assms(4) between_trivialT)
 
 end
 
 end
-
-
-  (*
-
-
-Global Instance GI2D_to_T2D : Tarski_2D GI_to_T_PED.
-Proof. split; exact upper_dimT. Defined.
-
-End Gupta_inspired_variant_of_Tarski_2D_to_Tarski_2D.
-
-Section Gupta_inspired_variant_of_Tarski_euclidean_to_Tarski_euclidean.
-
-Context `{ITE:Gupta_inspired_variant_of_Tarski_euclidean}.
-
-
-Lemma euclidT : forall A B C D T,
-  Bet A D T -> Bet B D C -> A \<noteq> D ->
-  exists X, exists Y, Bet A B X \<and> Bet A C Y \<and> Bet X T Y.
-Proof.
-assert (H := GI_to_T_PED).
-intros A B C D T HBet1 HBet2 HDiff1.
-elim (eq_dec_points B D); intro HDiff2;
-[treat_equalities; exists T, C; Between|].
-elim (eq_dec_points D C); intro HDiff3;
-[treat_equalities; exists B, T; Between|].
-elim (col_dec A B C); intro HCol; [|apply euclidG with D; auto].
-clear HDiff2; clear HDiff3.
-do 2 (try (elim HCol; clear HCol; intro HCol)); rename HCol into HBet3.
-
-  {
-  elim (eq_dec_points A B); intro HDiff2;
-  [treat_equalities; exists T; exists C; Between|].
-  elim (l5_2 A B C T); eBetween; intro HBet4.
-
-    {
-    elim (eq_dec_points B C); intro HDiff3;
-    [treat_equalities; exists T; exists T; Between|].
-    exists B; exists T; do 2 (split; Between); eBetween.
-    }
-
-    {
-    elim (eq_dec_points B T); intro HDiff3;
-    [treat_equalities; exists B; exists C; Between|].
-    exists B; exists C; Between.
-    }
-  }
-
-  {
-  elim (eq_dec_points A C); intro HDiff2;
-  [treat_equalities; exists B; exists T; Between|].
-  elim (l5_2 A C B T); eBetween; intro HBet4.
-
-    {
-    elim (eq_dec_points B C); intro HDiff3;
-    [treat_equalities; exists T; exists T; Between|].
-    exists T; exists C; repeat (split; Between); eBetween.
-    }
-
-    {
-    exists B; exists C; Between.
-    }
-  }
-
-  {
-  elim (l5_3 B A D C); Between; intro HBet4.
-
-    {
-    elim (eq_dec_points A B); intro HDiff2;
-    [treat_equalities; exists T; exists C; Between|].
-    elim (l5_2 B A C T); eBetween; intro HBet5.
-
-      {
-      exists B; exists T; Between.
-      }
-
-      {
-      exists B; exists C; do 2 (split; Between).
-      apply outer_transitivity_between2 with A; eBetween.
-      intro; treat_equalities; intuition.
-      }
-    }
-
-    {
-    elim (l5_2 A D B T); Between; intro HBet5.
-
-      {
-      elim (eq_dec_points B D); intro HDiff2;
-      [treat_equalities; exists T; exists C; Between|].
-      exists T; exists C; do 2 (try split; Between); eBetween.
-      }
-
-      {
-      exists B; exists C; do 2 (split; Between).
-      apply outer_transitivity_between with A; eBetween;
-      try (intro; treat_equalities; intuition).
-      }
-    }
-  }
-Qed.
-
-Global Instance GI_euclidean_to_T_euclidean :
-  Tarski_euclidean GI_to_T_PED.
-Proof. split; exact euclidT. Defined.
-
-End Gupta_inspired_variant_of_Tarski_euclidean_to_Tarski_euclidean.
-*)

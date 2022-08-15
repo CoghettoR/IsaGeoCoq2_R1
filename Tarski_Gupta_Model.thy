@@ -53,7 +53,8 @@ proof
     by (simp add: cong_identityG)
   show "\<forall>a b c q. \<exists>x. BetG q a x \<and> CongG a x b c" 
     by (simp add: segment_constructionG)
-  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> BetG a b c \<and> BetG a' b' c' \<and> CongG a b a' b' \<and> CongG b c b' c' \<and> CongG a d a' d' \<and> CongG b d b' d' \<longrightarrow>
+  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> BetG a b c \<and> BetG a' b' c' \<and> 
+         CongG a b a' b' \<and> CongG b c b' c' \<and> CongG a d a' d' \<and> CongG b d b' d' \<longrightarrow>
        CongG c d c' d'" 
     using five_segmentG by blast
   show "\<forall>a b. BetG a b a \<longrightarrow> a = b" 
@@ -77,21 +78,21 @@ lemma g_l5_3:
   assumes "BetG A B D" and
     "BetG A C D"
   shows "BetG A B C \<or> BetG A C B" 
- using Interpretation_Tarski_neutral_dimensionless.l5_3 assms(1) assms(2) by blast
+  using Interpretation_Tarski_neutral_dimensionless.l5_3 assms(1) assms(2) by blast
 
 lemma g_between_exchange4:
   assumes "BetG A B C" and
     "BetG A C D"
   shows "BetG A B D"
   using assms(1) assms(2) 
-Interpretation_Tarski_neutral_dimensionless.between_exchange4 by blast
+    Interpretation_Tarski_neutral_dimensionless.between_exchange4 by blast
 
 lemma g_between_inner_transitivity:
   assumes "BetG A B D" and
     "BetG B C D"
   shows "BetG A B C"
   using assms(1) assms(2) 
-Interpretation_Tarski_neutral_dimensionless.between_inner_transitivity by blast
+    Interpretation_Tarski_neutral_dimensionless.between_inner_transitivity by blast
 
 lemma g_not_bet_distincts: 
   assumes "\<not> BetG A B C"
@@ -125,7 +126,8 @@ proof
     by (simp add: cong_identityG)
   show "\<forall>a b c q. \<exists>x. BetG q a x \<and> CongG a x b c" 
     by (simp add: segment_constructionG)
-  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> BetG a b c \<and> BetG a' b' c' \<and> CongG a b a' b' \<and> CongG b c b' c' \<and> CongG a d a' d' \<and> CongG b d b' d' \<longrightarrow>
+  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> BetG a b c \<and> BetG a' b' c' \<and> 
+         CongG a b a' b' \<and> CongG b c b' c' \<and> CongG a d a' d' \<and> CongG b d b' d' \<longrightarrow>
        CongG c d c' d'" 
     using five_segmentG by blast
   show "\<forall>a b. BetG a b a \<longrightarrow> a = b" 

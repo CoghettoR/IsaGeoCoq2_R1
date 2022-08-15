@@ -3792,7 +3792,7 @@ proof -
     by (metis (mono_tags, opaque_lifting) \<open>O' \<noteq> I'\<close> \<open>outH O' H' I'\<close> \<open>outH O' L' L''\<close> 
         assms(2) colH_trans ncolH_expand outH_col)
   hence "\<exists> I'. (O' \<noteq> I' \<and> I' \<noteq> L'' \<and> outH PO H I \<and> outH O' H' I' \<and>
-ColH O' I' H' \<and> CongH O' I' PO I \<and> CongaH I PO L I' O' L'')" 
+              ColH O' I' H' \<and> CongH O' I' PO I \<and> CongaH I PO L I' O' L'')" 
     using \<open>CongH O' I' PO I\<close> \<open>CongaH I PO L I' O' L''\<close> \<open>O' \<noteq> I'\<close> \<open>PO \<noteq> H\<close>
       \<open>outH O' H' I'\<close> \<open>outH PO I H\<close> outH_col outH_sym by blast
   then obtain I' where "O' \<noteq> I'" and "I' \<noteq> L''" and 
@@ -7051,7 +7051,8 @@ proof
   qed
   show "\<not> Bet PP PQ PR \<and> \<not> Bet PQ PR PP \<and> \<not> Bet PR PP PQ" 
     using lower_dim_l by blast
-  show  "\<forall>A B C D T. Bet A D T \<and> Bet B D C \<and> A \<noteq> D \<longrightarrow> (\<exists>X Y. Bet A B X \<and> Bet A C Y \<and> Bet X T Y)"
+  show  "\<forall>A B C D T. Bet A D T \<and> Bet B D C \<and> A \<noteq> D 
+            \<longrightarrow> (\<exists>X Y. Bet A B X \<and> Bet A C Y \<and> Bet X T Y)"
     using tarski_s_euclid euclid_uniqueness by blast
 qed
 

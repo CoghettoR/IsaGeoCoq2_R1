@@ -7056,11 +7056,30 @@ next
       by (metis Col_cases midpoint_bet per_double_cong \<open>Cong Y A Y B\<close> \<open>Z Midpoint A B\<close> 
           assms(2) assms(3) between_equality between_trivial col_trivial_3 l4_18 l8_3)
   qed
-  moreover
-  have "Col A Z I \<and> Col X Y I \<longrightarrow> Col X Y Z" 
-    by (metis Col_cases midpoint_bet Tarski_neutral_dimensionless.per_double_cong 
-        Tarski_neutral_dimensionless_axioms \<open>Cong Y A Y B\<close> \<open>Z Midpoint A B\<close> 
-        assms(2) assms(3) between_equality_2 between_trivial2 col_trivial_3 l4_17 l4_18 l8_3)
+  moreover 
+  {
+    assume "Col A Z I" and "Col X Y I"
+    hence "Z = I \<longrightarrow> Col X Y Z" 
+      by simp 
+    moreover
+    {
+      assume "Z \<noteq> I" 
+      have "Cong I A I B" 
+        using l4_17 [where ?A = "X" and ?B ="Y"]
+          \<open>X \<noteq> Y\<close> \<open>Col X Y I\<close> \<open>Cong X A X B\<close> \<open>Cong Y A Y B\<close> by auto
+      have "(Col A I B \<and> Cong I A I B) \<longrightarrow> (A = B \<or> I Midpoint A B)" 
+        using l7_20_bis by blast
+      moreover have "A = B \<longrightarrow> Col X Y Z" 
+        using \<open>Z Midpoint A B\<close> assms(2) l7_3 by auto
+      moreover have "I Midpoint A B \<longrightarrow> ?thesis" 
+        using \<open>Z Midpoint A B\<close> \<open>Z \<noteq> I\<close> l7_17 by blast
+      ultimately have "Col X Y Z" 
+        using Col_cases Per_def \<open>Col A Z I\<close> \<open>Cong I A I B\<close> \<open>Z Midpoint A B\<close> 
+          assms(2) l8_9 by blast
+    }
+    ultimately have "Col X Y Z" 
+      by blast
+  }
   ultimately show ?thesis
     by blast
 qed
@@ -24714,25 +24733,49 @@ lemma col_perp2_ncol_col:
     "Col X1 Y1 Y2" and
     "\<not> Col X1 A B"
   shows "Col X2 Y1 Y2"
-proof -
-  have "Coplanar A B X2 Y1"
-  proof cases
-    assume "X1 = Y1"
-    thus ?thesis
-      using assms(1) ncoplanar_perm_22 perp__coplanar by blast
-  next
-    assume "X1 \<noteq> Y1"
-    hence "Y1 X1 Perp A B"
-      by (metis Col_cases assms(2) assms(3) perp_col)
-    thus ?thesis
-      by (meson assms(1) assms(4) coplanar_trans_1 ncoplanar_perm_18 
-          ncoplanar_perm_4 perp__coplanar)
+proof (cases "Y1 = Y2")
+  case True
+  thus ?thesis 
+    using col_trivial_2 by blast
+next
+  case False
+  hence "Y1 \<noteq> Y2"
+    by blast
+  show ?thesis
+  proof (cases "X2 = Y1")
+    case True
+    thus ?thesis 
+      by (simp add: col_trivial_1)
+  next 
+    case False
+    hence "X2 \<noteq> Y1"
+      by blast
+    show ?thesis 
+    proof (cases "X1 = Y1")
+      case True
+      hence "Coplanar A B X2 Y1" 
+        using assms(1) coplanar_perm_17 perp__coplanar by blast
+      hence "Coplanar A B X2 Y2" 
+        using True assms(2) assms(4) coplanar_perm_18 coplanar_perm_3 
+          coplanar_trans_1 perp__coplanar by blast
+      thus ?thesis 
+        using True assms(1) assms(2) col_permutation_4 cop_perp2__col by blast
+    next
+      case False
+      hence "X1 \<noteq> Y1" 
+        by blast
+      hence "Y1 X1 Perp A B"
+        by (metis Col_cases assms(2) assms(3) perp_col)
+      hence "Coplanar A B X2 Y1" 
+        by (meson assms(1) assms(4) coplanar_perm_3 coplanar_trans_1 
+            ncoplanar_perm_18 perp__coplanar)
+      hence "Coplanar A B X2 Y2" 
+        by (meson False assms(1) assms(3) col_cop2__cop ncoplanar_perm_22 perp__coplanar)
+      thus ?thesis 
+        by (metis \<open>Coplanar A B X2 Y1\<close> \<open>Y1 X1 Perp A B\<close> assms(1) assms(2) 
+            col_permutation_2 cop_perp2__col not_col_distincts perp_col2)
+    qed
   qed
-  then moreover have "Coplanar A B X2 Y2"
-    using assms(1) assms(2) assms(3) assms(4) col_cop2__cop coplanar_perm_17 
-      coplanar_perm_18 coplanar_trans_1 perp__coplanar by metis
-  ultimately show ?thesis
-    using assms(1) assms(2) assms(3) col_cop2_perp2__col by blast
 qed
 
 lemma l12_9:
@@ -40337,6 +40380,6 @@ proof -
     ultimately show ?thesis 
       by (metis QCongAAcute_def)
 qed
- 
+
 end
 end

@@ -56,8 +56,9 @@ locale Hilbert_neutral_dimensionless_pre =
     CongH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
     CongaH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" 
 
-definition (in Hilbert_neutral_dimensionless_pre) ColH :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow>bool" where
-  "ColH A B C \<equiv> (\<exists> l. IsL l \<and> IncidL A l \<and> IncidL B l \<and> IncidL C l)"
+definition (in Hilbert_neutral_dimensionless_pre) ColH :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow>bool" 
+  where
+    "ColH A B C \<equiv> (\<exists> l. IsL l \<and> IncidL A l \<and> IncidL B l \<and> IncidL C l)"
 
 definition (in Hilbert_neutral_dimensionless_pre) IncidLP :: "'b\<Rightarrow>'c\<Rightarrow>bool" where
   "IncidLP l p \<equiv> IsL l \<and> IsP p \<and> (\<forall> A. IncidL A l \<longrightarrow> IncidP A p)"
@@ -68,13 +69,15 @@ definition (in Hilbert_neutral_dimensionless_pre) cut :: "'b\<Rightarrow>TPoint\
 definition (in Hilbert_neutral_dimensionless_pre) outH :: "TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" where
   "outH P A B \<equiv> BetH P A B \<or> BetH P B A \<or> (P \<noteq> A \<and> A = B)" 
 
-definition (in Hilbert_neutral_dimensionless_pre) disjoint :: "TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" where
+definition (in Hilbert_neutral_dimensionless_pre) disjoint :: 
+  "TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" where
   "disjoint A B C D \<equiv> \<not> (\<exists> P. BetH A P B \<and> BetH C P D)" 
 
 definition (in Hilbert_neutral_dimensionless_pre) same_side :: "TPoint\<Rightarrow>TPoint\<Rightarrow>'b\<Rightarrow>bool" where
   "same_side A B l \<equiv> IsL l \<and> (\<exists> P. cut l A P \<and> cut l B P)" 
 
-definition (in Hilbert_neutral_dimensionless_pre) same_side' :: "TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" where
+definition (in Hilbert_neutral_dimensionless_pre) same_side' :: 
+  "TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" where
   "same_side' A B X Y \<equiv>
      X \<noteq> Y \<and>
      (\<forall> l::'b. (IsL l \<and> IncidL X l \<and> IncidL Y l) \<longrightarrow> same_side A B l)" 
@@ -88,11 +91,11 @@ locale Hilbert_neutral_dimensionless =  Hilbert_neutral_dimensionless_pre +
     EqP_refl: "IsP p \<longrightarrow> EqP p p" and
     EqP_sym: "EqP p1 p2 \<longrightarrow> EqP p2 p1" and
     EqP_trans: "(EqP p1 p2 \<and> EqP p2 p3) \<longrightarrow> EqP p1 p3" and
-IncidL_morphism: "(IsL l \<and> IsL m \<and>  IncidL P l \<and> EqL l m) \<longrightarrow> IncidL P m" and
-IncidP_morphism: "(IsP p \<and> IsP q \<and> IncidP M p \<and> EqP p q) \<longrightarrow> IncidP M q" and
-Is_line:"IncidL P l \<longrightarrow> IsL l" and
-Is_plane:"IncidP P p \<longrightarrow> IsP p" 
-assumes
+    IncidL_morphism: "(IsL l \<and> IsL m \<and>  IncidL P l \<and> EqL l m) \<longrightarrow> IncidL P m" and
+    IncidP_morphism: "(IsP p \<and> IsP q \<and> IncidP M p \<and> EqP p q) \<longrightarrow> IncidP M q" and
+    Is_line:"IncidL P l \<longrightarrow> IsL l" and
+    Is_plane:"IncidP P p \<longrightarrow> IsP p" 
+  assumes
     (** Group I Incidence *)
     line_existence: "A \<noteq> B \<longrightarrow> (\<exists> l. IsL l \<and> ( IncidL A l \<and> IncidL B l))" and
     line_uniqueness: "A \<noteq> B \<and> IsL l \<and> IsL m \<and>
@@ -101,8 +104,9 @@ assumes
     two_points_on_line: "\<forall> l. IsL l \<longrightarrow> (\<exists> A B. IncidL A l \<and> IncidL B l \<and> A \<noteq> B)" 
   assumes 
     lower_dim_2: "PP \<noteq> PQ \<and> PQ \<noteq> PR \<and> PP \<noteq> PR \<and> \<not> ColH PP PQ PR" and
-(*lower_dim_2: "\<exists> PP PQ PR. PP \<noteq> PQ \<and> PQ \<noteq> PR \<and> PP \<noteq> PR \<and> \<not> ColH PP PQ PR" and*)
-    plan_existence: "\<forall> A B C. ((\<not> ColH A B C) \<longrightarrow> (\<exists> p. IsP p \<and> IncidP A p \<and> IncidP B p \<and> IncidP C p))" and
+    (*lower_dim_2: "\<exists> PP PQ PR. PP \<noteq> PQ \<and> PQ \<noteq> PR \<and> PP \<noteq> PR \<and> \<not> ColH PP PQ PR" and*)
+    plan_existence: "\<forall> A B C. ((\<not> ColH A B C) \<longrightarrow> 
+                               (\<exists> p. IsP p \<and> IncidP A p \<and> IncidP B p \<and> IncidP C p))" and
     one_point_on_plane: "\<forall> p. \<exists> A. IsP p \<longrightarrow> IncidP A p" and
     plane_uniqueness: "\<not> ColH A B C \<and> IsP p \<and> IsP q \<and>
      IncidP A p \<and> IncidP B p \<and> IncidP C p \<and> IncidP A q \<and> IncidP B q \<and> IncidP C q \<longrightarrow>
@@ -121,7 +125,7 @@ assumes
 \<longrightarrow>
      (cut l A C) \<or> (cut l B C)"
   assumes
-cong_permr: "CongH A B C D \<longrightarrow> CongH A B D C" and
+    cong_permr: "CongH A B C D \<longrightarrow> CongH A B D C" and
     cong_existence: "\<And>A B A' P::TPoint. A \<noteq> B \<and> A' \<noteq> P \<and> IsL l \<and>
      IncidL A' l \<and> IncidL P l \<longrightarrow>
      (\<exists> B'. (IncidL B' l \<and> outH A' P B' \<and> CongH A' B' A B))" and
@@ -140,7 +144,7 @@ cong_permr: "CongH A B C D \<longrightarrow> CongH A B D C" and
     CongaH A' B C' D' E F'" and
     cong_4_existence: 
     " \<not> ColH P PO X \<and> \<not> ColH A B C \<longrightarrow>
- (\<exists> Y. (CongaH A B C X PO Y \<and> same_side' P Y PO X))" and
+            (\<exists> Y. (CongaH A B C X PO Y \<and> same_side' P Y PO X))" and
     cong_4_uniqueness:
     "\<not> ColH P PO X \<and> \<not> ColH A B C \<and>
      CongaH A B C X PO Y \<and> CongaH A B C X PO Y' \<and>
@@ -165,19 +169,25 @@ subsection "Axioms: neutral 3D"
 
 locale Hilbert_neutral_3D = Hilbert_neutral_dimensionless +
   fixes HS1 HS2 HS3 HS4 :: TPoint
-  assumes plane_intersection: "IsP p \<and> IsP q \<and> IncidP A p \<and> IncidP A q \<longrightarrow> (\<exists> B. IncidP B p \<and> IncidP B q \<and> A \<noteq> B)" 
-    and   lower_dim_3: "\<not> (\<exists> p. IsP p \<and> IncidP HS1 p \<and> IncidP HS2 p \<and> IncidP HS3 p \<and> IncidP HS4 p)"
+  assumes plane_intersection: 
+    "IsP p \<and> IsP q \<and> IncidP A p \<and> IncidP A q 
+        \<longrightarrow> 
+     (\<exists> B. IncidP B p \<and> IncidP B q \<and> A \<noteq> B)" 
+    and   lower_dim_3: 
+    "\<not> (\<exists> p. IsP p \<and> IncidP HS1 p \<and> IncidP HS2 p \<and> IncidP HS3 p \<and> IncidP HS4 p)"
 
 section "Hilbert - Geometry - Euclidean"
 
 subsection "Axioms: Euclidean"
 
 definition (in Hilbert_neutral_dimensionless_pre) Para :: "'b \<Rightarrow> 'b \<Rightarrow>bool" where
-  "Para l m \<equiv> IsL l \<and> IsL m \<and> (\<not>(\<exists> X. IncidL X l \<and> IncidL X m)) \<and> (\<exists> p. IncidLP l p \<and> IncidLP m p)"
+  "Para l m \<equiv> IsL l \<and> IsL m \<and> 
+              (\<not>(\<exists> X. IncidL X l \<and> IncidL X m)) \<and> (\<exists> p. IncidLP l p \<and> IncidLP m p)"
 
 locale Hilbert_euclidean = Hilbert_neutral_dimensionless +
   assumes euclid_uniqueness: "\<forall> l P m1 m2. IsL l \<and> IsL m1 \<and> IsL m2 \<and>
-     \<not> IncidL P l \<and> Para l m1 \<and> IncidL P m1 \<and> Para l m2 \<and> IncidL P m2 \<longrightarrow>
+     \<not> IncidL P l \<and> Para l m1 \<and> IncidL P m1 \<and> Para l m2 \<and> IncidL P m2 
+        \<longrightarrow>
      EqL m1 m2"
 
 end

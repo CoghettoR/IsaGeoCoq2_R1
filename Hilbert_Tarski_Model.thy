@@ -1304,7 +1304,7 @@ context Tarski_neutral_dimensionless
 
 begin
 
-interpretation Interpretation_Hilbert_neutral_dimensionless_pre : Hilbert_neutral_dimensionless_pre 
+interpretation Interpretation_Hilbert_neutral_dimensionless_pre: Hilbert_neutral_dimensionless_pre 
   where IncidL = IncidentL and 
     IncidP = IncidentP and
     EqL = EqTL and 
@@ -1696,7 +1696,7 @@ context Tarski_2D
 
 begin
 
-interpretation Interpretation_Hilbert_neutral_dimensionless_pre : Hilbert_neutral_dimensionless_pre 
+interpretation Interpretation_Hilbert_neutral_dimensionless_pre: Hilbert_neutral_dimensionless_pre 
   where IncidL = IncidentL and 
     IncidP = IncidentP and
     EqL = EqTL and 
@@ -2185,7 +2185,7 @@ context Tarski_3D
 
 begin
 
-interpretation Interpretation_Hilbert_neutral_dimensionless_pre : Hilbert_neutral_dimensionless_pre 
+interpretation Interpretation_Hilbert_neutral_dimensionless_pre: Hilbert_neutral_dimensionless_pre 
   where IncidL = IncidentL and IncidP = IncidentP and EqL = EqTL 
     and EqP = EqTP         and IsL = isLine       and IsP = isPlane 
     and BetH = Between_H   and CongH = Cong       and CongaH = CongA_H 
@@ -2638,7 +2638,7 @@ context Tarski_Euclidean
 
 begin
 
-interpretation Interpretation_Hilbert_neutral_dimensionless_pre : Hilbert_neutral_dimensionless_pre 
+interpretation Interpretation_Hilbert_neutral_dimensionless_pre: Hilbert_neutral_dimensionless_pre 
   where IncidL = IncidentL and IncidP = IncidentP and EqL = EqTL 
     and EqP = EqTP         and IsL = isLine       and IsP = isPlane 
     and BetH = Between_H   and CongH = Cong       and CongaH = CongA_H 
@@ -2687,7 +2687,8 @@ proof
   have "\<forall> A B C D. Interpretation_Hilbert_neutral_dimensionless_pre.same_side' A B C D 
 \<longleftrightarrow> same_side'_H A B C D" 
     by (simp add: Hilbert_neutral_dimensionless_pre.same_side'_def 
-        \<open>\<forall>A B l. Interpretation_Hilbert_neutral_dimensionless_pre.same_side A B l = same_side_H A B l\<close> 
+        \<open>\<forall>A B l. 
+           Interpretation_Hilbert_neutral_dimensionless_pre.same_side A B l = same_side_H A B l\<close> 
         same_side'_H_def)
 
 (* End Preliminaries *)

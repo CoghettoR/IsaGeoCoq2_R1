@@ -5185,7 +5185,7 @@ proof (induction rule: GradA.cases [OF assms(1)])
         show "GradA A B C Da Ea Fa" 
           by (simp add: "1")
         show "\<And>D E F. A B C CongA D E F \<Longrightarrow> GradA A' B' C' D E F" 
-          by (meson Tarski_neutral_dimensionless.conga_trans Tarski_neutral_dimensionless.not_conga_sym Tarski_neutral_dimensionless_axioms assms(2) grada_init)
+          by (meson conga_trans not_conga_sym assms(2) grada_init)
         {
           fix D E F G H I
           assume "GradA A B C D E F" and
@@ -5320,9 +5320,12 @@ proof -
           fix K L M
           assume "SAMS D E F Da Ea Fa" and "D E F Da Ea Fa SumA K L M"
           have "SAMS D E F A B C" 
-            by (meson Tarski_neutral_dimensionless.conga2_sams__sams Tarski_neutral_dimensionless.not_conga_sym Tarski_neutral_dimensionless.sams2_suma2__conga123 Tarski_neutral_dimensionless_axioms \<open>A B C CongA Da Ea Fa\<close> \<open>D E F Da Ea Fa SumA K L M\<close> \<open>SAMS D E F Da Ea Fa\<close>)
+            by (meson conga2_sams__sams not_conga_sym sams2_suma2__conga123 
+                \<open>A B C CongA Da Ea Fa\<close> \<open>D E F Da Ea Fa SumA K L M\<close> \<open>SAMS D E F Da Ea Fa\<close>)
           moreover have "D E F A B C SumA K L M" 
-            by (meson Tarski_neutral_dimensionless.conga3_suma__suma Tarski_neutral_dimensionless.not_conga_sym Tarski_neutral_dimensionless.sams2_suma2__conga123 Tarski_neutral_dimensionless_axioms \<open>A B C CongA Da Ea Fa\<close> \<open>D E F Da Ea Fa SumA K L M\<close> \<open>SAMS D E F Da Ea Fa\<close> suma2__conga)
+            by (meson conga3_suma__suma not_conga_sym sams2_suma2__conga123 
+                \<open>A B C CongA Da Ea Fa\<close> \<open>D E F Da Ea Fa SumA K L M\<close> \<open>SAMS D E F Da Ea Fa\<close> 
+                suma2__conga)
           ultimately have "GradA A B C K L M" 
             using K1 grada_stab by blast
         }
@@ -5726,7 +5729,8 @@ proof -
   let ?A0 = "A"
   let ?A1 = "B0"
   have "\<exists> P Q R. (GradA ?A0 PO ?A1 P Q R \<and> (?A0 PO B LeA P Q R \<or>
-                  (\<exists> A'. Bet ?A0 ?A1 A' \<and> Bet ?A0 A' B \<and> P Q R CongA ?A0 PO A' \<and> ?A0 ?A1 Le ?A0 A' \<and>
+                  (\<exists> A'. Bet ?A0 ?A1 A' \<and> Bet ?A0 A' B \<and> P Q R CongA ?A0 PO A' \<and> 
+                         ?A0 ?A1 Le ?A0 A' \<and>
                   (\<exists> A. Bet ?A0 A A' \<and> ?A0 PO A' CongA ?A0 PO ?A1 \<and> ?A0 ?A1 Le A A'))))" 
     using acute_archi_aux2_1_a assms(1) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) 
       assms(8) assms(9) by blast
@@ -6167,7 +6171,8 @@ proof -
           using \<open>E Out D0 D\<close> out_diff1 by auto
         have "D E F CongA D0 E F" 
           by (metis acute_col_perp__out acute_sym out2__conga out_trivial
-              perp_left_comm \<open>Acute D E F\<close> \<open>Col D E D0\<close> \<open>D E Perp F D0\<close> \<open>E \<noteq> F\<close> not_col_permutation_4)
+              perp_left_comm \<open>Acute D E F\<close> \<open>Col D E D0\<close> \<open>D E Perp F D0\<close> \<open>E \<noteq> F\<close> 
+              not_col_permutation_4)
         have "Acute D0 E F" 
           by (meson acute_conga__acute \<open>Acute D E F\<close> \<open>D E F CongA D0 E F\<close>)
         have "A B C LeA D0 E F" 
@@ -6311,7 +6316,8 @@ proof -
   have "\<not> SAMS D E F G H I \<longrightarrow> (\<exists> P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
   proof (rule GradA.induct [OF assms(2)])
     show "\<And>Da Ea Fa.
-       A B C CongA Da Ea Fa \<Longrightarrow> \<not> SAMS D E F Da Ea Fa \<longrightarrow> (\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
+       A B C CongA Da Ea Fa \<Longrightarrow> \<not> SAMS D E F Da Ea Fa \<longrightarrow> 
+                                (\<exists>P Q R. GradA A B C P Q R \<and> \<not> SAMS P Q R A B C)" 
       by (metis Tarski_neutral_dimensionless.conga_refl Tarski_neutral_dimensionless_axioms 
           assms(1) conga2_sams__sams grada_distincts)
     {
@@ -6565,7 +6571,8 @@ proof -
     by blast
 qed
 
-(** If Archimedes' postulate holds, every nondegenerate angle can be repeated until exceeding 180\<degree> *)
+(** If Archimedes' postulate holds, every nondegenerate angle can be 
+    repeated until exceeding 180\<degree> *)
 lemma archi__grada_destruction:
   assumes "archimedes_axiom" 
   shows "\<forall> A B C. \<not> Col A B C \<longrightarrow>
@@ -6617,7 +6624,8 @@ lemma gradaexp_destruction_aux:
   assumes "GradA A B C P Q R"
   shows "\<exists> S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> P Q R LeA S T U)" 
 proof (rule GradA.induct [OF assms(1)])
-  show "\<And>D E F. A B C CongA D E F \<Longrightarrow> \<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> D E F LeA S T U)" 
+  show "\<And>D E F. A B C CongA D E F \<Longrightarrow> 
+           \<exists>S T U. GradAExp A B C S T U \<and> (Obtuse S T U \<or> D E F LeA S T U)" 
     by (metis conga__lea456123 conga_diff1 conga_diff2 gradaexp_ABC)
   {
     fix D E F G H I

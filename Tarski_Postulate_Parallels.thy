@@ -993,10 +993,14 @@ proof -
                 { assume "\<exists>p. (R \<noteq> Q \<and> \<not> Col I p I) \<and> Col Q I p"
                   hence "I = Q"
                     using f1 by (metis (no_types) BetSEq Col_def col_transitivity_2) }
-                ultimately have "(\<exists>p pa. ((pa \<noteq> I \<and> \<not> Col pa p R) \<and> Col Q I pa) \<and> Col I pa p) \<or> I = Q"
+                ultimately 
+                have "(\<exists>p pa. ((pa \<noteq> I \<and> \<not> Col pa p R) \<and> Col Q I pa) \<and> Col I pa p) \<or> I = Q"
                   using f3 f2 by (metis (no_types) col_transitivity_2) }
-              ultimately have "(\<exists>p pa. ((pa \<noteq> I \<and> \<not> Col pa p R) \<and> Col Q I pa) \<and> Col I pa p) \<or> I = Q"
-                using f1 by (metis (no_types) BetSEq P9 W4 col_transitivity_2 par_strict_not_col_4) }
+              ultimately 
+              have "(\<exists>p pa. ((pa \<noteq> I \<and> \<not> Col pa p R) \<and> Col Q I pa) \<and> Col I pa p) \<or> I = Q"
+                using f1 
+                by (metis (no_types) BetSEq P9 W4 col_transitivity_2 par_strict_not_col_4) 
+            }
             then show ?thesis
               using f2 by (metis P9 W4 \<open>U = I\<close> col_transitivity_2 par_strict_not_col_4)
           qed
@@ -1372,10 +1376,13 @@ proof -
                       {
                         assume "Col A B C"
                         have "Bet A B C \<longrightarrow> ?thesis" 
-                          by (metis \<open>Bet A D T\<close> \<open>Bet B D C\<close> between_equality between_exchange2 between_exchange3 between_exchange4 between_trivial between_trivial2 l5_3) 
+                          by (metis \<open>Bet A D T\<close> \<open>Bet B D C\<close> between_equality 
+                              between_exchange2 between_exchange3 between_exchange4 
+                              between_trivial between_trivial2 l5_3) 
                         moreover
                         have "Bet B C A \<longrightarrow> ?thesis"
-                          by (meson Bet_perm P1 between_exchange3 between_exchange4 between_trivial) 
+                          by (meson Bet_perm P1 between_exchange3 between_exchange4 
+                              between_trivial) 
                         moreover
                         have "Bet C A B \<longrightarrow>?thesis"                       
                           by (metis between_exchange3 Bet_perm P1 
@@ -2413,10 +2420,12 @@ proof -
             have "A B B2 CongA C A B" 
             proof -
               have "B A TS B2 C"
-                by (metis Par_cases \<open>A C Par B B1\<close> \<open>B A TS B1 B2\<close> \<open>C B TS B1 A\<close> invert_two_sides l9_2 l9_8_2 par_two_sides_two_sides ts_ts_os) 
+                by (metis Par_cases \<open>A C Par B B1\<close> \<open>B A TS B1 B2\<close> \<open>C B TS B1 A\<close> 
+                    invert_two_sides l9_2 l9_8_2 par_two_sides_two_sides ts_ts_os) 
               moreover
               have "B B2 Par A C"
-                by (metis Par_perm \<open>A C Par B B1\<close> \<open>B \<noteq> B2\<close> \<open>Bet B1 B B2\<close> bet_col bet_col1 par_col2_par) 
+                by (metis Par_perm \<open>A C Par B B1\<close> \<open>B \<noteq> B2\<close> \<open>Bet B1 B B2\<close> 
+                    bet_col bet_col1 par_col2_par) 
               ultimately
               show ?thesis
                 using conga_left_comm alternate_interior_angles_postulate_def assms by blast 
@@ -2526,7 +2535,9 @@ proof -
         qed
         moreover
         have "Coplanar B1 B2 A1 D2" 
-          using coplanar_pseudo_trans not_par_not_col par_id_1 by (meson "15" \<open>Coplanar IAB IAC IBD A1\<close> \<open>Coplanar IAB IAC IBD B1\<close> \<open>Coplanar IAB IAC IBD B2\<close> \<open>\<not> Col IAC IAB IBD\<close> not_col_permutation_4)
+          using coplanar_pseudo_trans not_par_not_col par_id_1 
+          by (meson "15" \<open>Coplanar IAB IAC IBD A1\<close> \<open>Coplanar IAB IAC IBD B1\<close> 
+              \<open>Coplanar IAB IAC IBD B2\<close> \<open>\<not> Col IAC IAB IBD\<close> not_col_permutation_4)
         moreover
         have "Coplanar B1 B2 A2 D1"
         proof -
@@ -2944,7 +2955,8 @@ Coplanar IAB IAC IBD C2 \<and>
       {
         assume "Col A B T"
         have "\<not> Col B C T"
-          by (metis \<open>Col A B T\<close> \<open>T InAngle A B C\<close> \<open>\<not> Col A B C\<close> col_trivial_3 colx inangle_distincts not_col_permutation_2)
+          by (metis \<open>Col A B T\<close> \<open>T InAngle A B C\<close> \<open>\<not> Col A B C\<close> col_trivial_3 
+              colx inangle_distincts not_col_permutation_2)
         then obtain Y where P2: "Col B C Y \<and> B C Perp T Y"
           using l8_18_existence by blast 
         hence "Col B C Y"
@@ -2952,7 +2964,8 @@ Coplanar IAB IAC IBD C2 \<and>
         have "B C Perp T Y"
           using P2 by blast
         have "B Out A T"
-          using Col_def NCol_perm \<open>Col A B T\<close> \<open>T InAngle A B C\<close> \<open>\<not> Col A B C\<close> col_in_angle_out by blast 
+          using Col_def NCol_perm \<open>Col A B T\<close> \<open>T InAngle A B C\<close> \<open>\<not> Col A B C\<close> 
+            col_in_angle_out by blast 
         moreover
         have "T B A A B C SumA T B C" 
         proof -
@@ -2972,7 +2985,8 @@ Coplanar IAB IAC IBD C2 \<and>
             using SumA_def by blast 
         qed
         hence "A B C CongA T B C"
-          by (meson \<open>Col A B T\<close> \<open>T InAngle A B C\<close> \<open>\<not> Col A B C\<close> bet_col col_in_angle_out col_permutation_4 l6_6 out213_suma__conga) 
+          by (meson \<open>Col A B T\<close> \<open>T InAngle A B C\<close> \<open>\<not> Col A B C\<close> bet_col 
+              col_in_angle_out col_permutation_4 l6_6 out213_suma__conga) 
         hence "Acute T B C"
           using \<open>Acute A B C\<close> acute_conga__acute by blast 
         hence "B Out C Y"
@@ -10675,7 +10689,8 @@ proof -
             next
               case False
               thus ?thesis 
-                using \<open>A1' = A3\<close> \<open>A1 A2 Par B1 B2\<close> \<open>Col A1 A2 A3\<close> \<open>\<not> Col A1 A2 B1\<close> not_strict_par by blast
+                using \<open>A1' = A3\<close> \<open>A1 A2 Par B1 B2\<close> \<open>Col A1 A2 A3\<close> \<open>\<not> Col A1 A2 B1\<close> 
+                  not_strict_par by blast
             qed
             moreover
             have "Col B1 B2 B1" 
@@ -18010,7 +18025,8 @@ proof -
     fix P:: bool
     assume "playfair_s_postulate \<longrightarrow> P" and
       "hyperbolic_plane_postulate \<longrightarrow> \<not> P" 
-    have "hypothesis_of_acute_saccheri_quadrilaterals \<or> hypothesis_of_right_saccheri_quadrilaterals" 
+    have "hypothesis_of_acute_saccheri_quadrilaterals \<or> 
+               hypothesis_of_right_saccheri_quadrilaterals" 
       by (simp add: aristotle__acute_or_right assms)
     moreover
     have "greenberg_s_axiom" 

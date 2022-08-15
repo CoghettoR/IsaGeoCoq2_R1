@@ -133,9 +133,11 @@ proof -
   {
     assume "BetG A B C \<or> BetG B C A \<or> BetG C A B"
     moreover have "BetG A B C \<longrightarrow> ?thesis" 
-      by (meson assms(1) assms(2) between_inner_transitivityG g_between_exchange4 g_not_bet_distincts)
+      by (meson assms(1) assms(2) between_inner_transitivityG g_between_exchange4 
+          g_not_bet_distincts)
     moreover have "BetG B C A \<longrightarrow> ?thesis" 
-      by (metis assms(1) assms(2) between_inner_transitivityG between_symmetryG g_between_exchange4 g_not_bet_distincts segment_constructionG)    
+      by (metis assms(1) assms(2) between_inner_transitivityG between_symmetryG 
+          g_between_exchange4 g_not_bet_distincts segment_constructionG)    
     moreover 
     {
       assume "BetG C A B"
@@ -177,7 +179,8 @@ proof
     by (simp add: cong_identityG)
   show "\<forall>a b c q. \<exists>x. BetG q a x \<and> CongG a x b c" 
     by (simp add: segment_constructionG)
-  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> BetG a b c \<and> BetG a' b' c' \<and> CongG a b a' b' \<and> CongG b c b' c' \<and> CongG a d a' d' \<and> CongG b d b' d' \<longrightarrow>
+  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> BetG a b c \<and> BetG a' b' c' \<and> 
+            CongG a b a' b' \<and> CongG b c b' c' \<and> CongG a d a' d' \<and> CongG b d b' d' \<longrightarrow>
        CongG c d c' d'" 
     using five_segmentG by blast
   show "\<forall>a b. BetG a b a \<longrightarrow> a = b" 

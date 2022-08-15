@@ -136,7 +136,7 @@ lemma perp2_par:
   shows "A B Par C D"
   using Perp2_def l12_9_2D Perp_perm assms by blast
 
-section "Suite" (** TODO renommer **)
+section "Suite" 
 
 lemma not_par_strict_inter_exists:
   assumes "\<not> A1 B1 ParStrict A2 B2" 

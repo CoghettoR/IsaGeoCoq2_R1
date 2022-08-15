@@ -33,8 +33,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 theory Gupta_Tarski_Model
 
 imports 
-Tarski_2D
-Gupta
+  Tarski_2D
+  Gupta
 
 begin
   (*>*)
@@ -55,7 +55,8 @@ proof
     using cong_diff by blast
   show "\<forall>a b c q. \<exists>x. Bet q a x \<and> Cong a x b c" 
     using segment_construction by force
-  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> Bet a b c \<and> Bet a' b' c' \<and> Cong a b a' b' \<and> Cong b c b' c' \<and> Cong a d a' d' \<and> Cong b d b' d' \<longrightarrow>
+  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> Bet a b c \<and> Bet a' b' c' \<and> 
+           Cong a b a' b' \<and> Cong b c b' c' \<and> Cong a d a' d' \<and> Cong b d b' d' \<longrightarrow>
        Cong c d c' d'" 
     using five_segment by blast
   show "\<forall>a b c. Bet a b c \<longrightarrow> Bet c b a" 
@@ -63,13 +64,14 @@ proof
   show "\<forall>a b c d. Bet a b d \<and> Bet b c d \<longrightarrow> Bet a b c" 
     using between_inner_transitivity by blast
   show "\<forall>a b c p q.
-       Bet a p c \<and> Bet b q c \<and> a \<noteq> p \<and> c \<noteq> p \<and> b \<noteq> q \<and> c \<noteq> q \<and> \<not> (Bet a b c \<or> Bet b c a \<or> Bet c a b) \<longrightarrow>
+       Bet a p c \<and> Bet b q c \<and> a \<noteq> p \<and> c \<noteq> p \<and> b \<noteq> q \<and> c \<noteq> q \<and> 
+       \<not> (Bet a b c \<or> Bet b c a \<or> Bet c a b) \<longrightarrow>
        (\<exists>x. Bet p x b \<and> Bet q x a)" 
     using inner_pasch by blast
   show "\<not> (Bet TPA TPB TPC \<or> Bet TPB TPC TPA \<or> Bet TPC TPA TPB)" 
     by (simp add: lower_dim)
 qed
- 
+
 end
 
 context Tarski_2D
@@ -88,7 +90,8 @@ proof
     using cong_diff by blast
   show "\<forall>a b c q. \<exists>x. Bet q a x \<and> Cong a x b c" 
     using segment_construction by force
-  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> Bet a b c \<and> Bet a' b' c' \<and> Cong a b a' b' \<and> Cong b c b' c' \<and> Cong a d a' d' \<and> Cong b d b' d' \<longrightarrow>
+  show "\<forall>a b c d a' b' c' d'. a \<noteq> b \<and> Bet a b c \<and> Bet a' b' c' \<and> 
+          Cong a b a' b' \<and> Cong b c b' c' \<and> Cong a d a' d' \<and> Cong b d b' d' \<longrightarrow>
        Cong c d c' d'" 
     using five_segment by blast
   show "\<forall>a b c. Bet a b c \<longrightarrow> Bet c b a" 
@@ -96,7 +99,8 @@ proof
   show "\<forall>a b c d. Bet a b d \<and> Bet b c d \<longrightarrow> Bet a b c" 
     using between_inner_transitivity by blast
   show "\<forall>a b c p q.
-       Bet a p c \<and> Bet b q c \<and> a \<noteq> p \<and> c \<noteq> p \<and> b \<noteq> q \<and> c \<noteq> q \<and> \<not> (Bet a b c \<or> Bet b c a \<or> Bet c a b) \<longrightarrow>
+       Bet a p c \<and> Bet b q c \<and> a \<noteq> p \<and> c \<noteq> p \<and> b \<noteq> q \<and> c \<noteq> q \<and> 
+        \<not> (Bet a b c \<or> Bet b c a \<or> Bet c a b) \<longrightarrow>
        (\<exists>x. Bet p x b \<and> Bet q x a)" 
     using inner_pasch by blast
   show "\<not> (Bet TPA TPB TPC \<or> Bet TPB TPC TPA \<or> Bet TPC TPA TPB)" 

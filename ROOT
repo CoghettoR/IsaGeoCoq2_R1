@@ -20,6 +20,7 @@ theories
          Highschool1
          Highschool2
          Tarski_Euclidean_2D
+	 Tarski_Pappus
          Highschool3
 
          Gupta
