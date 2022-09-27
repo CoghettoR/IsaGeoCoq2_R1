@@ -42,22 +42,22 @@ begin
 subsection "Rappel"
 
 lemma (in Tarski_neutral_dimensionless) Rappel1:
-  assumes "Axiom2" 
-  shows "Axiom3" 
+  assumes "archimedes_axiom" 
+  shows "aristotle_s_axiom" 
   by (simp add: PPR_Proposition_6 assms) 
 
 lemma (in Tarski_neutral_dimensionless) Rappel2:
-  shows "Axiom3 \<longleftrightarrow> Axiom4" 
+  shows "aristotle_s_axiom \<longleftrightarrow> greenberg_s_axiom" 
 proof
-  show "Axiom3 \<Longrightarrow> Axiom4"
-    using Axiom3_def Axiom4_def aristotle__greenberg by blast
-  show "Axiom4 \<Longrightarrow> Axiom3"
+  show "aristotle_s_axiom \<Longrightarrow> greenberg_s_axiom"
+    using aristotle_s_axiom_def greenberg_s_axiom_def aristotle__greenberg by blast
+  show "greenberg_s_axiom \<Longrightarrow> aristotle_s_axiom"
     using Pambuccian by blast
 qed
 
 lemma (in Tarski_neutral_dimensionless) Rappel3:
   assumes "Postulate01"
-  shows "Axiom3 \<and> Axiom4" 
+  shows "aristotle_s_axiom \<and> greenberg_s_axiom" 
   using InterAx1 Rappel2 assms by blast
 
 subsection "Definitions"

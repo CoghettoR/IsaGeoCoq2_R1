@@ -265,8 +265,8 @@ context Tarski_Greenberg_Non_Euclidean
 begin
 
 lemma Greenberg_s_axiom_thm:
-  shows "Axiom4" 
-  using Axiom4_def greenberg greenberg_s_axiom_def by blast
+  shows "greenberg_s_axiom" 
+  using greenberg_s_axiom_def greenberg greenberg_s_axiom_def by blast
 
 lemma NPost03:
   shows "\<not> Postulate03" 

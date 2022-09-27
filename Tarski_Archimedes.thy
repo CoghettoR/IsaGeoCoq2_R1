@@ -154,12 +154,6 @@ definition aristotle_s_axiom ::
 definition Axiom1:: "bool" where "Axiom1 \<equiv> \<forall> A B C D. 
 (\<exists> I. Col I A B \<and> Col I C D) \<or> \<not>  (\<exists> I. Col I A B \<and> Col I C D)"
 
-definition Axiom2:: "bool" where "Axiom2 \<equiv> archimedes_axiom"
-
-definition Axiom3:: "bool" where "Axiom3 \<equiv> aristotle_s_axiom"
-
-definition Axiom4:: "bool" where "Axiom4 \<equiv> greenberg_s_axiom"
-
 subsubsection "Propositions"
 
 lemma PreGrad_lem1:

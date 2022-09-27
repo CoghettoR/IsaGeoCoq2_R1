@@ -15846,9 +15846,9 @@ proof -
 qed
 
 lemma InterCycle1:
-  assumes "Axiom4" and "Postulate03"
+  assumes "greenberg_s_axiom" and "Postulate03"
   shows "Postulate12" 
-  using Axiom4_def Postulate03_def Postulate12_def 
+  using greenberg_s_axiom_def Postulate03_def Postulate12_def 
     assms(1) assms(2) triangle__playfair_bis by blast
 
 lemma InterCycle2:
@@ -15872,13 +15872,13 @@ lemma InterCycle4:
 
 lemma InterAx1_R1:
   assumes "Postulate13"
-  shows "Axiom3" 
-  using proclus__aristotle Axiom3_def 
+  shows "aristotle_s_axiom" 
+  using proclus__aristotle aristotle_s_axiom_def 
     Postulate13_def assms by blast
 
 lemma InterAx1:
   assumes "Postulate01"
-  shows "Axiom3" 
+  shows "aristotle_s_axiom" 
   using InterAx1_R1 Postulate01_def Postulate13_def 
     assms euclid_5__original_euclid 
     inverse_projection_postulate__proclus_bis 
@@ -15887,7 +15887,7 @@ lemma InterAx1:
     tarski_s_euclid_implies_euclid_5 by blast
 
 lemma InterAx3:
-  assumes "Axiom4" and "Postulate02"
+  assumes "greenberg_s_axiom" and "Postulate02"
   shows "Postulate01" 
 proof -
   have "Postulate03" 
@@ -15896,7 +15896,7 @@ proof -
   hence "Postulate12" 
     using InterCycle1 assms(1) by auto
   thus ?thesis 
-    using Axiom4_def Postulate01_def Postulate07_def 
+    using greenberg_s_axiom_def Postulate01_def Postulate07_def 
       alternate_interior__proclus assms(1) 
       equivalent_postulates_without_decidability_of_intersection_of_lines 
       proclus_s_postulate_implies_strong_parallel_postulate 
@@ -15924,19 +15924,19 @@ qed
 
 lemma PPR_Theorem_4_bis: 
   assumes "Postulate01"
-  shows "Axiom4" 
-  using Axiom3_def Axiom4_def InterAx1 InterAx5 
+  shows "greenberg_s_axiom" 
+  using aristotle_s_axiom_def greenberg_s_axiom_def InterAx1 InterAx5 
     aristotle__greenberg assms by blast
 
 lemma PPR_Proposition_6:
-  assumes "Axiom2"
-  shows "Axiom3"
-  using t22_24 Axiom2_def Axiom3_def assms by blast
+  assumes "archimedes_axiom"
+  shows "aristotle_s_axiom"
+  using t22_24 archimedes_axiom_def aristotle_s_axiom_def assms by blast
 
 lemma Pambuccian:
-  assumes "Axiom4"
-  shows "Axiom3" 
-  using Axiom3_def Axiom4_def assms 
+  assumes "greenberg_s_axiom"
+  shows "aristotle_s_axiom" 
+  using aristotle_s_axiom_def greenberg_s_axiom_def assms 
     greenberg__aristotle by blast
 
 lemma InterCycle1bis: 
@@ -16836,7 +16836,7 @@ lemma P01__P35:
     tarski_s_euclid_implies_playfair_s_postulate assms by blast
 
 lemma P35__P01:
-  assumes "Axiom4" and
+  assumes "greenberg_s_axiom" and
     "Postulate01" 
   shows "Postulate35" 
 proof -
@@ -17915,10 +17915,8 @@ theorem equivalent_postulates_assuming_greenberg_s_axiom:
          (tarski_s_parallel_postulate \<longleftrightarrow> triangle_circumscription_principle) \<and>
          (tarski_s_parallel_postulate \<longleftrightarrow> triangle_postulate)" 
 proof -
-  have "Axiom4" 
-    by (simp add: Axiom4_def assms)
-  have "Axiom3" 
-    by (simp add: Axiom3_def assms greenberg__aristotle)
+  have "aristotle_s_axiom" 
+    using aristotle_s_axiom_def assms greenberg__aristotle by blast
   have "tarski_s_parallel_postulate \<longleftrightarrow> alternate_interior_angles_postulate" 
     using InterAx5 Postulate01_def Postulate02_def alternate_interior__playfair_bis 
       playfair__alternate_interior playfair_bis__playfair 
@@ -17947,10 +17945,10 @@ proof -
       tarski_s_implies_euclid_s_parallel_postulate by linarith
   moreover have "tarski_s_parallel_postulate \<longleftrightarrow> existential_playfair_s_postulate" 
     using Postulate35_def Cycle_3 InterCycle1 P01__P35 P35_27 Postulate01_def 
-      Postulate12_def \<open>Axiom4\<close> calculation(2) by blast
+      Postulate12_def \<open>greenberg_s_axiom\<close> calculation(2) by blast
   moreover have "tarski_s_parallel_postulate \<longleftrightarrow> existential_thales_postulate"  
     using Postulate26_def Cycle_3  InterCycle1 P01__P35 P35_27 Postulate01_def 
-      Postulate12_def \<open>Axiom4\<close> calculation(2) by blast
+      Postulate12_def \<open>greenberg_s_axiom\<close> calculation(2) by blast
   moreover have "tarski_s_parallel_postulate \<longleftrightarrow> inverse_projection_postulate" 
     using calculation(3) calculation(4) inverse_projection_postulate__proclus_bis 
       original_spp__inverse_projection_postulate by blast
