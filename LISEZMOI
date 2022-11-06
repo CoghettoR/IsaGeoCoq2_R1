@@ -11,7 +11,3 @@ Pour compiler la bibliotèque ('-j 8' n'est pas nécessaire)
 cd /home/user01/
 ./Isabelle2022/bin/isabelle build -j 8 -v -D IsaGeoCoq2_R1
 
-Pour produire les documents pdf (dans le répertoire /home/user01/abc/)
-cd /home/user01/
-./Isabelle2022/bin/isabelle document -V -v -d IsaGeoCoq2_R1 -O abc IsaGeoCoq2_R1
-
