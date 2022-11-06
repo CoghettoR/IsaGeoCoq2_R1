@@ -1,4 +1,4 @@
-chapter GeometrieTarski
+*chapter GeometrieTarski
 
 session IsaGeoCoq2_R1 (GeometrieTarski) = HOL +
   description \<open>Géométrie synthétique (Tarski - Hilbert)\<close>
