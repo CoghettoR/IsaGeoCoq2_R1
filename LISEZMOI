@@ -7,7 +7,12 @@ On suppose l'installation:
 /home/user01/Isabelle2022/
 /home/user01/IsaGeoCoq2_R1/
 
+On suppose être sur la branche main (git checkout main)
+
 Pour compiler la bibliotèque ('-j 8' n'est pas nécessaire)
 cd /home/user01/
 ./Isabelle2022/bin/isabelle build -j 8 -v -D IsaGeoCoq2_R1
 
+Pour la branch msa2p.be (git checkout msa2p.be)
+git checkout msa2p.be
+./Isabelle2022/bin/isabelle document -V -v -d IsaGeoCoq2_R1 -O aze IsaGeoCoq2_R1
