@@ -13,6 +13,9 @@ Pour compiler la bibliotèque ('-j 8' n'est pas nécessaire)
 cd /home/user01/
 ./Isabelle2022/bin/isabelle build -j 8 -v -D IsaGeoCoq2_R1
 
-Pour la branch msa2p.be (git checkout msa2p.be)
+Pour la branch msa2p.be (git checkout msa2p.be), il est possible de compiler le fichier pdf dans le répertoire /home/user01/mydoc:
+
+cd /home/user01/IsaGeoCoq2_R1
 git checkout msa2p.be
-./Isabelle2022/bin/isabelle document -V -v -d IsaGeoCoq2_R1 -O aze IsaGeoCoq2_R1
+cd ..
+./Isabelle2022/bin/isabelle document -V -v -d IsaGeoCoq2_R1 -O mydoc IsaGeoCoq2_R1
