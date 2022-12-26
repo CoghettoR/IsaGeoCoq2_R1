@@ -40,32 +40,9 @@ imports
 begin
   (*>*)
 
-section "Géométrie neutre"
-text
-  \<open>
-  La géométrie neutre contient 
-  
-  \<^enum> l'espace neutre et 
-  \<^enum> le plan neutre.
-  
-  On utilise indiféremment les termes "neutre" et "absolu".
-  \<close>
+section "Neutral geometry dimensionless"
 
-section "L'Espace en géométrie neutre"
-text
-  \<open>Il faut entendre par géométrie neutre l'espace de dimension au moins égale à 
-  2 avec les axiomes (1) à (7).
-  On parle aussi de géométrie absolue.
-  En particulier les propositions sont 
-  \<close>
-
-
-subsection "Les Axiomes de Tarski pour les géométries neutres spatiales"
-
-text
-  \<open>
-  La dimension de l'espace de ces géométries est au moins égale à 2.
-  \<close>
+subsection "Tarski's axiom system for neutral geometry: dimensionless"
 
 typedecl TPoint
 
@@ -121,18 +98,11 @@ Bet b q c
 
 and   lower_dim:  "\<not> Bet TPA TPB TPC \<and> \<not> Bet TPB TPC TPA \<and> \<not> Bet TPC TPA TPB"
 
-text
-  \<open>
-  Sauf indication contraire les définitions et les propriétés sont valides dans 
-  l'espace neutre.
-  \<close>
-
 context Tarski_neutral_dimensionless
 
 begin
 
-subsection "Définitions"
-
+subsection "Definitions"
 subsubsection "Congruence"
 
 definition OFSC ::
