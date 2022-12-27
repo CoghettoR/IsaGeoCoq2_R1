@@ -24625,20 +24625,20 @@ lemma par_neq2:
 
 lemma Par_cases:
   assumes "A B Par C D \<or> B A Par C D \<or> A B Par D C \<or> B A Par D C \<or> 
-C D Par A B \<or> C D Par B A \<or> D C Par A B \<or> D C Par B A"
+           C D Par A B \<or> C D Par B A \<or> D C Par A B \<or> D C Par B A"
   shows "A B Par C D"
   using assms par_right_comm par_symmetry by blast
 
 lemma Par_perm:
   assumes "A B Par C D"
   shows "A B Par C D \<and> B A Par C D \<and> A B Par D C \<and> B A Par D C \<and> 
-C D Par A B \<and> C D Par B A \<and> D C Par A B \<and> D C Par B A"
+         C D Par A B \<and> C D Par B A \<and> D C Par A B \<and> D C Par B A"
   using Par_cases assms by blast
 
 lemma Par_strict_cases:
   assumes "A B ParStrict C D \<or> B A ParStrict C D \<or> A B ParStrict D C \<or> 
-B A ParStrict D C \<or> C D ParStrict A B \<or> C D ParStrict B A \<or> 
-D C ParStrict A B \<or> D C ParStrict B A"
+           B A ParStrict D C \<or> C D ParStrict A B \<or> C D ParStrict B A \<or> 
+           D C ParStrict A B \<or> D C ParStrict B A"
   shows "A B ParStrict C D"
   using assms par_strict_right_comm par_strict_symmetry by blast
 
@@ -24757,74 +24757,72 @@ lemma l12_9:
     "A1 A2 Perp C1 C2" and
     "B1 B2 Perp C1 C2"
   shows "A1 A2 Par B1 B2"
-proof -
-  have P1: "A1 \<noteq> A2 \<and> C1 \<noteq> C2"
+proof (cases)
+  assume "Col A1 B1 B2"
+  moreover have "A1 \<noteq> A2"
     using assms(5) perp_distinct by auto
-  have P2: "B1 \<noteq> B2"
+  moreover have "B1 \<noteq> B2"
     using assms(6) perp_distinct by auto
-  show ?thesis
-  proof cases
-    assume "Col A1 B1 B2"
-    thus ?thesis
-      using P1 P2 Par_def assms(3) assms(4) assms(5) assms(6) col_cop2_perp2__col by blast
-  next
-    assume P3: "\<not> Col A1 B1 B2"
-    {
-      assume "\<not> Col C1 C2 A1"
-      hence "Coplanar A1 A2 B1 B2"
-      proof -
-        have "Coplanar C1 C2 A1 A1" 
-          using ncop_distincts by blast
-        moreover have "C1 C2 Perp A1 A2" 
-          using Perp_perm assms(5) by blast
-        hence "Coplanar C1 C2 A1 A2" 
-          using perp__coplanar by auto
-        ultimately show ?thesis 
-          by (meson coplanar_pseudo_trans \<open>\<not> Col C1 C2 A1\<close> assms(1) assms(2))
-      qed
-    }
-    moreover
-    {
-      assume "\<not> Col C1 C2 A2"
-      have "Coplanar A1 A2 B1 B2"
-      proof -
-        have "C1 C2 Perp A2 A1" 
-          using Perp_perm assms(5) by blast
-        hence "Coplanar C1 C2 A2 A1" 
-          using perp__coplanar by auto
-        moreover have "Coplanar C1 C2 A2 A2" 
-          using ncop_distincts by blast
-        ultimately show ?thesis 
-          by (meson \<open>\<not> Col C1 C2 A2\<close> assms(3) assms(4) coplanar_perm_5 coplanar_pseudo_trans_lem1)
-      qed
-    }
-    moreover
-    {
-      assume "\<exists> X. Col X A1 A2 \<and> Col X B1 B2"
-      then obtain AB where P4: "Col AB A1 A2 \<and> Col AB B1 B2" by auto
-      hence "False"
-      proof cases
-        assume "AB = A1"
-        thus ?thesis
-          using P3 P4 by blast
-      next
-        assume "AB \<noteq> A1"
-        hence "A1 AB Perp C1 C2"
-          by (metis P4 assms(5) not_col_permutation_2 perp_col)
-        hence "AB A1 Perp C1 C2"
-          by (simp add: perp_left_comm)
-        thus ?thesis
-          using P3 P4 assms(1) assms(2) assms(6) col_cop2_perp2__col by blast
-      qed
-    }
-    moreover
-    have "C1 C2 Perp A1 A2"
-      using Perp_cases assms(5) by blast
-    hence "\<not> Col C1 C2 A1 \<or> \<not> Col C1 C2 A2" 
-      using perp_not_col2 by blast
-    ultimately show ?thesis 
-      using ParStrict_def Par_def by blast
-  qed
+  ultimately show ?thesis
+    using Par_def assms(3) assms(4) assms(5) assms(6) col_cop2_perp2__col by blast
+next
+  assume "\<not> Col A1 B1 B2"
+  {
+    assume "\<not> Col C1 C2 A1"
+    hence "Coplanar A1 A2 B1 B2" 
+    proof -
+      have "Coplanar C1 C2 A1 A1" 
+        using ncop_distincts by blast
+      moreover have "C1 C2 Perp A1 A2" 
+        using Perp_perm assms(5) by blast
+      hence "Coplanar C1 C2 A1 A2" 
+        using perp__coplanar by auto
+      ultimately show ?thesis 
+        by (meson coplanar_pseudo_trans \<open>\<not> Col C1 C2 A1\<close> assms(1) assms(2))
+    qed
+  }
+  moreover
+  {
+    assume "\<not> Col C1 C2 A2"
+    have "Coplanar A1 A2 B1 B2"
+    proof -
+      have "C1 C2 Perp A2 A1" 
+        using Perp_perm assms(5) by blast
+      hence "Coplanar C1 C2 A2 A1" 
+        using perp__coplanar by auto
+      moreover have "Coplanar C1 C2 A2 A2" 
+        using ncop_distincts by blast
+      ultimately show ?thesis 
+        by (meson \<open>\<not> Col C1 C2 A2\<close> assms(3) assms(4) coplanar_perm_5 coplanar_pseudo_trans_lem1)
+    qed
+  }
+  moreover
+  {
+    assume "\<exists> X. Col X A1 A2 \<and> Col X B1 B2"
+    then obtain AB where "Col AB A1 A2" and "Col AB B1 B2" by auto
+    have "False"
+    proof cases
+      assume "AB = A1"
+      thus ?thesis
+        using \<open>\<not> Col A1 B1 B2\<close> \<open>Col AB B1 B2\<close> by blast
+    next
+      assume "AB \<noteq> A1"
+      hence "A1 AB Perp C1 C2"
+        using assms(5) not_col_permutation_2 perp_col by (metis \<open>Col AB A1 A2\<close>)
+      hence "AB A1 Perp C1 C2"
+        by (simp add: perp_left_comm)
+      thus ?thesis
+        using assms(1) assms(2) assms(6) col_cop2_perp2__col
+          \<open>Col AB B1 B2\<close> \<open>\<not> Col A1 B1 B2\<close> by blast
+    qed
+  }
+  moreover
+  have "C1 C2 Perp A1 A2"
+    using Perp_cases assms(5) by blast
+  hence "\<not> Col C1 C2 A1 \<or> \<not> Col C1 C2 A2" 
+    using perp_not_col2 by blast
+  ultimately show ?thesis 
+    using ParStrict_def Par_def by blast
 qed
 
 lemma parallel_existence:
@@ -24924,7 +24922,7 @@ next
       by blast
   qed
 qed
-
+(*
 lemma par_col_par:
   assumes "C \<noteq> D'" and
     "A B Par C D" and
@@ -29250,10 +29248,7 @@ proof -
         not_col_distincts par_not_col_strict)
 qed
 
-end
-
-end
-(*
+(* ICI ROLL
 lemma cop4_perp_in2__col:
   assumes "Coplanar X Y A A'" and
     "Coplanar X Y A B'" and
