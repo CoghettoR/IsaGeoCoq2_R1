@@ -1,7 +1,7 @@
-chapter GeometrieTarski
+chapter SyntheticGeometry
 
-session IsaGeoCoq2_R1 (GeometrieTarski) = HOL +
-  description \<open>Géométrie synthétique (Tarski - Hilbert)\<close>
+session IsaGeoCoq2_R1 (TarskiGeometry) = HOL +
+  description \<open>Synthetic geometry (Tarski - Hilbert, GeoCoq port)\<close>
   options [timeout = 600]
 
 theories 
@@ -20,7 +20,7 @@ theories
          Highschool1
          Highschool2
          Tarski_Euclidean_2D
-	 Tarski_Pappus
+      	 Tarski_Pappus
          Highschool3
 
          Gupta
