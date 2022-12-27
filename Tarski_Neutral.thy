@@ -29194,116 +29194,66 @@ proof -
   qed
 qed
 
+lemma triangle_mid_par_lem:
+  assumes "\<not> Col A B C" and
+    "P Midpoint B C" and
+    "Q Midpoint A C"
+  shows "A B Par P Q" 
+  proof -
+    obtain R where "R Midpoint A B"
+      using midpoint_existence by auto
+    then obtain X Y where "R PerpAt X Y A B" and "X Y Perp P Q" and
+      "Coplanar A B C X" and "Coplanar A B C Y"
+      using l13_1_aux assms(1) assms(2) assms(3) by blast
+    have "Coplanar A B C A"
+      using ncop_distincts by auto
+    have "Coplanar A B C B"
+      using ncop_distincts by auto
+    have "Coplanar A B C P"
+      using assms(2) coplanar_perm_21 midpoint__coplanar by blast
+    have "Coplanar A B C Q"
+      using assms(3) coplanar_perm_11 midpoint__coplanar by blast
+    have "Coplanar X Y A P" 
+      using \<open>Coplanar A B C A\<close> \<open>Coplanar A B C P\<close> \<open>Coplanar A B C X\<close> 
+        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
+    moreover have "Coplanar X Y A Q" 
+      using \<open>Coplanar A B C A\<close> \<open>Coplanar A B C Q\<close> \<open>Coplanar A B C X\<close> 
+        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
+    moreover have "Coplanar X Y B P" 
+      using \<open>Coplanar A B C B\<close> \<open>Coplanar A B C P\<close> \<open>Coplanar A B C X\<close> 
+        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
+    moreover have "Coplanar X Y B Q" 
+      using \<open>Coplanar A B C B\<close> \<open>Coplanar A B C Q\<close> \<open>Coplanar A B C X\<close> 
+        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by presburger
+    moreover have "Col X Y R" and "Col A B R"
+      using perp_in_col \<open>R PerpAt X Y A B\<close> perp_in_col by auto
+    hence "Col X R Y"  
+      using Col_perm by blast
+    hence "X Y Perp A B"
+      using perp_col \<open>R PerpAt X Y A B\<close> perp_in_perp by auto
+    ultimately show ?thesis
+      by (meson Perp_cases \<open>X Y Perp P Q\<close> l12_9)
+  qed
+
 lemma triangle_mid_par:
   assumes "\<not> Col A B C" and
     "P Midpoint B C" and
     "Q Midpoint A C"
-  shows "A B ParStrict Q P"
+  shows "A B ParStrict Q P" 
 proof -
-  obtain R where P1: "R Midpoint A B"
-    using midpoint_existence by auto
-  then obtain X Y where P2: "R PerpAt X Y A B \<and> X Y Perp P Q \<and> 
-  Coplanar A B C X \<and> Coplanar A B C Y"
-    using l13_1_aux assms(1) assms(2) assms(3) by blast
-  have P3: "Coplanar X Y A P \<and> Coplanar X Y A Q \<and> Coplanar X Y B P \<and> Coplanar X Y B Q"
-  proof -
-    have "Coplanar A B C A"
-      using ncop_distincts by auto
-    moreover have "Coplanar A B C B"
-      using ncop_distincts by auto
-    moreover have "Coplanar A B C P"
-      using assms(2) coplanar_perm_21 midpoint__coplanar by blast
-    moreover have "Coplanar A B C Q"
-      using assms(3) coplanar_perm_11 midpoint__coplanar by blast
-    ultimately show ?thesis
-      using P2 assms(1) coplanar_pseudo_trans by blast
-  qed
-  have P4: "Col X Y R \<and> Col A B R"
-    using P2 perp_in_col by blast
-  have P5: "R Y Perp A B \<or> X R Perp A B"
-    using P2 perp_in_perp_bis by auto
-  have P6: "Col A R B"
-    using Col_perm P4 by blast
-  have P7: "X \<noteq> Y"
-    using P2 perp_not_eq_1 by auto
-  {
-    assume P8: "R Y Perp A B"
-    have "Col Y R X"
-      using P4 not_col_permutation_2 by blast
-    hence "Y X Perp A B"
-      using P2 Perp_cases perp_in_perp by blast
-    hence P10: "X Y Perp A B"
-      using Perp_cases by blast
-    have "A B Par P Q"
-    proof -
-      have "Coplanar X Y A P"
-        by (simp add: P3)
-      moreover have "Coplanar X Y A Q"
-        by (simp add: P3)
-      moreover have "Coplanar X Y B P"
-        by (simp add: P3)
-      moreover have "Coplanar X Y B Q"
-        by (simp add: P3)
-      moreover have "A B Perp X Y"
-        using P10 Perp_cases by auto
-      moreover have "P Q Perp X Y"
-        using P2 Perp_cases by auto
-      ultimately show ?thesis
-        using l12_9 by blast
-    qed
-    {
-      assume "A B ParStrict P Q"
-      hence "A B ParStrict Q P"
-        using Par_strict_perm by blast
-    }
-    {
-      assume "A \<noteq> B \<and> P \<noteq> Q \<and> Col A P Q \<and> Col B P Q"
-      hence "Col A B P"
-        using l6_16_1 not_col_permutation_1 by blast
-      hence "P = B"
-        by (metis Col_perm assms(1) assms(2) l6_16_1 midpoint_col)
-      hence "A B ParStrict Q P"
-        using assms(1) assms(2) col_trivial_2 is_midpoint_id by blast
-    }
-    hence "A B ParStrict Q P"
-      using Par_def \<open>A B Par P Q\<close> \<open>A B ParStrict P Q \<Longrightarrow> A B ParStrict Q P\<close> by auto
-  }
-  {
-    assume P10: "X R Perp A B"
-    have "Col X R Y"
-      by (simp add: Col_perm P4)
-    hence P11: "X Y Perp A B"
-      using P7 P10 perp_col by blast
-    have "A B Par P Q"
-    proof -
-      have "A B Perp X Y"
-        using P11 Perp_perm by blast
-      moreover have "P Q Perp X Y"
-        using P2 Perp_perm by blast
-      ultimately show ?thesis
-        using P3 l12_9 by blast
-    qed
-    {
-      assume "A B ParStrict P Q"
-      hence "A B ParStrict Q P"
-        by (simp add: par_strict_right_comm)
-    }
-    {
-      assume "A \<noteq> B \<and> P \<noteq> Q \<and> Col A P Q \<and> Col B P Q"
-      hence "Col A B P"
-        using Col_perm l6_16_1 by blast
-      hence "P = B"
-        by (metis Col_perm assms(1) assms(2) l6_16_1 midpoint_col)
-      hence "A B ParStrict Q P"
-        using assms(1) assms(2) col_trivial_2 is_midpoint_id by blast
-    }
-    hence "A B ParStrict Q P"
-      using Par_def \<open>A B Par P Q\<close> \<open>A B ParStrict P Q \<Longrightarrow> A B ParStrict Q P\<close> by auto
-  }
-  thus ?thesis
-    using P5 \<open>R Y Perp A B \<Longrightarrow> A B ParStrict Q P\<close> by blast
+  have "A B Par P Q"
+    using assms(1) assms(2) assms(3) triangle_mid_par_lem by blast
+  hence "A B Par Q P" 
+    using Par_cases by blast
+  thus ?thesis 
+    by (metis assms(1) assms(3) col_transitivity_2 midpoint_col midpoint_distinct_3 
+        not_col_distincts par_not_col_strict)
 qed
 
+end
+
+end
+(*
 lemma cop4_perp_in2__col:
   assumes "Coplanar X Y A A'" and
     "Coplanar X Y A B'" and
@@ -40353,3 +40303,4 @@ qed
 
 end
 end
+*)
