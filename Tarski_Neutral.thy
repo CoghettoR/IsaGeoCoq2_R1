@@ -24833,88 +24833,81 @@ proof cases
   thus ?thesis
     using Col_perm assms par_reflexivity by blast
 next
-  assume P1: "\<not> Col A B P"
-  then obtain P' where P2: "Col A B P' \<and> A B Perp P P'"
+  assume "\<not> Col A B P"
+  then obtain P' where "Col A B P'" and "A B Perp P P'"
     using l8_18_existence by blast
-  hence P3: "P \<noteq> P'"
-    using P1 by blast
+  hence "P \<noteq> P'" 
+    using \<open>\<not> Col A B P\<close> by auto
   show ?thesis
   proof cases
-    assume P4: "P' = A"
+    assume "P' = A"
     have "\<exists> Q. Per Q P A \<and> Cong Q P A B \<and> A P OS Q B"
     proof -
       have "Col A P P"
         using not_col_distincts by auto
-      moreover have "\<not> Col A P B"
-        by (simp add: P1 not_col_permutation_5)
-      ultimately show ?thesis
-        using P3 P4 assms ex_per_cong by simp
+      moreover have "\<not> Col A P B" 
+        using \<open>\<not> Col A B P\<close> not_col_permutation_5 by blast
+      ultimately show ?thesis 
+        using ex_per_cong not_col_distincts by presburger
     qed
-    then obtain Q where T1: "Per Q P A \<and> Cong Q P A B \<and> A P OS Q B" by auto
-    hence T2: "P \<noteq> Q"
+    then obtain Q where "Per Q P A" and "Cong Q P A B" and "A P OS Q B" by auto
+    hence "P \<noteq> Q"
       using os_distincts by auto
-    have T3: "A B Par P Q"
+    moreover have "A B Par P Q" 
     proof -
-      have "P Q Perp P A"
-      proof -
-        have "P \<noteq> A"
-          using P3 P4 by auto
-        moreover have "Col P P Q"
-          by (simp add: col_trivial_1)
-        ultimately show ?thesis
-          by (metis T1 T2 Perp_perm per_perp)
-      qed
+      have "P Q Perp P A" 
+        by (metis Perp_cases \<open>P \<noteq> P'\<close> \<open>P \<noteq> Q\<close> \<open>P' = A\<close> \<open>Per Q P A\<close> per_perp)
       moreover have "Coplanar P A A P"
         using ncop_distincts by auto
       moreover have "Coplanar P A B P"
         using ncop_distincts by auto
-      moreover have "Coplanar P A B Q"
-        by (metis (no_types) T1 ncoplanar_perm_7 os__coplanar)
-      moreover have "A B Perp P A"
-        using P2 P4 by auto
-      ultimately show ?thesis using l12_9 ncop_distincts by blast
+      moreover have "Coplanar P A B Q" 
+        using \<open>A P OS Q B\<close> coplanar_perm_7 os__coplanar by blast
+      moreover have "A B Perp P A" 
+        using \<open>A B Perp P P'\<close> \<open>P' = A\<close> by auto
+      ultimately show ?thesis 
+        using l12_9 ncop_distincts by blast
     qed
-    thus ?thesis
-      using T2 col_trivial_1 by auto
+    ultimately show ?thesis 
+      using col_trivial_1 by auto
   next
-    assume T4: "P' \<noteq> A"
-    have "\<exists> Q. Per Q P P' \<and> Cong Q P A B \<and> P' P OS Q A"
+    assume "P' \<noteq> A"
+    have "\<exists> Q. Per Q P P' \<and> Cong Q P A B \<and> P' P OS Q A" 
     proof -
-      have "P' \<noteq> P"
-        using P3 by auto
+      have "P' \<noteq> P" 
+        using \<open>P \<noteq> P'\<close> by auto
       moreover have "A \<noteq> B"
         by (simp add: assms)
       moreover have "Col P' P P"
         using not_col_distincts by blast
-      moreover have "\<not> Col P' P A"
-        by (metis P1 P2 T4 col2__eq col_permutation_1)
+      moreover have "\<not> Col P' P A" 
+        using Col_perm \<open>Col A B P'\<close> \<open>\<not> Col A B P\<close> col_transitivity_2 \<open>P' \<noteq> A\<close> by blast
       ultimately show ?thesis
         using ex_per_cong by blast
     qed
-    then obtain Q where T5: "Per Q P P' \<and> Cong Q P A B \<and> P' P OS Q A" by blast
-    hence T6: "P \<noteq> Q"
+    then obtain Q where "Per Q P P'" and "Cong Q P A B" and "P' P OS Q A" by blast
+    hence "P \<noteq> Q"
       using os_distincts by blast
     moreover have "A B Par P Q"
     proof -
       have "Coplanar P P' A P"
         using ncop_distincts by auto
       moreover have "Coplanar P P' A Q"
-        by (meson T5 ncoplanar_perm_7 os__coplanar)
+        using ncoplanar_perm_7 os__coplanar \<open>P' P OS Q A\<close> by blast
       moreover 
       have "Coplanar A P B Q" 
-        by (metis P2 T4 \<open>Coplanar P P' A Q\<close> col_cop2__cop coplanar_perm_9 
-            ncop_distincts ncoplanar_perm_17 not_col_permutation_5)
+        using \<open>Coplanar P P' A Q\<close> col_cop2__cop coplanar_perm_9 
+            ncop_distincts ncoplanar_perm_17 not_col_permutation_5 
+        by (metis \<open>Col A B P'\<close> \<open>P' \<noteq> A\<close>)
       hence "Coplanar P P' B Q"
-        using P2 assms col2_cop__cop col_trivial_2 coplanar_perm_10 coplanar_perm_5 
-          calculation(1) by blast
+        using assms col2_cop__cop col_trivial_2 coplanar_perm_10 coplanar_perm_5 
+          calculation(1) by (meson \<open>Col A B P'\<close>)
       moreover have "Coplanar P P' B P"
         using ncop_distincts by auto
-      moreover have "A B Perp P P'"
-        by (simp add: P2)
       moreover have "P Q Perp P P'"
-        by (metis P3 T5 T6 Perp_perm per_perp)
+        using Perp_perm per_perp by (metis \<open>P \<noteq> P'\<close> \<open>P \<noteq> Q\<close> \<open>Per Q P P'\<close>)
       ultimately show ?thesis
-        using l12_9 by blast
+        using l12_9 \<open>A B Perp P P'\<close> by blast
     qed
     moreover have "Col P P Q"
       by (simp add: col_trivial_1)
@@ -24922,7 +24915,7 @@ next
       by blast
   qed
 qed
-(*
+
 lemma par_col_par:
   assumes "C \<noteq> D'" and
     "A B Par C D" and
@@ -29248,7 +29241,6 @@ proof -
         not_col_distincts par_not_col_strict)
 qed
 
-(* ICI ROLL
 lemma cop4_perp_in2__col:
   assumes "Coplanar X Y A A'" and
     "Coplanar X Y A B'" and
@@ -40298,4 +40290,4 @@ qed
 
 end
 end
-*)
+
