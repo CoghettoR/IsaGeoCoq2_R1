@@ -11,11 +11,12 @@ theories
 
          Tarski_Archimedes
 
+Tarski_Continuity
+
          Tarski_Postulate_Parallels
          Tarski_Euclidean
 
          Tarski_Hyperbolic
-
          
          Highschool1
          Highschool2

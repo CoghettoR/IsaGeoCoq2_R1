@@ -1415,7 +1415,6 @@ proof -
     by (meson IFSC_def assms(3) assms(4) cong_reflexivity l4_2)
 qed
 
-
 lemma l4_18:
   assumes "A \<noteq> B" and
     "Col A B C" and
