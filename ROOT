@@ -10,7 +10,7 @@ session IsaGeoCoq2_R1 (TarskiGeometry) = HOL +
 
 theories 
          Tarski_Neutral
- (*        Tarski_2D
+         Tarski_2D
          Tarski_3D
 
          Tarski_Archimedes
@@ -36,7 +36,7 @@ Tarski_Continuity
 
          Hilbert
          Hilbert_Tarski_Model
-         Tarski_Hilbert_Model*)
+         Tarski_Hilbert_Model
 
 document_files
     "root.bib"
