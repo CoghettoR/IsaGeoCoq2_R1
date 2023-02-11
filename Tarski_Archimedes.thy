@@ -133,7 +133,7 @@ subsubsection "Continuity Axioms"
 definition archimedes_axiom ::
   "bool"
   ("ArchimedesAxiom") where
-  "archimedes_axiom \<equiv> \<forall> A B C D. 
+  "archimedes_axiom \<equiv> \<forall> A B C D::TPoint. 
 A \<noteq> B \<longrightarrow> Reach A B C D"
 
 definition greenberg_s_axiom ::

@@ -47,7 +47,7 @@ subsection "Tarski's axiom system for neutral geometry: dimensionless"
 typedecl TPoint
 
 locale Tarski_neutral_dimensionless =
-  fixes Bet  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
+  fixes Bet  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" ("(_ - _ - _) ")
   fixes Cong :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
   fixes TPA TPB TPC :: TPoint
   assumes cong_pseudo_reflexivity: "\<forall> a b. 
@@ -109,8 +109,8 @@ definition OFSC ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ _ OFSC _ _ _ _" [99,99,99,99,99,99,99,99] 50)
   where
-    "A B C D OFSC A' B' C' D' \<equiv>
-
+    "A B C D OFSC A' B' C' D' 
+\<equiv>
 Bet A B C \<and>
 Bet A' B' C' \<and>
 Cong A B A' B' \<and>
@@ -122,8 +122,8 @@ definition Cong3 ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ Cong3 _ _ _" [99,99,99,99,99,99] 50)
   where
-    "A B C Cong3 A' B' C' \<equiv>
-
+    "A B C Cong3 A' B' C' 
+\<equiv>
 Cong A B A' B' \<and>
 Cong A C A' C' \<and>
 Cong B C B' C'"
@@ -134,16 +134,16 @@ definition Col ::
   "[TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("Col _ _ _" [99,99,99] 50)
   where
-    "Col A B C \<equiv>
-
+    "Col A B C 
+\<equiv>
 Bet A B C \<or> Bet B C A \<or> Bet C A B"
 
 definition Bet4 ::
   "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("Bet4 _ _ _ _" [99,99,99,99] 50)
   where
-    "Bet4 A1 A2 A3 A4 \<equiv>
-
+    "Bet4 A1 A2 A3 A4 
+\<equiv>
 Bet A1 A2 A3 \<and>
 Bet A2 A3 A4 \<and>
 Bet A1 A3 A4 \<and>
@@ -152,8 +152,8 @@ Bet A1 A2 A4"
 definition BetS ::
   "[TPoint,TPoint,TPoint] \<Rightarrow> bool" ("BetS _ _ _" [99,99,99] 50)
   where
-    "BetS A B C \<equiv>
-
+    "BetS A B C 
+\<equiv>
 Bet A B C \<and>
 A \<noteq> B \<and>
 B \<noteq> C"
@@ -165,7 +165,8 @@ definition SumS ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
   ("_ _ _ _ SumS _ _" [99,99,99,99,99,99] 50)
   where
-    "A B C D SumS E F \<equiv>
+    "A B C D SumS E F 
+\<equiv>
 \<exists> P Q R. Bet P Q R \<and> Cong P Q A B \<and> Cong Q R C D \<and> Cong P R E F"
 
 subsubsection "Collinearity"
@@ -174,8 +175,8 @@ definition FSC ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ _ FSC _ _ _ _" [99,99,99,99,99,99,99,99] 50)
   where
-    "A B C D FSC A' B' C' D' \<equiv>
-
+    "A B C D FSC A' B' C' D' 
+\<equiv>
 Col A B C \<and>
 A B C Cong3 A' B' C' \<and>
 Cong A D A' D' \<and>
@@ -187,8 +188,8 @@ definition IFSC ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ _ IFSC _ _ _ _" [99,99,99,99,99,99,99,99] 50)
   where
-    "A B C D IFSC A' B' C' D' \<equiv>
-
+    "A B C D IFSC A' B' C' D' 
+\<equiv>
 Bet A B C \<and>
 Bet A' B' C' \<and>
 Cong A C A' C' \<and>
@@ -199,35 +200,45 @@ Cong C D C' D'"
 subsubsection "Between transivitity  LE"
 
 definition Le ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ Le _ _" [99,99,99,99] 50)
-  where "A B Le C D \<equiv>
-
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ Le _ _" [99,99,99,99] 50)
+  where 
+    "A B Le C D 
+\<equiv>
 \<exists> E. (Bet C E D \<and> Cong A B C E)"
 
 definition Lt ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ Lt _ _" [99,99,99,99] 50)
-  where "A B Lt C D \<equiv>
-
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ Lt _ _" [99,99,99,99] 50)
+  where 
+    "A B Lt C D 
+\<equiv>
 A B Le C D \<and> \<not> Cong A B C D"
 
 definition Ge ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _Ge _ _" [99,99,99,99] 50)
-  where "A B Ge C D \<equiv>
-
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _Ge _ _" [99,99,99,99] 50)
+  where 
+    "A B Ge C D 
+\<equiv>
 C D Le A B"
 
 definition Gt ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ Gt _ _" [99,99,99,99] 50)
-  where "A B Gt C D \<equiv>
-
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ Gt _ _" [99,99,99,99] 50)
+  where 
+    "A B Gt C D 
+\<equiv>
 C D Lt A B"
 
 subsubsection "Out lines"
 
 definition Out ::
-  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ Out _ _" [99,99,99] 50)
-  where "P Out A B \<equiv>
-
+  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ Out _ _" [99,99,99] 50)
+  where 
+    "P Out A B 
+\<equiv>
 A \<noteq> P \<and>
 B \<noteq> P \<and>
 (Bet P A B \<or> Bet P B A)"
@@ -235,24 +246,30 @@ B \<noteq> P \<and>
 subsubsection "Midpoint"
 
 definition Midpoint ::
-  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ Midpoint _ _" [99,99,99] 50)
-  where "M Midpoint A B \<equiv>
-
+  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ Midpoint _ _" [99,99,99] 50)
+  where 
+    "M Midpoint A B 
+\<equiv>
 Bet A M B \<and>
 Cong A M M B"
 
 subsubsection "Orthogonality"
 
 definition Per ::
-  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Per _ _ _" [99,99,99] 50)
-  where "Per A B C \<equiv>
-
+  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Per _ _ _" [99,99,99] 50)
+  where 
+    "Per A B C 
+\<equiv>
 \<exists> C'. (B Midpoint C C' \<and> Cong A C A C')"
 
 definition PerpAt ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ PerpAt _ _ _ _ " [99,99,99,99,99] 50)
-  where "X PerpAt A B C D \<equiv>
-
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ PerpAt _ _ _ _ " [99,99,99,99,99] 50)
+  where 
+    "X PerpAt A B C D 
+\<equiv>
 A \<noteq> B \<and>
 C \<noteq> D \<and>
 Col X A B \<and>
@@ -260,67 +277,99 @@ Col X C D \<and>
 (\<forall> U V. ((Col U A B \<and> Col V C D) \<longrightarrow> Per U X V))"
 
 definition Perp ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ Perp _ _" [99,99,99,99] 50)
-  where "A B Perp C D \<equiv>
-
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ Perp _ _" [99,99,99,99] 50)
+  where 
+    "A B Perp C D 
+\<equiv>
 \<exists> X::TPoint. X PerpAt A B C D"
 
 subsubsection "Coplanar"
 
 definition Coplanar ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Coplanar _ _ _ _" [99,99,99,99] 50)
-  where "Coplanar A B C D \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Coplanar _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Coplanar A B C D 
+\<equiv>
 \<exists> X. (Col A B X \<and> Col C D X) \<or>
 (Col A C X \<and> Col B D X) \<or>
 (Col A D X \<and> Col B C X)"
 
 definition TS ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ TS _ _" [99,99,99,99] 50)
-  where "A B TS P Q \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ TS _ _" [99,99,99,99] 50)
+  where 
+    "A B TS P Q 
+\<equiv>
 \<not> Col P A B \<and> \<not> Col Q A B \<and> (\<exists> T::TPoint. Col T A B \<and> Bet P T Q)"
 
 definition ReflectL ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ ReflectL _ _" [99,99,99,99] 50)
-  where "P' P ReflectL A B \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ ReflectL _ _" [99,99,99,99] 50)
+  where 
+    "P' P ReflectL A B 
+\<equiv>
 (\<exists> X. X Midpoint P P' \<and> Col A B X) \<and> (A B Perp P P' \<or> P = P')"
 
 definition Reflect ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ Reflect _ _" [99,99,99,99] 50)
-  where "P' P Reflect A B \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ Reflect _ _" [99,99,99,99] 50)
+  where 
+    "P' P Reflect A B 
+\<equiv>
 (A \<noteq> B \<and> P' P ReflectL A B) \<or> (A = B \<and> A Midpoint P P')"
 
 definition InAngle ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ InAngle _ _ _" [99,99,99,99] 50)
-  where "P InAngle A B C \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ InAngle _ _ _" [99,99,99,99] 50)
+  where 
+    "P InAngle A B C 
+\<equiv>
 A \<noteq> B \<and> C \<noteq> B \<and> P \<noteq> B \<and>
 (\<exists> X. Bet A X C \<and> (X = B \<or> B Out X P))"
 
 definition ParStrict::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ ParStrict _ _" [99,99,99,99] 50)
-  where "A B ParStrict C D \<equiv>  
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ ParStrict _ _" [99,99,99,99] 50)
+  where 
+    "A B ParStrict C D 
+\<equiv>  
 Coplanar A B C D \<and> 
 \<not> (\<exists> X. Col X A B \<and> Col X C D)"
 
 definition Par::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ Par _ _" [99,99,99,99] 50)
-  where "A B Par C D \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ Par _ _" [99,99,99,99] 50)
+  where 
+    "A B Par C D 
+\<equiv>
 A B ParStrict C D \<or> (A \<noteq> B \<and> C \<noteq> D \<and> Col A C D \<and> Col B C D)"
 
 definition Plg::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Plg _ _ _ _" [99,99,99,99] 50)
-  where "Plg  A B C D \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Plg _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Plg  A B C D 
+\<equiv>
 (A \<noteq> C \<or> B \<noteq> D) \<and> (\<exists> M. M Midpoint A C \<and> M Midpoint B D)"
 
 definition ParallelogramStrict::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("ParallelogramStrict _ _ _ _" [99,99,99,99] 50)
-  where "ParallelogramStrict A B A' B' \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("ParallelogramStrict _ _ _ _" [99,99,99,99] 50)
+  where 
+    "ParallelogramStrict A B A' B' 
+\<equiv>
 A A' TS B B' \<and> 
 A B Par A' B' \<and> 
 Cong A B A' B'"
 
 definition ParallelogramFlat::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("ParallelogramFlat _ _ _ _" [99,99,99,99] 50)
-  where "ParallelogramFlat A B A' B' \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("ParallelogramFlat _ _ _ _" [99,99,99,99] 50)
+  where
+    "ParallelogramFlat A B A' B' 
+\<equiv>
 Col A B A' \<and> 
 Col A B B' \<and>
 Cong A B A' B' \<and> 
@@ -328,29 +377,51 @@ Cong A B' A' B \<and>
 (A \<noteq> A' \<or> B \<noteq> B')"
 
 definition Parallelogram::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Parallelogram _ _ _ _" [99,99,99,99] 50)
-  where "Parallelogram A B A' B' \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Parallelogram _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Parallelogram A B A' B' 
+\<equiv>
 ParallelogramStrict A B A' B' \<or> ParallelogramFlat A B A' B'"
 
 definition Rhombus::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Rhombus _ _ _ _" [99,99,99,99] 50)
-  where "Rhombus A B C D \<equiv> Plg A B C D \<and> Cong A B B C"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Rhombus _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Rhombus A B C D 
+\<equiv> 
+Plg A B C D \<and> Cong A B B C"
 
 definition Rectangle::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Rectangle _ _ _ _" [99,99,99,99] 50)
-  where "Rectangle A B C D \<equiv> Plg A B C D \<and> Cong A C B D"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Rectangle _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Rectangle A B C D 
+\<equiv> 
+Plg A B C D \<and> Cong A C B D"
 
 definition Square::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Square _ _ _ _" [99,99,99,99] 50)
-  where "Square A B C D \<equiv> Rectangle A B C D \<and> Cong A B B C"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Square _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Square A B C D 
+\<equiv> 
+Rectangle A B C D \<and> Cong A B B C"
 
 definition Kite::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Kite _ _ _ _" [99,99,99,99] 50)
-  where "Kite A B C D \<equiv> Cong B C C D \<and> Cong D A A B"
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Kite _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Kite A B C D 
+\<equiv> 
+Cong B C C D \<and> Cong D A A B"
 
 definition Lambert::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Lambert _ _ _ _" [99,99,99,99] 50)
-  where "Lambert A B C D \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Lambert _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Lambert A B C D 
+\<equiv>
 A \<noteq> B \<and> B \<noteq> C \<and> C \<noteq> D \<and> A \<noteq> D \<and> 
 Per B A D \<and> 
 Per A D C \<and> 
@@ -360,24 +431,36 @@ Coplanar A B C D"
 subsubsection "Plane"
 
 definition OS ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ OS _ _" [99,99,99,99] 50)
-  where "A B OS P Q \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ OS _ _" [99,99,99,99] 50)
+  where 
+    "A B OS P Q 
+\<equiv>
 \<exists> R::TPoint. A B TS P R \<and> A B TS Q R"
 
 definition TSP ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ TSP _ _" [99,99,99,99,99] 50)
-  where "A B C TSP P Q \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ _ TSP _ _" [99,99,99,99,99] 50)
+  where 
+    "A B C TSP P Q 
+\<equiv>
 (\<not> Coplanar A B C P) \<and> (\<not> Coplanar A B C Q) \<and>
 (\<exists> T. Coplanar A B C T \<and> Bet P T Q)"
 
 definition OSP ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ OSP _ _" [99,99,99,99,99] 50)
-  where "A B C OSP P Q \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ _ OSP _ _" [99,99,99,99,99] 50)
+  where 
+    "A B C OSP P Q 
+\<equiv>
 \<exists> R. ((A B C TSP P R) \<and> (A B C TSP Q R))"
 
 definition Saccheri::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Saccheri _ _ _ _" [99,99,99,99] 50)
-  where "Saccheri A B C D \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Saccheri _ _ _ _" [99,99,99,99] 50)
+  where 
+    "Saccheri A B C D 
+\<equiv>
 Per B A D \<and> 
 Per A D C \<and> 
 Cong A B C D \<and> A D OS B C"
@@ -385,21 +468,30 @@ Cong A B C D \<and> A D OS B C"
 subsubsection "Line reflexivity"
 
 definition ReflectLAt ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ ReflectLAt _ _ _ _" [99,99,99,99,99] 50)
-  where "M ReflectLAt P' P A B \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ ReflectLAt _ _ _ _" [99,99,99,99,99] 50)
+  where 
+    "M ReflectLAt P' P A B 
+\<equiv>
 (M Midpoint P P' \<and> Col A B M) \<and> (A B Perp P P' \<or> P = P')"
 
 definition ReflectAt ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ ReflectAt _ _ _ _" [99,99,99,99,99] 50)
-  where "M ReflectAt P' P A B \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ ReflectAt _ _ _ _" [99,99,99,99,99] 50)
+  where 
+    "M ReflectAt P' P A B 
+\<equiv>
 (A \<noteq> B \<and> M ReflectLAt P' P A B) \<or> (A = B \<and> A = M \<and> M Midpoint P P')"
 
 subsubsection "Line reflexivity 2D (Upper dim 2)"
 
 definition upper_dim_axiom ::
-  "bool" ("UpperDimAxiom" [] 50)
+  "bool" 
+  ("UpperDimAxiom" [] 50)
   where
-    "upper_dim_axiom \<equiv> \<forall> A B C P Q.
+    "upper_dim_axiom 
+\<equiv> 
+\<forall> A B C P Q.
 P \<noteq> Q \<and>
 Cong A P A Q \<and>
 Cong B P B Q \<and>
@@ -408,9 +500,12 @@ Cong C P C Q
 (Bet A B C \<or> Bet B C A \<or> Bet C A B)"
 
 definition all_coplanar_axiom ::
-  "bool" ("AllCoplanarAxiom" [] 50)
+  "bool" 
+  ("AllCoplanarAxiom" [] 50)
   where
-    "AllCoplanarAxiom \<equiv> \<forall> A B C P Q.
+    "AllCoplanarAxiom 
+\<equiv> 
+\<forall> A B C P Q.
 P \<noteq> Q \<and>
 Cong A P A Q \<and>
 Cong B P B Q \<and>
@@ -423,122 +518,165 @@ subsubsection "Upper dim 3"
 (** If three points A, B and C are equidistant to three distinct points P, Q and R,
     then A, B and C are collinear. *)
 
-definition upper_dim_3_axiom :: "bool" 
+definition upper_dim_3_axiom :: 
+  "bool" 
   where
-    "upper_dim_3_axiom \<equiv> \<forall> A B C P Q R. P \<noteq> Q \<and> Q \<noteq> R \<and> P \<noteq> R \<and>
+    "upper_dim_3_axiom 
+\<equiv> 
+\<forall> A B C P Q R. P \<noteq> Q \<and> Q \<noteq> R \<and> P \<noteq> R \<and>
   Cong A P A Q \<and> Cong B P B Q \<and> Cong C P C Q \<and>
   Cong A P A R \<and> Cong B P B R \<and> Cong C P C R \<longrightarrow>
   (Bet A B C \<or> Bet B C A \<or> Bet C A B)"
 
 (** If four points are equidistant to two distinct points, then they are coplanar. *)
 
-definition median_planes_axiom :: "bool" 
+definition median_planes_axiom :: 
+  "bool" 
   where
-    "median_planes_axiom \<equiv> \<forall> A B C D P Q. P \<noteq> Q \<and>
+    "median_planes_axiom 
+\<equiv> 
+\<forall> A B C D P Q. P \<noteq> Q \<and>
   Cong A P A Q \<and> Cong B P B Q \<and> Cong C P C Q \<and> Cong D P D Q \<longrightarrow>
   Coplanar A B C D"
 
 (** If two planes meet in some point, then they also meet in another point. *)
 
-definition plane_intersection_axiom :: "bool" 
+definition plane_intersection_axiom :: 
+  "bool" 
   where
-    "plane_intersection_axiom \<equiv> \<forall> A B C D E F P.
+    "plane_intersection_axiom 
+\<equiv> 
+\<forall> A B C D E F P.
   Coplanar A B C P \<and> Coplanar D E F P \<longrightarrow>
 (\<exists> Q. Coplanar A B C Q \<and> Coplanar D E F Q \<and> P \<noteq> Q)"
 
 (** If two points do not lie on a plane, then they are either
     on opposite sides or on the same side of the plane. *)
 
-definition space_separation_axiom :: "bool" 
+definition space_separation_axiom :: 
+  "bool" 
   where 
-    "space_separation_axiom \<equiv> \<forall> A B C P Q.
-  \<not> Coplanar A B C P \<and> \<not> Coplanar A B C Q \<longrightarrow>  (A B C TSP P Q \<or> A B C OSP P Q)" 
+    "space_separation_axiom 
+\<equiv> 
+\<forall> A B C P Q.
+  \<not> Coplanar A B C P \<and> \<not> Coplanar A B C Q \<longrightarrow>
+  (A B C TSP P Q \<or> A B C OSP P Q)"
 
 (** The line segments SU1, SU2, SU3 and SU4 can not form an orthonormal family *)
 
-definition orthonormal_family_axiom :: "bool" 
+definition orthonormal_family_axiom :: 
+  "bool" 
   where
-    "orthonormal_family_axiom \<equiv> \<forall> S U1' U1 U2 U3 U4.
+    "orthonormal_family_axiom 
+\<equiv> 
+\<forall> S U1' U1 U2 U3 U4.
   \<not> (S \<noteq> U1' \<and> Bet U1 S U1' \<and>
      Cong S U1 S U1' \<and> Cong S U2 S U1' \<and> Cong S U3 S U1' \<and> Cong S U4 S U1' \<and>
      Cong U1 U2 U1' U2 \<and> Cong U1 U3 U1' U2 \<and> Cong U1 U4 U1' U2 \<and>
-     Cong U2 U3 U1' U2 \<and> Cong U2 U4 U1' U2 \<and> Cong U3 U4 U1' U2)" 
+     Cong U2 U3 U1' U2 \<and> Cong U2 U4 U1' U2 \<and> Cong U3 U4 U1' U2)"
 
 subsubsection "Angles"
 
 definition CongA ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ CongA _ _ _" [99,99,99,99,99,99] 50)
-  where "A B C CongA D E F \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ _ CongA _ _ _" [99,99,99,99,99,99] 50)
+  where 
+    "A B C CongA D E F 
+\<equiv>
 A \<noteq> B \<and> C \<noteq> B \<and> D \<noteq> E \<and> F \<noteq> E \<and>
 (\<exists> A' C' D' F'. Bet B A A' \<and> Cong A A' E D \<and> Bet B C C' \<and> Cong C C' E F \<and>
 Bet E D D' \<and> Cong D D' B A \<and> Bet E F F' \<and> Cong F F' B C \<and>
 Cong A' C' D' F')"
 
 definition LeA ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ LeA _ _ _" [99,99,99,99,99,99] 50)
-  where "A B C LeA D E F \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ _ LeA _ _ _" [99,99,99,99,99,99] 50)
+  where 
+    "A B C LeA D E F 
+\<equiv>
 \<exists> P. (P InAngle D E F \<and> A B C CongA D E P)"
 
 definition LtA ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ LtA _ _ _" [99,99,99,99,99,99] 50)
-  where "A B C LtA D E F \<equiv> A B C LeA D E F \<and> \<not> A B C CongA D E F"
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ _ LtA _ _ _" [99,99,99,99,99,99] 50)
+  where 
+    "A B C LtA D E F 
+\<equiv> 
+A B C LeA D E F \<and> \<not> A B C CongA D E F"
 
 definition GtA ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ GtA _ _ _" [99,99,99,99,99,99] 50)
-  where "A B C GtA D E F \<equiv> D E F LtA A B C"
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ _ GtA _ _ _" [99,99,99,99,99,99] 50)
+  where 
+    "A B C GtA D E F 
+\<equiv> 
+D E F LtA A B C"
 
 definition Acute ::
-  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Acute _ _ _" [99,99,99] 50)
-  where "Acute A B C \<equiv>
+  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Acute _ _ _" [99,99,99] 50)
+  where 
+    "Acute A B C 
+\<equiv>
 \<exists> A' B' C'. (Per A' B' C' \<and> A B C LtA A' B' C')"
 
 definition Obtuse ::
-  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" ("Obtuse _ _ _" [99,99,99] 50)
-  where "Obtuse A B C \<equiv>
+  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("Obtuse _ _ _" [99,99,99] 50)
+  where 
+    "Obtuse A B C 
+\<equiv>
 \<exists> A' B' C'. (Per A' B' C' \<and> A' B' C' LtA A B C)"
 
 definition OrthAt ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
-("_ OrthAt _ _ _ _ _" [99,99,99,99,99,99] 50)
-  where "X OrthAt A B C U V \<equiv>
+  ("_ OrthAt _ _ _ _ _" [99,99,99,99,99,99] 50)
+  where 
+    "X OrthAt A B C U V 
+\<equiv>
 \<not> Col A B C \<and> U \<noteq> V \<and> Coplanar A B C X \<and> Col U V X \<and>
 (\<forall> P Q. (Coplanar A B C P \<and> Col U V Q) \<longrightarrow> Per P X Q)"
 
 definition Orth ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ _ Orth _ _" [99,99,99,99,99] 50)
-  where "A B C Orth U V \<equiv> \<exists> X. X OrthAt A B C U V"
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ _ Orth _ _" [99,99,99,99,99] 50)
+  where 
+    "A B C Orth U V 
+\<equiv>
+\<exists> X. X OrthAt A B C U V"
 
 definition SuppA ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ SuppA _ _ _ " [99,99,99,99,99,99] 50)
   where
-    "A B C SuppA D E F \<equiv>
+    "A B C SuppA D E F 
+\<equiv>
 A \<noteq> B \<and> (\<exists> A'. Bet A B A' \<and>  D E F CongA C B A')"
 
 subsubsection "Sum of angles"
 
 definition SumA ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
-("_ _ _ _ _ _ SumA _ _ _" 
-    [99,99,99,99,99,99,99,99,99] 50)
+  ("_ _ _ _ _ _ SumA _ _ _" [99,99,99,99,99,99,99,99,99] 50)
   where
-    "A B C D E F SumA G H I \<equiv>
-
+    "A B C D E F SumA G H I 
+\<equiv>
 \<exists> J. (C B J CongA D E F \<and> \<not> B C OS A J \<and> Coplanar A B C J \<and> A B J CongA G H I)"
 
 definition TriSumA ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
-("_ _ _ TriSumA _ _ _" [99,99,99,99,99,99] 50)
+  ("_ _ _ TriSumA _ _ _" [99,99,99,99,99,99] 50)
   where
-    "A B C TriSumA D E F \<equiv>
-
+    "A B C TriSumA D E F 
+\<equiv>
 \<exists> G H I. (A B C B C A SumA G H I \<and> G H I C A B SumA D E F)"
 
 definition SAMS ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("SAMS _ _ _ _ _ _" [99,99,99,99,99,99] 50)
+  "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("SAMS _ _ _ _ _ _" [99,99,99,99,99,99] 50)
   where
-    "SAMS A B C D E F \<equiv>
-
+    "SAMS A B C D E F 
+\<equiv>
 (A \<noteq> B \<and>
 (E Out D F \<or> \<not> Bet A B C)) \<and>
 (\<exists> J. (C B J CongA D E F \<and> \<not> (B C OS A J) \<and> \<not> (A B TS C J) \<and> Coplanar A B C J))"
@@ -546,9 +684,11 @@ definition SAMS ::
 subsubsection "Parallelism"
 
 definition Inter ::
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ Inter _ _ _ _" [99,99,99,99,99] 50)
-  where "X Inter A1 A2 B1 B2 \<equiv>
-
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ Inter _ _ _ _" [99,99,99,99,99] 50)
+  where 
+    "X Inter A1 A2 B1 B2 
+\<equiv>
 B1 \<noteq> B2 \<and>
 (\<exists> P::TPoint. (Col P B1 B2 \<and> \<not> Col P A1 A2)) \<and>
 Col A1 A2 X \<and> Col B1 B2 X"
@@ -556,27 +696,37 @@ Col A1 A2 X \<and> Col B1 B2 X"
 subsubsection "Perpendicularity"
 
 definition Perp2 :: (*GeoCoq 'Perp2 A B C D E' = IsaGeoCoq 'E Perp2 A B C D'*)
-  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ Perp2 _ _ _ _" [99,99,99,99,99] 50)
+  "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ Perp2 _ _ _ _" [99,99,99,99,99] 50)
   where
-    "P Perp2 A B C D \<equiv>
-
+    "P Perp2 A B C D 
+\<equiv>
 \<exists> X Y. (Col P X Y \<and> X Y Perp A B \<and> X Y Perp C D)"
 
 subsubsection "Perpendicular bisector of segment"
 
 definition Perp_bisect ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ PerpBisect _ _" [99,99,99,99] 50)
-  where "P Q PerpBisect A B \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ PerpBisect _ _" [99,99,99,99] 50)
+  where 
+    "P Q PerpBisect A B 
+\<equiv>
 A B ReflectL P Q \<and> A \<noteq> B"
 
 definition Perp_bisect_bis ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ _ PerpBisectBis _ _" [99,99,99,99] 50)
-  where "P Q PerpBisectBis A B \<equiv>
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ _ PerpBisectBis _ _" [99,99,99,99] 50)
+  where 
+    "P Q PerpBisectBis A B 
+\<equiv>
 \<exists> I. I PerpAt P Q A B \<and> I Midpoint A B"
 
 definition Is_on_perp_bisect ::
-  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" ("_ IsOnPerpBisect _ _" [99,99,99] 50)
-  where "P IsOnPerpBisect A B \<equiv>
+  "[TPoint,TPoint,TPoint] \<Rightarrow> bool" 
+  ("_ IsOnPerpBisect _ _" [99,99,99] 50)
+  where 
+    "P IsOnPerpBisect A B 
+\<equiv>
 Cong A P P B"
 
 subsubsection "Triangles"
@@ -585,137 +735,156 @@ definition isosceles::
   "[TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ isosceles" [99,99,99] 50)
   where
-    "A B C isosceles \<equiv>
+    "A B C isosceles 
+\<equiv>
 Cong A B B C"
 
 definition equilateral::
   "[TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ equilateral" [99,99,99] 50)
   where
-    "A B C equilateral \<equiv>
+    "A B C equilateral 
+\<equiv>
 Cong A B B C \<and> Cong B C C A"
 
 definition equilateralStrict::
   "[TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("_ _ _ equilateralStrict" [99,99,99] 50)
   where
-    "A B C equilateralStrict \<equiv>
+    "A B C equilateralStrict 
+\<equiv>
 A B C equilateral \<and> A \<noteq> B"
 
 subsubsection "Lentgh"
 
 definition QCong::
-  "([TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCong _" [99] 50)
+  "([TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCong _" [99] 50)
   where
-    "QCong l \<equiv>
-
+    "QCong l 
+\<equiv>
 \<exists> A B. (\<forall> X Y. (Cong A B X Y \<longleftrightarrow> l X Y))"
 
 definition TarskiLen::
-  "[TPoint,TPoint,([TPoint,TPoint] \<Rightarrow> bool)] \<Rightarrow> bool" ("TarskiLen _ _ _" [99,99,99] 50)
+  "[TPoint,TPoint,([TPoint,TPoint] \<Rightarrow> bool)] \<Rightarrow> bool" 
+  ("TarskiLen _ _ _" [99,99,99] 50)
   where
-    "TarskiLen A B l \<equiv>
-
+    "TarskiLen A B l 
+\<equiv>
 QCong l \<and> l A B"
 
 definition QCongNull ::
-  "([TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCongNull _" [99] 50)
+  "([TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCongNull _" [99] 50)
   where
-    "QCongNull l \<equiv>
-
+    "QCongNull l 
+\<equiv>
 QCong l \<and> (\<exists> A. l A A)"
 
 subsubsection "Equivalence Class of Angles"
 
 definition QCongA ::
-  "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCongA _" [99] 50)
+  "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCongA _" [99] 50)
   where
-    "QCongA a \<equiv>
-
+    "QCongA a 
+\<equiv>
 \<exists> A B C. (A \<noteq> B \<and> C \<noteq> B \<and> (\<forall> X Y Z. A B C CongA X Y Z \<longleftrightarrow> a X Y Z))"
 
 definition Ang ::
   "[TPoint,TPoint,TPoint, ([TPoint, TPoint, TPoint] \<Rightarrow> bool) ] \<Rightarrow> bool" 
-("_ _ _ Ang _" [99,99,99,99] 50)
+  ("_ _ _ Ang _" [99,99,99,99] 50)
   where
-    "A B C Ang a \<equiv>
-
+    "A B C Ang a 
+\<equiv>
 QCongA a \<and>
 a A B C"
 
 definition QCongAAcute ::
-  "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCongAACute _" [99] 50)
+  "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCongAACute _" [99] 50)
   where
-    "QCongAAcute a \<equiv>
-
+    "QCongAAcute a 
+\<equiv>
 \<exists> A B C. (Acute A B C \<and> (\<forall> X Y Z. (A B C CongA X Y Z \<longleftrightarrow> a X Y Z)))"
 
 definition AngAcute ::
   "[TPoint,TPoint,TPoint, ([TPoint,TPoint,TPoint] \<Rightarrow> bool)] \<Rightarrow> bool" 
-("_ _ _ AngAcute _" [99,99,99,99] 50)
+  ("_ _ _ AngAcute _" [99,99,99,99] 50)
   where
-    "A B C AngAcute a \<equiv>
-
+    "A B C AngAcute a 
+\<equiv>
 ((QCongAAcute a) \<and> (a A B C))"
 
 definition QCongANullAcute ::
-  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCongANullAcute _" [99] 50)
+  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCongANullAcute _" [99] 50)
   where
-    "QCongANullAcute a \<equiv>
-
+    "QCongANullAcute a 
+\<equiv>
 QCongAAcute a \<and>
 (\<forall> A B C. (a A B C \<longrightarrow> B Out A C))"
 
 definition QCongAnNull ::
-  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCongAnNull _" [99] 50)
+  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCongAnNull _" [99] 50)
   where
-    "QCongAnNull a \<equiv>
-
+    "QCongAnNull a 
+\<equiv>
 QCongA a \<and>
 (\<forall> A B C. (a A B C \<longrightarrow> \<not> B Out A C))"
 
 definition QCongAnFlat ::
-  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCongAnFlat _" [99] 50)
+  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCongAnFlat _" [99] 50)
   where
-    "QCongAnFlat a \<equiv>
-
+    "QCongAnFlat a 
+\<equiv>
 QCongA a \<and>
 (\<forall> A B C. (a A B C \<longrightarrow> \<not> Bet A B C))"
 
 definition IsNullAngaP ::
-  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("IsNullAngaP _" [99] 50)
+  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("IsNullAngaP _" [99] 50)
   where
-    "IsNullAngaP a\<equiv>
-
+    "IsNullAngaP a
+\<equiv>
 QCongAAcute a \<and>
 (\<exists> A B C. (a A B C \<and> B Out A C))"
 
 definition QCongANull ::
-  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("QCongANull _" [99] 50)
+  "([TPoint,TPoint,TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("QCongANull _" [99] 50)
   where
-    "QCongANull a \<equiv>
-
+    "QCongANull a 
+\<equiv>
 QCongA a \<and>
 (\<forall> A B C. (a A B C \<longrightarrow> B Out A C))"
 
 definition AngFlat ::
-  "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("AngFlat _" [99] 50)
+  "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("AngFlat _" [99] 50)
   where
-    "AngFlat a \<equiv>
-
+    "AngFlat a 
+\<equiv>
 QCongA a \<and>
 (\<forall> A B C. (a A B C \<longrightarrow> Bet A B C))"
 
 definition EqLTarski ::
-  "([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" ("_ EqLTarski _" [99,99] 50)
+  "([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
+  ("_ EqLTarski _" [99,99] 50)
   where
-    "l1 EqLTarski l2 \<equiv> \<forall> A B. l1 A B \<longleftrightarrow> l2 A B"
+    "l1 EqLTarski l2 
+\<equiv> 
+\<forall> A B. l1 A B \<longleftrightarrow> l2 A B"
 
 definition EqA ::
   "([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> ([TPoint, TPoint, TPoint] \<Rightarrow> bool) \<Rightarrow> bool" 
   ("_ EqA _" [99,99] 50)
   where
-    "a1 EqA a2 \<equiv> \<forall> A B C. a1 A B C \<longleftrightarrow> a2 A B C"
+    "a1 EqA a2 
+\<equiv> 
+\<forall> A B C. a1 A B C \<longleftrightarrow> a2 A B C"
 
 subsubsection "Saccheri"
 
@@ -723,28 +892,32 @@ definition hypothesis_of_right_saccheri_quadrilaterals ::
   "bool"
   ("HypothesisRightSaccheriQuadrilaterals")
   where
-    "hypothesis_of_right_saccheri_quadrilaterals \<equiv>
+    "hypothesis_of_right_saccheri_quadrilaterals 
+\<equiv>
 \<forall> A B C D. Saccheri A B C D \<longrightarrow> Per A B C"
 
 definition hypothesis_of_acute_saccheri_quadrilaterals ::
   "bool"
   ("HypothesisAcuteSaccheriQuadrilaterals")
   where
-    "hypothesis_of_acute_saccheri_quadrilaterals \<equiv>
+    "hypothesis_of_acute_saccheri_quadrilaterals 
+\<equiv>
 \<forall> A B C D. Saccheri A B C D \<longrightarrow> Acute A B C"
 
 definition hypothesis_of_obtuse_saccheri_quadrilaterals ::
   "bool"
   ("HypothesisObtuseSaccheriQuadrilaterals")
   where
-    "hypothesis_of_obtuse_saccheri_quadrilaterals \<equiv>
+    "hypothesis_of_obtuse_saccheri_quadrilaterals 
+\<equiv>
 \<forall> A B C D. Saccheri A B C D \<longrightarrow> Obtuse A B C"
 
 definition Defect ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool" 
-("Defect _ _ _ _ _ _ " [99,99,99,99,99,99] 50)
+  ("Defect _ _ _ _ _ _ " [99,99,99,99,99,99] 50)
   where
-    "Defect A B C D E F\<equiv>
+    "Defect A B C D E F
+\<equiv>
 (\<exists> G H I. (A B C TriSumA G H I \<and> G H I SuppA D E F))"
 
 subsection "Propositions"
@@ -2546,6 +2719,401 @@ lemma Out_cases:
   assumes "A Out B C \<or> A Out C B"
   shows "A Out B C"
   using assms l6_6 by blast
+
+(** Existence of the sum *)
+
+lemma ex_sums: 
+  shows "\<exists> E F. A B C D SumS E F" 
+proof -
+  obtain R where "Bet A B R" and "Cong B R C D" 
+    using segment_construction by blast
+  thus ?thesis 
+    using SumS_def cong_reflexivity by blast
+qed
+
+(** Commutativity of the sum. *)
+
+lemma sums_sym:
+  assumes "A B C D SumS E F" 
+  shows "C D A B SumS E F" 
+proof -
+  obtain P Q R where "Bet P Q R" and "Cong P Q A B" and "Cong Q R C D" and "Cong P R E F" 
+    using SumS_def assms by auto
+  thus ?thesis 
+    by (meson Cong_cases SumS_def between_symmetry)
+qed
+
+(** Unicity of the sum. *)
+
+lemma sums2__cong56:
+  assumes "A B C D SumS E F" and
+    "A B C D SumS E' F'"
+  shows "Cong E F E' F'" 
+proof -
+  obtain P Q R where "Bet P Q R" and "Cong P Q A B" and "Cong Q R C D" and "Cong P R E F"
+    using SumS_def assms(1) by blast
+  obtain P' Q' R' where "Bet P' Q' R'" and "Cong P' Q' A B" and "Cong Q' R' C D" and "Cong P' R' E' F'"
+    using SumS_def assms(2) by blast
+  have "Cong P Q P' Q'" 
+    using Cong_cases \<open>Cong P Q A B\<close> \<open>Cong P' Q' A B\<close> cong_transitivity by blast
+  have "Cong Q R Q' R'" 
+    using Cong_cases \<open>Cong Q R C D\<close> \<open>Cong Q' R' C D\<close> cong_transitivity by blast
+  hence "Cong P R P' R'" 
+    using \<open>Bet P Q R\<close> \<open>Bet P' Q' R'\<close> \<open>Cong P Q P' Q'\<close> l2_11_b by blast
+  hence "Cong P R E' F'" 
+    using \<open>Cong P' R' E' F'\<close> cong_transitivity by blast
+  thus ?thesis 
+    using \<open>Cong P R E F\<close> cong_inner_transitivity by blast
+qed
+  (** Unicity of the difference of segments. *)
+
+lemma sums2__cong12: 
+  assumes "A B C D SumS E F" 
+    and "A' B' C D SumS E F" 
+  shows "Cong A B A' B'" 
+proof -
+  obtain P Q R where "Bet P Q R" and "Cong P Q A B" and "Cong Q R C D" and "Cong P R E F"
+    using SumS_def assms(1) by blast
+  obtain P' Q' R' where "Bet P' Q' R'" and "Cong P' Q' A' B'" and "Cong Q' R' C D" and "Cong P' R' E F"
+    using SumS_def assms(2) by blast
+  have "Cong P R P' R'" 
+    using Cong_cases \<open>Cong P R E F\<close> \<open>Cong P' R' E F\<close> cong_transitivity by blast
+  moreover have "Cong Q R Q' R'" 
+    using \<open>Cong Q R C D\<close> \<open>Cong Q' R' C D\<close> cong_inner_transitivity cong_symmetry by blast
+  ultimately have "Cong P Q P' Q'" 
+    using \<open>Bet P Q R\<close> \<open>Bet P' Q' R'\<close> l4_3 by blast
+  hence "Cong P Q A' B'" 
+    using \<open>Cong P' Q' A' B'\<close> cong_transitivity by blast
+  thus ?thesis 
+    using \<open>Cong P Q A B\<close> cong_inner_transitivity by blast
+qed
+  (** Unicity of the difference of segments on the right. *)
+
+lemma sums2__cong34: 
+  assumes "A B C D SumS E F" and
+    "A B C' D' SumS E F"
+  shows "Cong C D C' D'" 
+  using assms(1) assms(2) sums2__cong12 sums_sym by blast
+
+(** Cong preserves SumS *)
+
+lemma cong3_sums__sums:
+  assumes "Cong A B A' B'" and
+    "Cong C D C' D'" and 
+    "Cong E F E' F'" and 
+    "A B C D SumS E F" 
+  shows "A' B' C' D' SumS E' F'" 
+  by (meson SumS_def assms(1) assms(2) assms(3) assms(4) cong_inner_transitivity cong_symmetry)
+
+(** The degenerate segments represent the additive identity *)
+
+lemma sums123312:
+  shows "A B C C SumS A B" 
+  using SumS_def between_trivial cong_reflexivity cong_trivial_identity by blast
+
+lemma sums__cong1245: 
+  assumes "A B C C SumS D E"
+  shows "Cong A B D E" 
+  using assms sums123312 sums2__cong56 by blast
+
+lemma sums__eq34: 
+  assumes "A B C D SumS A B"
+  shows "C = D" 
+  using assms cong_reverse_identity sums123312 sums2__cong34 by blast
+
+lemma sums112323: 
+  shows "A A B C SumS B C" 
+  by (simp add: sums123312 sums_sym)
+
+lemma sums__cong2345: 
+  assumes "A A B C SumS D E"
+  shows "Cong B C D E" 
+  using assms sums112323 sums2__cong56 by blast
+
+lemma sums__eq12: 
+  assumes "A B C D SumS C D" 
+  shows "A = B" 
+  using assms sums__eq34 sums_sym by blast
+
+(** Some permutation properties *)
+
+lemma sums_left_comm:
+  assumes "A B C D SumS E F"
+  shows "B A C D SumS E F" 
+  using assms cong3_sums__sums cong_pseudo_reflexivity cong_reflexivity by blast
+
+lemma sums_middle_comm: 
+  assumes "A B C D SumS E F"
+  shows "A B D C SumS E F" 
+  using assms sums_left_comm sums_sym by blast
+
+lemma sums_right_comm: 
+  assumes "A B C D SumS E F" 
+  shows "A B C D SumS F E" 
+  using assms cong3_sums__sums cong_pseudo_reflexivity cong_reflexivity by blast
+
+lemma sums_comm: 
+  assumes "A B C D SumS E F"
+  shows "B A D C SumS F E" 
+  using assms cong3_sums__sums cong_pseudo_reflexivity by blast
+
+(** Basic case of sum *)
+
+lemma bet__sums: 
+  assumes "Bet A B C" 
+  shows "A B B C SumS A C"
+  using SumS_def assms cong_reflexivity by blast
+
+lemma sums_assoc_1:
+  assumes "A B C D SumS G H" and
+    "C D E F SumS I J" and
+    "G H E F SumS K L" 
+  shows "A B I J SumS K L" 
+proof -
+  obtain P Q R where "Bet P Q R" and "Cong P Q A B" and 
+    "Cong Q R C D" and "Cong P R G H"
+    using assms(1) SumS_def by fastforce
+  obtain S where "Bet P R S" and "Cong R S E F" 
+    using segment_construction by blast
+  hence "Bet P Q S" 
+    using \<open>Bet P Q R\<close> between_exchange4 by blast
+  moreover have "Cong Q S I J" 
+    using SumS_def \<open>Bet P Q R\<close> \<open>Bet P R S\<close> \<open>Cong Q R C D\<close> \<open>Cong R S E F\<close> assms(2) between_exchange3 cong_reflexivity sums2__cong56 by blast
+  moreover have "Cong P S K L" 
+    using SumS_def \<open>Bet P R S\<close> \<open>Cong P R G H\<close> \<open>Cong R S E F\<close> assms(3) cong_reflexivity sums2__cong56 by blast
+  ultimately show ?thesis 
+    using SumS_def \<open>Cong P Q A B\<close> by blast
+qed
+
+lemma sums_assoc_2:
+  assumes "A B C D SumS G H" and
+    "C D E F SumS I J" and
+    "A B I J SumS K L"
+  shows "G H E F SumS K L"
+proof -
+  have "E F G H SumS K L"
+  proof -
+    have "E F C D SumS I J" 
+      by (simp add: assms(2) sums_sym)
+    moreover have "C D A B SumS G H" 
+      by (simp add: assms(1) sums_sym)
+    moreover have "I J A B SumS K L" 
+      using assms(3) sums_sym by blast
+    ultimately show ?thesis
+      using sums_assoc_1 by blast
+  qed
+  thus ?thesis     
+    using sums_sym by blast
+qed
+
+(** Associativity of the sum. *)
+
+lemma sums_assoc:
+  assumes "A B C D SumS G H" and
+    "C D E F SumS I J"
+  shows "G H E F SumS K L \<longleftrightarrow> A B I J SumS K L" 
+  by (meson assms(1) assms(2) sums_assoc_1 sums_assoc_2)
+
+(** AB <= AB + CD *)
+
+lemma sums__le1256: 
+  assumes "A B C D SumS E F"
+  shows "A B Le E F" 
+proof -
+  obtain P Q R where "Bet P Q R" and "Cong P Q A B" and 
+    "Cong Q R C D" and "Cong P R E F" 
+    using SumS_def assms by blast
+  thus ?thesis 
+    using bet__le1213 l5_6 by blast
+qed
+
+(** CD <= AB + CD *)
+
+lemma sums__le3456: 
+  assumes "A B C D SumS E F" 
+  shows "C D Le E F" 
+  using assms sums__le1256 sums_sym by blast
+
+(** If the sum of two segments is degenerate, then the segments are degenerate *)
+
+lemma eq_sums__eq: 
+  assumes "A B C D SumS E E"
+  shows "A = B \<and> C = D" 
+  by (metis assms cong_identity le_diff sums__cong1245 sums__le3456)
+
+lemma sums_diff_1: 
+  assumes "A \<noteq> B" and
+    "A B C D SumS E F"
+  shows "E \<noteq> F" 
+  using assms(1) assms(2) eq_sums__eq by force
+
+lemma sums_diff_2: 
+  assumes "C \<noteq> D" and
+    "A B C D SumS E F" 
+  shows "E \<noteq> F" 
+  using assms(1) assms(2) eq_sums__eq by blast
+
+(** SumS preserves Le *)
+
+lemma le2_sums2__le:
+  assumes "A B Le A' B'" and
+    "C D Le C' D'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "E F Le E' F'"
+proof -
+  obtain P Q R where "Bet P Q R" and "Cong P Q A B" and 
+    "Cong Q R C D" and "Cong P R E F" 
+    using SumS_def assms(3) by blast
+  obtain P' Q' R' where "Bet P' Q' R'" and "Cong P' Q' A' B'" and 
+    "Cong Q' R' C' D'" and "Cong P' R' E' F'" 
+    using SumS_def assms(4) by blast
+  have "P Q Le P' Q'" 
+    by (meson \<open>Cong P Q A B\<close> \<open>Cong P' Q' A' B'\<close> assms(1) cong_symmetry l5_6)
+  moreover have "Q R Le Q' R'" 
+    by (meson Cong_perm \<open>Cong Q R C D\<close> \<open>Cong Q' R' C' D'\<close> assms(2) l5_6)
+  ultimately have "P R Le P' R'" 
+    using \<open>Bet P Q R\<close> \<open>Bet P' Q' R'\<close> bet2_le2__le1346 by blast
+  thus ?thesis 
+    using \<open>Cong P R E F\<close> \<open>Cong P' R' E' F'\<close> l5_6 by blast
+qed
+
+(** If AB <= A'B', CD <= C'D' and AB + CD = A'B' + C'D', then AB = A'B' and CD = C'D' *)
+
+lemma le2_sums2__cong12:
+  assumes "A B Le A' B'" and
+    "C D Le C' D'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E F" 
+  shows "Cong A B A' B'" 
+proof -
+  obtain E' F' where "A' B' C D SumS E' F'" 
+    using ex_sums by blast
+  hence "Cong E' F' E F" 
+    by (meson assms(1) assms(2) assms(3) assms(4) le2_sums2__le le_anti_symmetry le_reflexivity)
+  hence "A' B' C D SumS E F" 
+    using \<open>A' B' C D SumS E' F'\<close> cong3_sums__sums cong_reflexivity by blast
+  thus ?thesis
+    using assms(3) sums2__cong12 by blast
+qed
+
+lemma le2_sums2__cong34:
+  assumes "A B Le A' B'" and
+    "C D Le C' D'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E F" 
+  shows "Cong C D C' D'" 
+  by (meson assms(1) assms(2) assms(3) assms(4) cong3_sums__sums cong_reflexivity le2_sums2__cong12 sums2__cong34)
+
+(** If AB < A'B' and CD <= C'D', then AB + CD < A'B' + C'D' *)
+
+lemma le_lt12_sums2__lt:
+  assumes "A B Lt A' B'" and 
+    "C D Le C' D'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "E F Lt E' F'" 
+proof -
+  have "E F Le E' F'" 
+    using Lt_def assms(1) assms(2) assms(3) assms(4) le2_sums2__le by blast
+  moreover {
+    assume "Cong E F E' F'" 
+    hence "A' B' C' D' SumS E F" 
+      by (meson assms(4) cong3_sums__sums cong_reflexivity not_cong_3412)
+    hence "Cong A B A' B'" 
+      using assms(1) assms(2) assms(3) le2_sums2__cong12 lt__le by blast
+    hence False 
+      using assms(1) cong__nlt lt__le by blast 
+  }
+  ultimately show ?thesis 
+    using Lt_def by blast
+qed
+
+lemma le_lt34_sums2__lt:
+  assumes "A B Le A' B'" and 
+    "C D Lt C' D'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "E F Lt E' F'" 
+  using assms(1) assms(2) assms(3) assms(4) le_lt12_sums2__lt sums_sym by blast
+
+lemma lt2_sums2__lt:
+  assumes "A B Lt A' B'" and
+    "C D Lt C' D'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "E F Lt E' F'" 
+  using assms(1) assms(2) assms(3) assms(4) le_lt12_sums2__lt lt__le by blast
+
+(** If CD >= C'D' and AB + CD <= A'B' + C'D', then AB <= A'B' *)
+
+lemma le2_sums2__le12:
+  assumes "C' D' Le C D" and
+    "E F Le E' F'" and 
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "A B Le A' B'" 
+  using assms(1) assms(2) assms(3) assms(4) le_lt12_sums2__lt lt__nle nlt__le by blast
+
+lemma le2_sums2__le34:
+  assumes "A' B' Le A B" and
+    "E F Le E' F'" and
+    "A B C D SumS E F" and 
+    "A' B' C' D' SumS E' F'" 
+  shows "C D Le C' D'" 
+  by (meson assms(1) assms(2) assms(3) assms(4) le_lt12_sums2__lt lt__nle nlt__le sums_sym)
+
+(** If CD > C'D' and AB + CD <= A'B' + C'D', then AB < A'B' *)
+
+lemma le_lt34_sums2__lt12:
+  assumes "C' D' Lt C D" and
+    "E F Le E' F'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "A B Lt A' B'" 
+  by (meson assms(1) assms(2) assms(3) assms(4) le3456_lt__lt le_lt34_sums2__lt nle__lt nlt)
+
+lemma le_lt12_sums2__lt34:
+  assumes "A' B' Lt A B" and
+    "E F Le E' F'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "C D Lt C' D'" 
+  using assms(1) assms(2) assms(3) assms(4) le_lt12_sums2__lt lt__nle nlt__le by blast
+
+(** If CD >= C'D' and AB + CD < A'B' + C'D', then AB < A'B' *)
+
+lemma le_lt56_sums2__lt12:
+  assumes "C' D' Le C D" and
+    "E F Lt E' F'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "A B Lt A' B'" 
+  by (meson assms(1) assms(2) assms(3) assms(4) le2_sums2__le le__nlt nle__lt)
+
+lemma le_lt56_sums2__lt34:
+  assumes "A' B' Le A B" and
+    "E F Lt E' F'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "C D Lt C' D'" 
+  using assms(1) assms(2) assms(3) assms(4) le2_sums2__le lt__nle nlt__le by blast
+
+lemma lt2_sums2__lt12:
+  assumes "C' D' Lt C D" and
+    "E F Lt E' F'" and 
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "A B Lt A' B'" 
+  using assms(1) assms(2) assms(3) assms(4) le_lt34_sums2__lt nle__lt not_and_lt by blast
+
+lemma lt2_sums2__lt34: 
+  assumes "A' B' Lt A B" and
+    "E F Lt E' F'" and
+    "A B C D SumS E F" and
+    "A' B' C' D' SumS E' F'" 
+  shows "C D Lt C' D'" 
+  by (meson assms(1) assms(2) assms(3) assms(4) le_lt12_sums2__lt nlt__le not_and_lt)
 
 subsubsection "Midpoint"
 
@@ -8709,7 +9277,8 @@ lemma all_coplanar_upper_dim:
   using all_coplanar_implies_upper_dim upper_dim_implies_all_coplanar by auto
 
 lemma upper_dim_stab:
-  shows "\<not> \<not> upper_dim_axiom \<longrightarrow> upper_dim_axiom" by blast
+  shows "\<not> \<not> upper_dim_axiom \<longrightarrow> upper_dim_axiom" 
+  by blast
 
 paragraph "Line reflexivity 2D"
 
@@ -9485,7 +10054,6 @@ proof -
   }
   hence T2: "(\<not>Col A B C \<and> Col A B P) \<longrightarrow>
 (\<exists> Q. A B Perp Q C \<and> Coplanar A B P Q)" by blast
-
   {
     assume "Col A B C \<and> \<not>Col A B P"
     hence "\<exists> Q. A B Perp Q C \<and> Coplanar A B P Q"
@@ -12958,7 +13526,6 @@ proof -
       hence "C InAngle A B E"
         by (metis InAngle_def P2 T1 assms(1) assms(2) between_exchange4)
     }
-
     hence "C InAngle A B E"
       using T1 \<open>CC' = B \<Longrightarrow> C InAngle A B E\<close> by blast
   }
@@ -16021,16 +16588,20 @@ proof -
 qed
 
 lemma orth_dec:
-  shows "A B C Orth U V \<or> \<not> A B C Orth U V" by auto
+  shows "A B C Orth U V \<or> \<not> A B C Orth U V" 
+  by auto
 
 lemma orth_at_dec:
-  shows "X OrthAt A B C U V \<or> \<not> X OrthAt A B C U V" by auto
+  shows "X OrthAt A B C U V \<or> \<not> X OrthAt A B C U V" 
+  by auto
 
 lemma tsp_dec:
-  shows "A B C TSP X Y \<or> \<not> A B C TSP X Y" by auto
+  shows "A B C TSP X Y \<or> \<not> A B C TSP X Y" 
+  by auto
 
 lemma osp_dec:
-  shows "A B C OSP X Y \<or> \<not> A B C OSP X Y" by auto
+  shows "A B C OSP X Y \<or> \<not> A B C OSP X Y" 
+  by auto
 
 lemma ts2__inangle:
   assumes "A C TS B P" and
@@ -16411,13 +16982,16 @@ next
 qed
 
 lemma inangle_dec:
-  "P InAngle A B C \<or> \<not> P InAngle A B C" by blast
+  "P InAngle A B C \<or> \<not> P InAngle A B C" 
+  by blast
 
 lemma lea_dec:
-  "A B C LeA D E F \<or> \<not> A B C LeA D E F" by blast
+  "A B C LeA D E F \<or> \<not> A B C LeA D E F" 
+  by blast
 
 lemma lta_dec:
-  "A B C LtA D E F \<or> \<not> A B C LtA D E F" by blast
+  "A B C LtA D E F \<or> \<not> A B C LtA D E F" 
+  by blast
 
 lemma lea_total:
   assumes "A \<noteq> B" and
@@ -23631,7 +24205,6 @@ proof -
       ultimately show ?thesis
         using l11_21_a by blast
     qed
-
     hence "C A B CongA P Q R"
       using P1 out213_suma__conga by blast
     hence "Bet P Q R"
@@ -23642,10 +24215,12 @@ proof -
 qed
 
 lemma suma_dec:
-  "A B C D E F SumA G H I \<or> \<not> A B C D E F SumA G H I" by simp
+  "A B C D E F SumA G H I \<or> \<not> A B C D E F SumA G H I" 
+  by simp
 
 lemma sams_dec:
-  "SAMS A B C D E F \<or> \<not> SAMS A B C D E F" by simp
+  "SAMS A B C D E F \<or> \<not> SAMS A B C D E F" 
+  by simp
 
 lemma trisuma_dec:
   "A B C TriSumA P Q R \<or> \<not> A B C TriSumA P Q R"
@@ -23672,7 +24247,6 @@ proof -
     assume "P \<noteq> Q" and "Q \<noteq> R" and "P \<noteq> R" and
       "Cong A P A Q" and "Cong B P B Q" and "Cong C P C Q" and
       "Cong A P A R" and "Cong B P B R" and "Cong C P C R" 
-
     have "Bet A B C \<or> Bet B C A \<or> Bet C A B"
     proof (cases "Col A B C")
       case True
@@ -23727,7 +24301,6 @@ proof -
             ultimately show ?thesis
               using l11_60 by blast
           qed
-
           ultimately show ?thesis 
             using Per_cases l8_7 by blast
         qed
@@ -24176,7 +24749,6 @@ proof -
         using \<open>X OrthAt A B C X P\<close> orth_at_chara by blast
       have 2: "\<not> Col A B C \<and> X \<noteq> Q \<and> Coplanar A B C X \<and> (\<forall> D.(Coplanar A B C D \<longrightarrow> Per D X Q))" 
         using \<open>X OrthAt A B C X Q\<close> orth_at_chara by blast
-
       obtain D E where "Coplanar A B C D" and "Coplanar A B C E" and "\<not> Col X D E" 
         using ex_ncol_cop2 by blast
       have "\<not> Col D E X" 
@@ -24896,7 +25468,7 @@ next
       moreover 
       have "Coplanar A P B Q" 
         using \<open>Coplanar P P' A Q\<close> col_cop2__cop coplanar_perm_9 
-            ncop_distincts ncoplanar_perm_17 not_col_permutation_5 
+          ncop_distincts ncoplanar_perm_17 not_col_permutation_5 
         by (metis \<open>Col A B P'\<close> \<open>P' \<noteq> A\<close>)
       hence "Coplanar P P' B Q"
         using assms col2_cop__cop col_trivial_2 coplanar_perm_10 coplanar_perm_5 
@@ -28189,7 +28761,6 @@ next
         by (simp add: l12_6)
       have P7: "C C' OS A A'"
         by (simp add: P5 pars__os3412)
-
       have "Bet A B C"
       proof cases
         assume P8: "B = B'"
@@ -29189,41 +29760,41 @@ lemma triangle_mid_par_lem:
     "P Midpoint B C" and
     "Q Midpoint A C"
   shows "A B Par P Q" 
-  proof -
-    obtain R where "R Midpoint A B"
-      using midpoint_existence by auto
-    then obtain X Y where "R PerpAt X Y A B" and "X Y Perp P Q" and
-      "Coplanar A B C X" and "Coplanar A B C Y"
-      using l13_1_aux assms(1) assms(2) assms(3) by blast
-    have "Coplanar A B C A"
-      using ncop_distincts by auto
-    have "Coplanar A B C B"
-      using ncop_distincts by auto
-    have "Coplanar A B C P"
-      using assms(2) coplanar_perm_21 midpoint__coplanar by blast
-    have "Coplanar A B C Q"
-      using assms(3) coplanar_perm_11 midpoint__coplanar by blast
-    have "Coplanar X Y A P" 
-      using \<open>Coplanar A B C A\<close> \<open>Coplanar A B C P\<close> \<open>Coplanar A B C X\<close> 
-        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
-    moreover have "Coplanar X Y A Q" 
-      using \<open>Coplanar A B C A\<close> \<open>Coplanar A B C Q\<close> \<open>Coplanar A B C X\<close> 
-        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
-    moreover have "Coplanar X Y B P" 
-      using \<open>Coplanar A B C B\<close> \<open>Coplanar A B C P\<close> \<open>Coplanar A B C X\<close> 
-        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
-    moreover have "Coplanar X Y B Q" 
-      using \<open>Coplanar A B C B\<close> \<open>Coplanar A B C Q\<close> \<open>Coplanar A B C X\<close> 
-        \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by presburger
-    moreover have "Col X Y R" and "Col A B R"
-      using perp_in_col \<open>R PerpAt X Y A B\<close> perp_in_col by auto
-    hence "Col X R Y"  
-      using Col_perm by blast
-    hence "X Y Perp A B"
-      using perp_col \<open>R PerpAt X Y A B\<close> perp_in_perp by auto
-    ultimately show ?thesis
-      by (meson Perp_cases \<open>X Y Perp P Q\<close> l12_9)
-  qed
+proof -
+  obtain R where "R Midpoint A B"
+    using midpoint_existence by auto
+  then obtain X Y where "R PerpAt X Y A B" and "X Y Perp P Q" and
+    "Coplanar A B C X" and "Coplanar A B C Y"
+    using l13_1_aux assms(1) assms(2) assms(3) by blast
+  have "Coplanar A B C A"
+    using ncop_distincts by auto
+  have "Coplanar A B C B"
+    using ncop_distincts by auto
+  have "Coplanar A B C P"
+    using assms(2) coplanar_perm_21 midpoint__coplanar by blast
+  have "Coplanar A B C Q"
+    using assms(3) coplanar_perm_11 midpoint__coplanar by blast
+  have "Coplanar X Y A P" 
+    using \<open>Coplanar A B C A\<close> \<open>Coplanar A B C P\<close> \<open>Coplanar A B C X\<close> 
+      \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
+  moreover have "Coplanar X Y A Q" 
+    using \<open>Coplanar A B C A\<close> \<open>Coplanar A B C Q\<close> \<open>Coplanar A B C X\<close> 
+      \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
+  moreover have "Coplanar X Y B P" 
+    using \<open>Coplanar A B C B\<close> \<open>Coplanar A B C P\<close> \<open>Coplanar A B C X\<close> 
+      \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by blast
+  moreover have "Coplanar X Y B Q" 
+    using \<open>Coplanar A B C B\<close> \<open>Coplanar A B C Q\<close> \<open>Coplanar A B C X\<close> 
+      \<open>Coplanar A B C Y\<close> assms(1) coplanar_pseudo_trans by presburger
+  moreover have "Col X Y R" and "Col A B R"
+    using perp_in_col \<open>R PerpAt X Y A B\<close> perp_in_col by auto
+  hence "Col X R Y"  
+    using Col_perm by blast
+  hence "X Y Perp A B"
+    using perp_col \<open>R PerpAt X Y A B\<close> perp_in_perp by auto
+  ultimately show ?thesis
+    by (meson Perp_cases \<open>X Y Perp P Q\<close> l12_9)
+qed
 
 lemma triangle_mid_par:
   assumes "\<not> Col A B C" and
@@ -31783,7 +32354,8 @@ proof -
 qed
 
 lemma ngta:
-  shows "\<not> A B C GtA A B C" using GtA_def nlta by blast
+  shows "\<not> A B C GtA A B C" using GtA_def nlta 
+  by blast
 
 lemma lam_per__cong:
   assumes "Lambert A B C D" and
@@ -35986,7 +36558,6 @@ proof -
     have "Obtuse A B C"
       using \<open>HypothesisObtuseSaccheriQuadrilaterals\<close> assms not_aah 
         not_rah by blast
-
     {
       assume "hypothesis_of_acute_saccheri_quadrilaterals"
       hence "Acute A B C"
@@ -40269,22 +40840,22 @@ proof -
     using EqA_def assms(2) by fastforce
   have "Acute A B C" 
     using \<open>a A B C\<close> anga_acute assms(1) by blast
-    moreover
-    {
-      fix X Y Z
-      assume "A B C CongA X Y Z"
-      hence "b X Y Z" 
-        using EqA_def \<open>a A B C\<close> anga_conga_anga assms(1) assms(2) by fastforce
-    }
-    moreover
-    {
-      fix X Y Z
-      assume "b X Y Z" 
-      hence "A B C CongA X Y Z"
-        using EqA_def \<open>a A B C\<close> anga_conga assms(1) assms(2) by auto
-    }
-    ultimately show ?thesis 
-      by (metis QCongAAcute_def)
+  moreover
+  {
+    fix X Y Z
+    assume "A B C CongA X Y Z"
+    hence "b X Y Z" 
+      using EqA_def \<open>a A B C\<close> anga_conga_anga assms(1) assms(2) by fastforce
+  }
+  moreover
+  {
+    fix X Y Z
+    assume "b X Y Z" 
+    hence "A B C CongA X Y Z"
+      using EqA_def \<open>a A B C\<close> anga_conga assms(1) assms(2) by auto
+  }
+  ultimately show ?thesis 
+    by (metis QCongAAcute_def)
 qed
 
 end
