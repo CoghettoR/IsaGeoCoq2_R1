@@ -4,7 +4,7 @@ Tarski_2D.thy
 
 Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
@@ -42,7 +42,10 @@ imports
 
 subsection "Tarski's axiom system for neutral geometry: 2D"
 
-locale Tarski_2D = Tarski_neutral_dimensionless +
+locale Tarski_2D = Tarski_neutral_dimensionless Bet Cong TPA TPB TPC
+  for Bet  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" ("(_ - _ - _) ")
+  and Cong :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
+  and TPA TPB TPC :: TPoint +
   assumes upper_dim: "\<forall> a b c p q.
                       p \<noteq> q \<and>
                       Cong a p a q \<and>

@@ -4,7 +4,7 @@ Hilbert.thy
 
 Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
@@ -82,7 +82,17 @@ definition (in Hilbert_neutral_dimensionless_pre) same_side' ::
      X \<noteq> Y \<and>
      (\<forall> l::'b. (IsL l \<and> IncidL X l \<and> IncidL Y l) \<longrightarrow> same_side A B l)" 
 
-locale Hilbert_neutral_dimensionless =  Hilbert_neutral_dimensionless_pre +
+locale Hilbert_neutral_dimensionless =  Hilbert_neutral_dimensionless_pre IncidL IncidP EqL EqP IsL IsP BetH CongH CongaH
+  for
+    IncidL :: "TPoint \<Rightarrow> 'b \<Rightarrow> bool" and
+    IncidP :: "TPoint \<Rightarrow> 'c \<Rightarrow> bool" and
+    EqL ::"'b \<Rightarrow> 'b \<Rightarrow> bool" and
+    EqP ::"'c \<Rightarrow> 'c \<Rightarrow> bool" and
+    IsL ::"'b \<Rightarrow> bool" and
+    IsP ::"'c \<Rightarrow> bool" and
+    BetH ::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongaH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" +
   fixes  PP PQ PR :: TPoint
   assumes 
     EqL_refl: "IsL l \<longrightarrow> EqL l l" and
@@ -159,7 +169,17 @@ section "Hilbert - Geometry - Neutral 2D"
 
 subsection "Axioms: neutral 2D"
 
-locale Hilbert_neutral_2D = Hilbert_neutral_dimensionless +
+locale Hilbert_neutral_2D = Hilbert_neutral_dimensionless IncidL IncidP EqL EqP IsL IsP BetH CongH CongaH
+  for
+    IncidL :: "TPoint \<Rightarrow> 'b \<Rightarrow> bool" and
+    IncidP :: "TPoint \<Rightarrow> 'c \<Rightarrow> bool" and
+    EqL ::"'b \<Rightarrow> 'b \<Rightarrow> bool" and
+    EqP ::"'c \<Rightarrow> 'c \<Rightarrow> bool" and
+    IsL ::"'b \<Rightarrow> bool" and
+    IsP ::"'c \<Rightarrow> bool" and
+    BetH ::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongaH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" +
   assumes pasch_2D :
     "IsL l \<and>  \<not> ColH A B C \<and> \<not> IncidL C l \<and> cut l A B \<longrightarrow> (cut l A C \<or> cut l B C)"
 
@@ -167,7 +187,17 @@ section "Hilbert - Geometry - Neutral 3D"
 
 subsection "Axioms: neutral 3D"
 
-locale Hilbert_neutral_3D = Hilbert_neutral_dimensionless +
+locale Hilbert_neutral_3D = Hilbert_neutral_dimensionless IncidL IncidP EqL EqP IsL IsP BetH CongH CongaH
+  for
+    IncidL :: "TPoint \<Rightarrow> 'b \<Rightarrow> bool" and
+    IncidP :: "TPoint \<Rightarrow> 'c \<Rightarrow> bool" and
+    EqL ::"'b \<Rightarrow> 'b \<Rightarrow> bool" and
+    EqP ::"'c \<Rightarrow> 'c \<Rightarrow> bool" and
+    IsL ::"'b \<Rightarrow> bool" and
+    IsP ::"'c \<Rightarrow> bool" and
+    BetH ::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongaH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" +
   fixes HS1 HS2 HS3 HS4 :: TPoint
   assumes plane_intersection: 
     "IsP p \<and> IsP q \<and> IncidP A p \<and> IncidP A q 
@@ -184,7 +214,17 @@ definition (in Hilbert_neutral_dimensionless_pre) Para :: "'b \<Rightarrow> 'b \
   "Para l m \<equiv> IsL l \<and> IsL m \<and> 
               (\<not>(\<exists> X. IncidL X l \<and> IncidL X m)) \<and> (\<exists> p. IncidLP l p \<and> IncidLP m p)"
 
-locale Hilbert_euclidean = Hilbert_neutral_dimensionless +
+locale Hilbert_euclidean = Hilbert_neutral_dimensionless  IncidL IncidP EqL EqP IsL IsP BetH CongH CongaH
+  for
+    IncidL :: "TPoint \<Rightarrow> 'b \<Rightarrow> bool" and
+    IncidP :: "TPoint \<Rightarrow> 'c \<Rightarrow> bool" and
+    EqL ::"'b \<Rightarrow> 'b \<Rightarrow> bool" and
+    EqP ::"'c \<Rightarrow> 'c \<Rightarrow> bool" and
+    IsL ::"'b \<Rightarrow> bool" and
+    IsP ::"'c \<Rightarrow> bool" and
+    BetH ::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" and
+    CongaH::"TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>TPoint\<Rightarrow>bool" +
   assumes euclid_uniqueness: "\<forall> l P m1 m2. IsL l \<and> IsL m1 \<and> IsL m2 \<and>
      \<not> IncidL P l \<and> Para l m1 \<and> IncidL P m1 \<and> Para l m2 \<and> IncidL P m2 
         \<longrightarrow>

@@ -4,7 +4,7 @@ Gupta_Euclidean_Tarski_Model.thy
 
 Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
@@ -44,8 +44,7 @@ context Tarski_Euclidean
 begin
 
 interpretation Interpretation_Gupta_euclidean : Gupta_euclidean 
-  where BetG = Bet and CongG = Cong and
-    GPA = TPA and GPB = TPB and GPC = TPC
+  where GPA = TPA and GPB = TPB and GPC = TPC and BetG = Bet and CongG = Cong 
 proof
   show "\<forall>a b. Cong a b b a" 
     by (simp add: cong_pseudo_reflexivity)

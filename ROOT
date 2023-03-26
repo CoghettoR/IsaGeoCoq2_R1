@@ -15,7 +15,7 @@ theories
 
          Tarski_Archimedes
 
-Tarski_Continuity
+    Tarski_Continuity
 
          Tarski_Postulate_Parallels
          Tarski_Euclidean
@@ -37,7 +37,7 @@ Tarski_Continuity
          Hilbert
          Hilbert_Tarski_Model
          Tarski_Hilbert_Model
-
+                   
 document_files
     "root.bib"
     "root.tex"

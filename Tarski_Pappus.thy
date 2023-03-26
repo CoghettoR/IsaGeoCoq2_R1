@@ -31,7 +31,7 @@ work of Gabriel Braun April 2013:
   [X] Ch13_5_Pappus_Pascal.v
 
 
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be for Traduction.
+Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be for Traduction.
 License: LGPGL
 
 History

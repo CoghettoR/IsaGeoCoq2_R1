@@ -3,7 +3,7 @@
 Tarski_Gupta_Model.thy
 
 Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
@@ -36,14 +36,12 @@ imports Gupta
 begin
   (*>*)
 
-
 context Gupta_neutral_dimensionless
 
 begin
 
 interpretation Interpretation_Tarski_neutral_dimensionless: Tarski_neutral_dimensionless 
-  where Bet = BetG and Cong = CongG and
-    TPA = GPA  and TPB = GPB    and TPC = GPC 
+  where TPA = GPA and TPB = GPB and TPC = GPC and Bet = BetG and Cong = CongG 
 proof 
   show "\<forall>a b. CongG a b b a" 
     by (simp add: cong_pseudo_reflexivityG)
@@ -115,8 +113,7 @@ context Gupta_neutral_2D
 begin
 
 interpretation Interpretation_Tarski_neutral_2D : Tarski_2D 
-  where Bet = BetG and Cong = CongG and
-    TPA = GPA  and TPB = GPB    and TPC = GPC 
+  where TPA = GPA and TPB = GPB and TPC = GPC and Bet = BetG and Cong = CongG   
 proof 
   show "\<forall>a b. CongG a b b a" 
     by (simp add: cong_pseudo_reflexivityG)

@@ -4,7 +4,7 @@ Gupta.thy
 
 Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
@@ -45,9 +45,9 @@ section "Gupta inspired variant of Tarski - Geometry"
 subsection "Axioms - neutral dimension less"
 
 locale Gupta_neutral_dimensionless =
-  fixes GPA GPB GPC :: TPoint
-  fixes BetG  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
-  fixes CongG :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
+  fixes GPA GPB GPC :: TPoint 
+  and BetG  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
+  and CongG :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
 
 assumes cong_pseudo_reflexivityG: "\<forall> a b. 
 
@@ -121,7 +121,10 @@ definition (in Gupta_neutral_dimensionless) ColG :: "TPoint\<Rightarrow>TPoint\<
 
 subsection "Axioms: neutral 2D"
 
-locale Gupta_neutral_2D = Gupta_neutral_dimensionless +
+locale Gupta_neutral_2D = Gupta_neutral_dimensionless GPA GPB GPC BetG CongG
+  for GPA GPB GPC :: TPoint 
+  and BetG  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
+  and CongG :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" +
   assumes upper_dimG: "\<forall> a b c p q.
                       p \<noteq> q \<and>
 a \<noteq> b \<and>
@@ -136,7 +139,10 @@ c \<noteq> b \<and>
 
 subsection "Axioms: euclidean"
 
-locale Gupta_euclidean = Gupta_neutral_dimensionless +
+locale Gupta_euclidean = Gupta_neutral_dimensionless GPA GPB GPC BetG CongG
+  for GPA GPB GPC :: TPoint 
+  and BetG  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
+  and CongG :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" +
   assumes euclidG: "\<forall> A B C D T.
    BetG A D T \<and> BetG B D C \<and> B \<noteq> D \<and> D \<noteq> C \<and>
    \<not> (BetG A B C \<or> BetG B C A \<or> BetG C A B) \<longrightarrow>

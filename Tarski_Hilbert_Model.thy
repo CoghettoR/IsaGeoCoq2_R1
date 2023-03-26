@@ -5,7 +5,7 @@ Highschool3.thy
 Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 (* GeoCoq : hilbert_to_tarski.v *)
 
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
@@ -3924,10 +3924,10 @@ proof -
     have "L'' \<noteq> O'" 
       using \<open>O' \<noteq> L''\<close> by blast
     moreover 
-    have "\<forall> l::'a. (IsL l \<and> IncidL L'' l \<and> IncidL O' l) \<longrightarrow> same_side H' K'' l" 
+    have "\<forall> l. (IsL l \<and> IncidL L'' l \<and> IncidL O' l) \<longrightarrow> same_side H' K'' l" 
     proof -
       {
-        fix l::'a
+        fix l
         assume "IsL l" and
           "IncidL L'' l" and "IncidL O' l"
         have "ColH O' L' L''" 
@@ -3951,7 +3951,8 @@ proof -
       thus ?thesis 
         by blast
     qed
-    ultimately have "same_side' H' K'' L'' O'" using same_side'_def by blast
+    ultimately have "same_side' H' K'' L'' O'" 
+      using same_side'_def by blast
     thus ?thesis 
       by (metis \<open>BetH K I L\<close>  \<open>CongaH PO L K O' L'' I'\<close> \<open>same_side' H' I' L'' O'\<close> assms(3) 
           \<open>CongaH PO I L O' I' L'' \<and> CongaH PO L I O' L'' I' \<and> CongH I L I' L''\<close> 

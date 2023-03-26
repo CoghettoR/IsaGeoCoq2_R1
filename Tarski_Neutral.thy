@@ -4,7 +4,7 @@ Tarski_Neutral.thy
 
 Version 2.2.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
 Version 2.1.0 IsaGeoCoq2_R1, Port part of GeoCoq 3.4.0
-Copyright (C) 2021-2022 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2021-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
@@ -48,8 +48,8 @@ typedecl TPoint
 
 locale Tarski_neutral_dimensionless =
   fixes Bet  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" ("(_ - _ - _) ")
-  fixes Cong :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
-  fixes TPA TPB TPC :: TPoint
+  and Cong :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
+  and TPA TPB TPC :: TPoint
   assumes cong_pseudo_reflexivity: "\<forall> a b. 
 
 Cong a b b a"
