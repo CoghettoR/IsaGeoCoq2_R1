@@ -4,7 +4,7 @@ Tarski_Non_Euclidean.thy
 
 Version 2.2.0 IsaGeoCoq2_R1
 Version 2.1.0 IsaGeoCoq2_R1
-Copyright (C) 2022-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
+Copyright (C) 2021-2023 Roland Coghetto roland.coghetto ( a t ) cafr-msa2p.be
 License: LGPGL
 
 History
