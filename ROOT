@@ -10,12 +10,15 @@ session IsaGeoCoq2_R1 (TarskiGeometry) = HOL +
 
 theories 
          Tarski_Neutral
+	 Tarski_Continuity_Neutral
+	 
          Tarski_2D
+	 Tarski_Continuity_2D
+	 
          Tarski_3D
 
          Tarski_Archimedes
-
-    Tarski_Continuity
+         Tarski_Continuity_Archimedes
 
          Tarski_Postulate_Parallels
          Tarski_Euclidean
@@ -26,6 +29,8 @@ theories
          Highschool2
          Tarski_Euclidean_2D
       	 Tarski_Pappus
+	 Desargues_Hessenberg
+	 
          Highschool3
 
          Gupta
