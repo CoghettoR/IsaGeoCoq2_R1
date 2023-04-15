@@ -1018,7 +1018,7 @@ lemma five_segment_with_def:
   using assms(1) assms(2) OFSC_def five_segment by blast
 
 lemma cong_diff:
-  assumes "A \<noteq> B" and "Cong A B C D"
+  assumes "A \<noteq> B" and "Cong A B C D"NCol
   shows "C \<noteq> D"
   using assms(1) assms(2) cong_identity by blast
 
@@ -1448,8 +1448,8 @@ lemma not_col_permutation_1:
   using assms col_permutation_2 by blast
 
 lemma not_col_permutation_2:
-  assumes "~ Col A B C"
-  shows  "~ Col C A B"
+  assumes "\<not> Col A B C"
+  shows  "\<not> Col C A B"
   using assms col_permutation_1 by blast
 
 lemma not_col_permutation_3:
@@ -1616,7 +1616,7 @@ lemma NCol_cases:
 
 lemma NCol_perm:
   assumes "\<not> Col A B C"
-  shows "\<not> Col A B C \<and> ~ Col A C B \<and> ~ Col B A C \<and> ~ Col B C A \<and> ~ Col C A B \<and> ~ Col C B A"
+  shows "\<not> Col A B C \<and> \<not> Col A C B \<and> \<not> Col B A C \<and> \<not> Col B C A \<and> \<not> Col C A B \<and> \<not> Col C B A"
   using NCol_cases assms by blast
 
 lemma col_cong_3_cong_3_eq:
@@ -15455,7 +15455,7 @@ proof -
     using assms(1) assms(2) assms(3) cong__nlt l11_46 lt__le by blast
   hence "A B C CongA A' B' C'"
     using assms(2) assms(3) assms(4) assms(5) assms(6) cong_diff 
-      cong_inner_transitivity cong_symmetry l11_16 by blast
+      cong_inner_transitivity cong_symmetry l11_16 by metis
   thus ?thesis 
     using \<open>B C Le A C \<and> \<not> Cong B C A C\<close> assms(5) assms(6) l11_52 by blast
 qed
@@ -25704,7 +25704,7 @@ proof -
 qed
 
 lemma par_col_par_2:
-  assumes "A \<noteq> P" and
+  assumes "A \<noteq> P" and                         
     "Col A B P" and
     "A B Par C D"
   shows "A P Par C D"

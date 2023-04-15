@@ -67,6 +67,7 @@ begin
 context Tarski_neutral_dimensionless
 
 begin
+
 section "Pappus Pascal"
 subsection "Definitions"
 
@@ -3345,7 +3346,7 @@ lemma (in Tarski_Euclidean) project_col_eq:
   by (metis Proj_def assms(1) assms(2) assms(3) assms(4) not_par_not_col 
       par_not_par project_par project_uniqueness)
 
-lemma (in Tarski_Euclidean) par_col_project:
+lemma (in Tarski_neutral_dimensionless) par_col_project:
   assumes "A \<noteq> B" and
     "\<not> A B Par X Y" and
     "P P' Par X Y" and
@@ -3353,7 +3354,7 @@ lemma (in Tarski_Euclidean) par_col_project:
   shows "P P' Proj A B X Y" 
   using Proj_def assms(1) assms(2) assms(3) assms(4) par_neq2 by presburger
 
-lemma project_preserves_bet:
+lemma (in Tarski_Euclidean) project_preserves_bet:
   assumes "Bet P Q R" and
     "P P' Proj A B X Y" and
     "Q Q' Proj A B X Y" and
@@ -3579,7 +3580,7 @@ proof -
     by blast
 qed
 
-lemma triangle_par:
+lemma (in Tarski_Euclidean) triangle_par:
   assumes "\<not> Col A B C" and
     "A B Par A' B'" and
     "B C Par B' C'" and 
@@ -3748,7 +3749,7 @@ proof -
     using \<open>A' B' C' CongA A'' B C''\<close> conga_sym_equiv not_conga by blast
 qed
 
-lemma par3_conga3 :
+lemma (in Tarski_Euclidean) par3_conga3 :
   assumes "\<not> Col A B C" and
     "A B Par A' B'" and
     "B C Par B' C'" and
@@ -3766,14 +3767,14 @@ proof -
     by (simp add: CongA3_def)
 qed
 
-lemma cong_conga3_cong3:
+lemma (in Tarski_neutral_dimensionless) cong_conga3_cong3:
   assumes "\<not> Col A B C" and
     "Cong A B A' B'" and
     "A B C CongA3 A' B' C'"
   shows "A B C Cong3 A' B' C'" 
   using CongA3_def assms(1) assms(2) assms(3) l11_50_2  Cong3_def by blast
 
-lemma project_par_eqv:
+lemma (in Tarski_Euclidean) project_par_eqv:
   assumes "P P' Proj A B X Y" and
     "Q Q' Proj A B X Y" and
     "P Q Par A B" 
@@ -3806,7 +3807,7 @@ proof -
     using EqV_def by blast
 qed
 
-lemma eqv_project_eq_eq:
+lemma (in Tarski_Euclidean) eqv_project_eq_eq:
   assumes "P Q EqV R S" and
     "P P' Proj A B X Y" and
     "Q Q' Proj A B X Y" and
@@ -3842,7 +3843,7 @@ next
     by blast
 qed
 
-lemma eqv_eq_project:
+lemma (in Tarski_Euclidean) eqv_eq_project:
   assumes "P Q EqV R S" and
     "P P' Proj A B X Y" and
     "Q Q' Proj A B X Y" and
@@ -3889,18 +3890,18 @@ next
     using assms(1) assms(3) vector_uniqueness by blast
 qed
 
-lemma project_par_dir: 
+lemma (in Tarski_neutral_dimensionless) project_par_dir: 
   assumes "P \<noteq> P'" and
     "P P' Proj A B X Y"
   shows "P P' Par X Y" 
   using Proj_def assms(1) assms(2) by presburger
 
-lemma project_idem: 
+lemma (in Tarski_neutral_dimensionless) project_idem: 
   assumes "P P' Proj A B X Y"
   shows "P' P' Proj A B X Y" 
   using Proj_def assms by force
 
-lemma eqv_cong: 
+lemma (in Tarski_Euclidean) eqv_cong: 
   assumes "A B EqV C D"
   shows "Cong A B C D" 
 proof -
@@ -3910,7 +3911,7 @@ proof -
     using EqV_def assms cong_trivial_identity not_cong_1243 plg_cong_1 by blast
 qed
 
-lemma project_preserves_eqv:
+lemma (in Tarski_Euclidean) project_preserves_eqv:
   assumes "P Q EqV R S" and
     "P P' Proj A B X Y" and
     "Q Q' Proj A B X Y" and
@@ -4096,7 +4097,7 @@ next
     by blast
 qed
 
-lemma perp_projp:
+lemma (in Tarski_neutral_dimensionless) perp_projp:
   assumes "P' PerpAt A B P P'"
   shows "P P' Projp A B" 
 proof -
@@ -4110,7 +4111,7 @@ proof -
     using Projp_def by blast
 qed
 
-lemma proj_distinct:
+lemma (in Tarski_neutral_dimensionless) proj_distinct:
   assumes "P P' Projp A B"
   shows "P' \<noteq> A \<or> P' \<noteq> B" 
 proof -
@@ -4122,7 +4123,7 @@ proof -
     using Projp_def assms by auto
 qed
 
-lemma projp_is_project:
+lemma (in Tarski_Euclidean_2D) projp_is_project:
   assumes "P P' Projp A B"
   shows "\<exists> X Y. P P' Proj A B X Y" 
 proof -
@@ -4143,7 +4144,7 @@ proof -
     using Proj_def by blast
 qed
 
-lemma projp_is_project_perp:
+lemma (in Tarski_Euclidean_2D) projp_is_project_perp:
   assumes "P P' Projp A B" 
   shows "\<exists> X Y. P P' Proj A B X Y \<and> A B Perp X Y" 
 proof -
@@ -4165,7 +4166,7 @@ proof -
     using Proj_def by blast
 qed
 
-lemma projp_to_project:
+lemma (in Tarski_Euclidean_2D) projp_to_project:
   assumes "A B Perp X Y" and
     "P P' Projp A B"
   shows "P P' Proj A B X Y" 
@@ -4184,7 +4185,7 @@ proof -
     using Proj_def by blast
 qed
 
-lemma project_to_projp:
+lemma (in Tarski_Euclidean_2D) project_to_projp:
   assumes "P P' Proj A B X Y" and
     "A B Perp X Y" 
   shows "P P' Projp A B" 
@@ -4207,21 +4208,21 @@ proof -
     using Proj_def Projp_def assms(1) by auto
 qed
 
-lemma projp_project_to_perp:
+lemma (in Tarski_Euclidean_2D) projp_project_to_perp:
   assumes "P \<noteq> P'" and
     "P P' Projp A B" and 
     "P P' Proj A B X Y"
   shows "A B Perp X Y" 
   by (metis Perp_perm Projp_def assms(1) assms(2) assms(3) par_perp__perp project_par_dir)
 
-lemma project_par_project:
+lemma (in Tarski_Euclidean_2D) project_par_project:
   assumes "P P' Proj A B X Y" and
     "X Y Par X' Y'"
   shows "P P' Proj A B X' Y'" 
   by (metis Proj_def assms(1) assms(2) not_par_one_not_par par_neq2 par_symmetry)
 
 
-lemma project_project_par :
+lemma (in Tarski_Euclidean_2D) project_project_par :
   assumes "P \<noteq> P'" and
     "P P' Proj A B X Y" and
     "P P' Proj A B X' Y'"
@@ -4233,7 +4234,7 @@ proof -
     using assms(1) assms(2) project_par_dir by blast
 qed
 
-lemma projp_id:
+lemma (in Tarski_neutral_dimensionless) projp_id:
   assumes "P P' Projp A B" and 
     "P Q' Projp A B" 
   shows "P' = Q'" 
@@ -4246,7 +4247,7 @@ proof -
     using Projp_def assms(1) by force
 qed
 
-lemma projp_preserves_bet:
+lemma (in Tarski_Euclidean_2D) projp_preserves_bet:
   assumes "Bet A B C" and
     "A A' Projp X Y" and
     "B B' Projp X Y" and
@@ -4259,7 +4260,7 @@ proof -
     using assms(1) assms(3) assms(4) project_preserves_bet projp_to_project by blast
 qed
 
-lemma projp_preserves_eqv:
+lemma (in Tarski_Euclidean_2D) projp_preserves_eqv:
   assumes "A B EqV C D" and
     "A A' Projp X Y" and
     "B B' Projp X Y" and
@@ -4273,12 +4274,12 @@ proof -
     using assms(1) assms(3) assms(4) assms(5) project_preserves_eqv projp_to_project by blast
 qed
 
-lemma projp_idem:
+lemma (in Tarski_neutral_dimensionless) projp_idem:
   assumes "P P' Projp A B" 
   shows "P' P' Projp A B" 
   using Projp_def assms by force
 
-lemma projp2_col:
+lemma (in Tarski_Euclidean_2D) projp2_col:
   assumes "P A Projp B C" and
     "Q A Projp B C"
   shows "Col A P Q" 
@@ -4307,7 +4308,7 @@ proof -
     using Projp_def assms(1) by force
 qed
 
-lemma projp_projp_perp:
+lemma (in Tarski_Euclidean_2D) projp_projp_perp:
   assumes "P1 \<noteq> P2" and
     "P1 P Projp Q1 Q2" and
     "P2 P Projp Q1 Q2" 
@@ -4319,18 +4320,18 @@ proof -
     by (metis Perp_cases Projp_def assms(1) assms(2) assms(3) not_col_distincts perp_col2_bis)
 qed
 
-lemma col_projp_eq: 
+lemma (in Tarski_neutral_dimensionless) col_projp_eq: 
   assumes "Col A B P" and
     "P P' Projp A B"
   shows "P = P'" 
   by (meson Projp_def assms(1) assms(2) perp_not_col2)
 
-lemma projp_col:
+lemma (in Tarski_neutral_dimensionless) projp_col:
   assumes "P P' Projp A B"
   shows "Col A B P'" 
   using Projp_def assms by force
 
-lemma perp_projp2_eq:
+lemma (in Tarski_Euclidean_2D) perp_projp2_eq:
   assumes "A A' Projp C D" and 
     "B B' Projp C D" and
     "A B Perp C D"
@@ -4372,7 +4373,7 @@ proof -
     using Projp_def assms(1) by force
 qed
 
-lemma col_par_projp2_eq:
+lemma (in Tarski_Euclidean_2D) col_par_projp2_eq:
   assumes "Col L11 L12 P" and
     "L11 L12 Par L21 L22" and
     "P P' Projp L21 L22" and
@@ -4398,7 +4399,7 @@ proof -
         col_projp_eq par_symmetry)
 qed
 
-lemma col_2_par_projp2_cong:
+lemma (in Tarski_Euclidean_2D) col_2_par_projp2_cong:
   assumes "Col L11 L12 A'" and
     "Col L11 L12 B'" and
     "L11 L12 Par L21 L22" and
