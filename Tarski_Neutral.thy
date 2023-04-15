@@ -1018,7 +1018,7 @@ lemma five_segment_with_def:
   using assms(1) assms(2) OFSC_def five_segment by blast
 
 lemma cong_diff:
-  assumes "A \<noteq> B" and "Cong A B C D"NCol
+  assumes "A \<noteq> B" and "Cong A B C D"
   shows "C \<noteq> D"
   using assms(1) assms(2) cong_identity by blast
 
