@@ -47,7 +47,7 @@ subsection "Tarski's axiom system for neutral geometry: dimensionless"
 typedecl TPoint
 
 locale Tarski_neutral_dimensionless =
-  fixes Bet  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" ("(_ - _ - _) ")
+  fixes Bet  :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool" ("(_ \<midarrow> _ \<midarrow> _) ")
   and Cong :: "TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> TPoint \<Rightarrow> bool"
   and TPA TPB TPC :: TPoint
   assumes cong_pseudo_reflexivity: "\<forall> a b. 

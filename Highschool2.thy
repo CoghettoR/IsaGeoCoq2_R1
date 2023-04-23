@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 theory Highschool2
 
 imports 
+  Tarski_Continuity_Neutral
   Highschool1
   Tarski_Euclidean
 
@@ -3376,7 +3377,6 @@ lemma is_gravity_center_perm_5:
   shows "G IsGravityCenter C B A" 
   using assms is_gravity_center_perm by blast
 
-
 lemma is_gravity_center_cases:
   assumes  "G IsGravityCenter A B C \<or> G IsGravityCenter A C B \<or>
             G IsGravityCenter B A C \<or> G IsGravityCenter B C A \<or>
@@ -3384,19 +3384,12 @@ lemma is_gravity_center_cases:
   shows "G IsGravityCenter A B C" 
   using assms is_gravity_center_perm by blast
 
-definition Concyclic ::
-  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
-  ("Concyclic _ _ _ _" [99,99,99,99] 50)
-  where
-    "Concyclic A B C D \<equiv>
-Coplanar A B C D \<and> (\<exists> P. Cong P A P B \<and> Cong P A P C \<and> Cong P A P D)"
-
 lemma concyclic_aux:
-  assumes "Concyclic A B C D"
+  assumes "Concyclic2 A B C D"
   shows "\<exists> P. Cong P A P B \<and> Cong P A P C \<and> Cong P A P D \<and> Coplanar A B C P" 
 proof -
   obtain O1 where "Cong O1 A O1 B" "Cong O1 A O1 C" "Cong O1 A O1 D" 
-    using assms Concyclic_def by blast
+    using assms Concyclic2_def by blast
   have "\<exists> P. Cong P A P B \<and> Cong P A P C \<and> Cong P A P D \<and> Coplanar A B C P" 
   proof (cases "Col A B C")
     case True
@@ -3431,7 +3424,7 @@ proof -
           cong_commutativity ncop_distincts)
     moreover
     have"Cong P A P D" 
-      by (metis Concyclic_def \<open>Cong O1 A O1 D\<close> 
+      by (metis Concyclic2_def \<open>Cong O1 A O1 D\<close> 
           \<open>\<forall>E. Coplanar A B C E \<longrightarrow> Per E P O1\<close> assms cong2_per2__cong 
           cong_commutativity cong_reflexivity ncop_distincts)
     ultimately
@@ -3444,9 +3437,9 @@ qed
 
 lemma concyclic_trans:
   assumes "\<not> Col A B C" and
-    "Concyclic A B C D" and
-    "Concyclic A B C E" 
-  shows "Concyclic A B D E" 
+    "Concyclic2 A B C D" and
+    "Concyclic2 A B C E" 
+  shows "Concyclic2 A B D E" 
 proof -
   obtain x where "Cong x A x B" "Cong x A x C" "Cong x A x D" "Coplanar A B C x" 
     using assms(2) concyclic_aux by blast
@@ -3465,129 +3458,129 @@ proof -
         calculation(1) cong4_cop2__eq cong_commutativity)
   ultimately
   show ?thesis 
-    by (meson Concyclic_def assms(1) assms(2) assms(3) 
+    by (meson Concyclic2_def assms(1) assms(2) assms(3) 
         coplanar_pseudo_trans ncop_distincts)
 qed
 
 lemma concyclic_perm_1:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic A B D C" 
-  using Concyclic_def assms coplanar_perm_1 by fastforce
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 A B D C" 
+  using Concyclic2_def assms coplanar_perm_1 by fastforce
 
 lemma concyclic_perm_2:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic A C B D" 
-  by (meson Concyclic_def assms coplanar_perm_2)
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 A C B D" 
+  by (meson Concyclic2_def assms coplanar_perm_2)
 
 lemma concyclic_perm_3:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic A C D B" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 A C D B" 
   by (meson assms concyclic_perm_1 concyclic_perm_2)
 
 lemma concyclic_perm_4:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic A D B C" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 A D B C" 
   using assms concyclic_perm_1 concyclic_perm_2 by blast
 
 lemma concyclic_perm_5:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic A D C B" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 A D C B" 
   by (meson assms concyclic_perm_1 concyclic_perm_4)
 
 lemma concyclic_perm_6:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic B A C D" 
-  by (meson Concyclic_def assms concyclic_perm_4 cong_inner_transitivity 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 B A C D" 
+  by (meson Concyclic2_def assms concyclic_perm_4 cong_inner_transitivity 
       coplanar_perm_9 not_cong_3412)
 
 lemma concyclic_perm_7:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic B A D C" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 B A D C" 
   using assms concyclic_perm_1 concyclic_perm_6 by blast
 
 lemma concyclic_perm_8:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic B C A D" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 B C A D" 
   using assms concyclic_perm_4 concyclic_perm_7 by blast
 
 lemma concyclic_perm_9:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic B C D A" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 B C D A" 
   using assms concyclic_perm_3 concyclic_perm_6 by blast
 
 lemma concyclic_perm_10:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic B D A C" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 B D A C" 
   by (meson assms concyclic_perm_3 concyclic_perm_9)
 
 lemma concyclic_perm_11:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic B D C A" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 B D C A" 
   using assms concyclic_perm_1 concyclic_perm_10 by blast
 
 lemma concyclic_perm_12:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic C A B D" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 C A B D" 
   using assms concyclic_perm_2 concyclic_perm_6 by blast
 
 lemma concyclic_perm_13:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic C A D B" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 C A D B" 
   using assms concyclic_perm_3 concyclic_perm_6 by blast
 
 lemma concyclic_perm_14:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic C B A D" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 C B A D" 
   using assms concyclic_perm_12 concyclic_perm_2 by blast
 
 lemma concyclic_perm_15:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic C B D A" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 C B D A" 
   by (meson assms concyclic_perm_12 concyclic_perm_3)
 
 lemma concyclic_perm_16:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic C D A B" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 C D A B" 
   using assms concyclic_perm_15 concyclic_perm_3 by blast
 
 lemma concyclic_perm_17:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic C D B A" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 C D B A" 
   using assms concyclic_perm_1 concyclic_perm_16 by blast
 
 lemma concyclic_perm_18:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic D A B C" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 D A B C" 
   using assms concyclic_perm_11 concyclic_perm_17 by blast
 
 lemma concyclic_perm_19:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic D A C B" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 D A C B" 
   using assms concyclic_perm_10 concyclic_perm_17 by blast
 
 lemma concyclic_perm_20:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic D B A C" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 D B A C" 
   using assms concyclic_perm_1 concyclic_perm_14 by blast
 
 lemma concyclic_perm_21:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic D B C A" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 D B C A" 
   using assms concyclic_perm_19 concyclic_perm_5 by blast
 
 lemma concyclic_perm_22:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic D C A B" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 D C A B" 
   using assms concyclic_perm_21 concyclic_perm_3 by blast
 
 lemma concyclic_perm_23:
-  assumes "Concyclic A B C D" 
-  shows "Concyclic D C B A" 
+  assumes "Concyclic2 A B C D" 
+  shows "Concyclic2 D C B A" 
   using assms concyclic_perm_2 concyclic_perm_21 by blast
 
 lemma concyclic_1123:
   assumes "\<not> Col A B C"
-  shows "Concyclic A A B C" 
+  shows "Concyclic2 A A B C" 
 proof -
   have "Coplanar A A B C" 
     using coplanar_trivial by blast
@@ -3603,11 +3596,11 @@ proof -
     using \<open>G IsCircumcenter A B C\<close> circumcenter_cong_3 cong_4321 by blast
   ultimately
   show ?thesis 
-    using Concyclic_def ncop_distincts by fastforce
+    using Concyclic2_def ncop_distincts by fastforce
 qed
 
 lemma concyclic_not_col_or_eq_aux:
-  assumes "Concyclic A B C D" 
+  assumes "Concyclic2 A B C D" 
   shows "A = B \<or> A = C \<or> B = C \<or> \<not> Col A B C" 
 proof (cases "A = B")
   case True
@@ -3738,9 +3731,9 @@ next
 qed
 
 lemma concyclic_not_col_or_eq:
-  assumes "Concyclic A B C A'" 
+  assumes "Concyclic2 A B C A'" 
   shows "A' = C \<or> A' = B \<or> A = B \<or> A = C \<or> A = A' \<or> (\<not> Col A B A' \<and> \<not> Col A C A')" 
-  by (metis Concyclic_def assms cong2__ncol cong_commutativity)
+  by (metis Concyclic2_def assms cong2__ncol cong_commutativity)
 
 lemma Euler_line_special_case:
   assumes "Per A B C" and
@@ -3906,7 +3899,7 @@ next
     using assms(1) not_col_distincts by blast
   have "C \<noteq> B" 
     using False cong_reflexivity by blast
-  have "Concyclic A B C A'" 
+  have "Concyclic2 A B C A'" 
   proof -
     have "Coplanar A B C A'" 
     proof (cases "P = A")
@@ -3942,7 +3935,7 @@ next
       by (meson \<open>P Midpoint A A'\<close> midpoint_cong not_cong_2134)
     ultimately
     show ?thesis 
-      using Concyclic_def by blast
+      using Concyclic2_def by blast
   qed
   have "A' = C \<or> A' = B \<or> A = B \<or> A = C \<or> A = A' \<or> \<not> Col A B A' \<and> \<not> Col A C A'" 
     by (metis Col_cases circumcenter_cong_3 \<open>P Midpoint A A'\<close> assms(4) 
@@ -4005,7 +3998,7 @@ next
     hence "C H Par A' B" 
     proof -
       have "Coplanar A B C A'" 
-        using Concyclic_def \<open>Concyclic A B C A'\<close> by blast
+        using Concyclic2_def \<open>Concyclic2 A B C A'\<close> by blast
       moreover
       have "Coplanar A B C B" 
         using ncop_distincts by blast
@@ -4045,7 +4038,7 @@ next
         using ncop_distincts by auto
       moreover
       have "Coplanar A C B A'" 
-        using Concyclic_def \<open>Concyclic A B C A'\<close> coplanar_perm_2 by blast
+        using Concyclic2_def \<open>Concyclic2 A B C A'\<close> coplanar_perm_2 by blast
       moreover
       have "Coplanar A C H C" 
         using ncop_distincts by blast

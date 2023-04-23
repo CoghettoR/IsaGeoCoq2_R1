@@ -124,11 +124,14 @@ definition InterCC ::
 (** The circles of center A passing through B and
                 of center C passing through D
                 are tangent. *)
+
 definition TangentCC ::
   "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("TangentCC _ _ _ _ " [99,99,99,99] 50)
   where
-    "TangentCC A B C D \<equiv> \<exists>\<^sub>\<le>\<^sub>1 X. X OnCircle A B \<and> X OnCircle C D"
+    "TangentCC A B C D \<equiv>  
+        \<exists> X. (X OnCircle A B \<and> X OnCircle C D \<and> 
+             (\<forall> Y. (Y OnCircle A B \<and> Y OnCircle C D) \<longrightarrow> X = Y))"
 
 (** The line AB is tangent to the circle OP *)
 
@@ -136,14 +139,15 @@ definition Tangent ::
   "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("Tangent _ _ _ _ " [99,99,99,99] 50)
   where 
-    "Tangent A B PO P \<equiv> \<exists>\<^sub>\<le>\<^sub>1 X. Col A B X \<and> X OnCircle PO P" 
+    "Tangent A B PO P \<equiv> 
+        \<exists> X. (Col A B X \<and> X OnCircle PO P \<and>
+             (\<forall> Y. (Col A B Y \<and> Y OnCircle PO P) \<longrightarrow> X  = Y))"
 
 definition TangentAt ::
   "[TPoint,TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
   ("TangentAt _ _ _ _ _ " [99,99,99,99,99] 50)
   where
-    "TangentAt A B PO P T \<equiv>
-  Tangent A B PO P \<and> Col A B T \<and> T OnCircle PO P"
+    "TangentAt A B PO P T \<equiv> Tangent A B PO P \<and> Col A B T \<and> T OnCircle PO P"
 
 (** The points A, B, C and D belong to a same circle *)
 
@@ -152,8 +156,8 @@ definition Concyclic ::
   ("Concyclic _ _ _ _ " [99,99,99,99] 50)
   where
     "Concyclic A B C D \<equiv> Coplanar A B C D \<and>
-  (\<exists> PO P. A OnCircle PO P \<and> B OnCircle PO P \<and> 
-C OnCircle PO P \<and> D OnCircle PO P)"
+                         (\<exists> PO P. A OnCircle PO P \<and> B OnCircle PO P \<and> 
+                                  C OnCircle PO P \<and> D OnCircle PO P)"
 
 (** The points A, B, C and D are concyclic or lined up *)
 
@@ -164,6 +168,13 @@ definition ConcyclicGen ::
     "ConcyclicGen A B C D \<equiv>
   Concyclic A B C D \<or> 
 (Col A B C \<and> Col A B D \<and> Col A C D \<and> Col B C D)"
+
+definition Concyclic2 ::
+  "[TPoint,TPoint,TPoint,TPoint] \<Rightarrow> bool"
+  ("Concyclic2 _ _ _ _" [99,99,99,99] 50)
+  where
+    "Concyclic2 A B C D \<equiv> Coplanar A B C D \<and> 
+                          (\<exists> P. Cong P A P B \<and> Cong P A P C \<and> Cong P A P D)"
 
 subsubsection "Circle Propositions"
 
@@ -1711,8 +1722,8 @@ qed
 
 lemma concyclic_aux:
   assumes "Concyclic A B C D" 
-  shows "\<exists> PO P. A OnCircle PO P \<and> B OnCircle PO P \<and> C OnCircle PO P \<and> 
-D OnCircle PO P \<and> Coplanar A B C PO" 
+  shows "\<exists> PO P. A OnCircle PO P \<and> B OnCircle PO P \<and> C OnCircle PO P \<and>  
+                 D OnCircle PO P \<and> Coplanar A B C PO" 
 proof-
   have 1: "Coplanar A B C D \<and>
   (\<exists> O1 P1. A OnCircle O1 P1 \<and> B OnCircle O1 P1 \<and> C OnCircle O1 P1 \<and> D OnCircle O1 P1)" 
@@ -1904,6 +1915,653 @@ lemma concyclic_gen_pseudo_trans:
   using ConcyclicGen_def assms(1) assms(2) assms(3) assms(4) assms(5) 
     concyclic_pseudo_trans by presburger
 
+lemma (in Tarski_neutral_dimensionless) Concyclic__Concyclic2:
+  assumes "Concyclic A B C D"
+  shows "Concyclic2 A B C D" 
+proof -
+  have "Coplanar A B C D" 
+    using Concyclic_def assms by blast
+  moreover
+  obtain PO P where "A OnCircle PO P" and "B OnCircle PO P" and 
+    "C OnCircle PO P" and "D OnCircle PO P" 
+    using Concyclic_def assms by blast
+  hence "\<exists> P. Cong P A P B \<and> Cong P A P C \<and> Cong P A P D" 
+    using onc2__cong by blast
+  ultimately show ?thesis 
+    using Concyclic2_def by blast
+qed
+
+lemma (in Tarski_neutral_dimensionless) Concyclic2__Concyclic:
+  assumes "Concyclic2 A B C D"
+  shows "Concyclic A B C D" 
+proof -
+  have "Coplanar A B C D" 
+    using assms Concyclic2_def by blast
+  moreover
+  obtain P where "Cong P A P B" and "Cong P A P C" and "Cong P A P D" 
+    using assms Concyclic2_def by blast
+  have "\<exists> PO P. A OnCircle PO P \<and> B OnCircle PO P \<and> C OnCircle PO P \<and> D OnCircle PO P" 
+    by (meson OnCircle_def onc212 onc_sym
+        \<open>\<And>thesis. (\<And>P. \<lbrakk>Cong P A P B; Cong P A P C; Cong P A P D\<rbrakk> \<Longrightarrow> thesis) \<Longrightarrow> thesis\<close>)
+  ultimately show ?thesis 
+    using Concyclic_def by auto
+qed
+
+(** Euclid Book III, Prop 11 and Prop 12
+ We do not need to distinguish between internal or external tangency. *)
+
+(** If two circles are tangent, the common point is on the line joining the centers. *)
+
+lemma TangentCC_Col:
+  assumes "TangentCC A B C D" and
+    "X OnCircle A B" and
+    "X OnCircle C D" 
+  shows "Col X A C" 
+proof (cases "A = C")
+  case True
+  then show ?thesis 
+    by (simp add: col_trivial_2)
+next
+  case False
+  hence "A \<noteq> C" 
+    by simp
+  then obtain Y where "A C Perp X Y \<or> X = Y" and
+    "\<exists> M. Col A C M \<and> M Midpoint X Y \<and> X Y Reflect A C" 
+    using ex_sym1 by blast
+  then obtain M where "Col A C M" and "M Midpoint X Y" and
+    "X Y Reflect A C" by blast
+  have "Cong X A Y A" 
+    using \<open>X Y Reflect A C\<close> image_triv l10_10 not_cong_4321 by blast
+  have "Cong X C Y C" 
+    using False \<open>X Y Reflect A C\<close> is_image_col_cong not_col_distincts by blast
+  have "X OnCircle A B \<and> X OnCircle C D" 
+    using assms(2) assms(3) by blast
+  hence "\<exists> X. X OnCircle A B \<and> X OnCircle C D" 
+    by blast
+  have "Y OnCircle A B" 
+    by (meson OnCircle_def \<open>Cong X A Y A\<close> assms(2) cong_commutativity cong_inner_transitivity)
+  have "Y OnCircle C D" 
+    by (meson OnCircle_def \<open>Cong X C Y C\<close> \<open>X OnCircle A B \<and> X OnCircle C D\<close> 
+        cong_inner_transitivity not_cong_2134)
+  hence "X = Y" 
+    using TangentCC_def \<open>Y OnCircle A B\<close> assms(1) assms(2) assms(3) by blast
+  {
+    assume "A \<noteq> C" and "X X ReflectL A C"
+    hence ?thesis 
+      using Col_cases \<open>Col A C M\<close> \<open>M Midpoint X Y\<close> \<open>X = Y\<close> l8_20_2 by blast
+  }
+  moreover
+  {
+    assume "A = C" and "A Midpoint X X"
+    hence ?thesis 
+      using False by blast
+  }
+  ultimately show ?thesis 
+    using Col_cases \<open>X = Y\<close> \<open>\<exists>M. Col A C M \<and> M Midpoint X Y \<and> X Y Reflect A C\<close> l7_3 by blast
+qed
+
+lemma tangent_neq:
+  assumes "PO \<noteq> P" and
+    "Tangent A B PO P" 
+  shows "A \<noteq> B" 
+proof -
+  {
+    assume "A = B"
+    hence 1: "Tangent A A PO P" 
+      using assms(2) by blast
+    then obtain T where "Col A A T" and "T OnCircle PO P" 
+      using col_trivial_1 onc212 by blast
+    hence False 
+      by (metis Tangent_def \<open>A = B\<close> assms(1) assms(2) not_col_distincts tree_points_onc)
+  }
+  thus ?thesis 
+    by blast
+qed
+
+(** A line going through the center is not tangent to the circle. *)
+
+lemma diam_not_tangent:
+  assumes "P \<noteq> PO" and
+    "Col PO A B"
+  shows "\<not> Tangent A B PO P" 
+proof -
+  {
+    assume "Tangent A B PO P"
+    then obtain Q where "Col A B Q" and "Q OnCircle PO P" and
+      *: "\<forall> Y. (Col A B Y \<and> Y OnCircle PO P) \<longrightarrow> Q  = Y"
+      using Tangent_def by auto
+    have False
+    proof (cases "A = B")
+      case True
+      then show ?thesis 
+        by (metis \<open>Tangent A B PO P\<close> assms(1) tangent_neq)
+    next
+      case False
+      hence "A \<noteq> B" 
+        by simp
+      obtain C where "A \<noteq> C" and "B \<noteq> C" and "PO \<noteq> C" and "Col A B C" 
+        by (metis diff_col_ex diff_col_ex3)
+      obtain Q1 Q2 where "Bet Q1 PO Q2" and "Col Q1 Q2 C" and
+        "Q1 OnCircle PO P" and "Q2 OnCircle PO P" 
+        using diam_points by blast
+      hence "Q1 \<noteq> Q2" 
+        using assms(1) between_identity cong_reverse_identity onc212 onc2__cong by blast
+      moreover have "Q = Q1" 
+      proof -
+        have "Col A B Q1" 
+          by (metis Col_cases Col_def \<open>Col A B C\<close> \<open>Col Q1 Q2 C\<close> \<open>PO \<noteq> C\<close> 
+              \<open>Bet Q1 PO Q2\<close> assms(2) calculation l6_21)
+        moreover have "Q1 OnCircle PO P" 
+          using \<open>Q1 OnCircle PO P\<close> by auto
+        ultimately show ?thesis
+          using * by blast
+      qed
+      moreover have "Q = Q2" 
+      proof -
+        have "Col A B Q2" 
+          by (metis \<open>Col A B C\<close> \<open>Col A B Q\<close> \<open>Col Q1 Q2 C\<close> \<open>PO \<noteq> C\<close> \<open>Bet Q1 PO Q2\<close> 
+              assms(2) bet_col calculation(2) colx not_col_permutation_2)
+        moreover have "Q2 OnCircle PO P" 
+          by (simp add: \<open>Q2 OnCircle PO P\<close>)
+        ultimately show ?thesis
+          using * by blast
+      qed
+      ultimately show ?thesis 
+        by blast
+    qed
+  }
+  thus ?thesis 
+    by blast
+qed
+
+(** Every point on the tangent different from the point of tangency is 
+strictly outside the circle. *)
+
+lemma tangent_out:
+  assumes "X \<noteq> T" and
+    "Col A B X" and
+    "TangentAt A B PO P T"
+  shows "X OutCircleS PO P" 
+proof (cases "PO = P")
+  case True
+  then show ?thesis 
+    using OnCircle_def TangentAt_def assms(1) assms(3) cong_identity inc_eq 
+      outcs__ninc_2 by blast
+next
+  case False
+  have "Tangent A B PO P" 
+    using assms(3) TangentAt_def by blast
+  have "Col A B T" 
+    using assms(3) TangentAt_def by blast
+  have "T OnCircle PO P" 
+    using assms(3) TangentAt_def by blast
+  {
+    assume "X InCircle PO P"
+    then obtain T' where "T' OnCircle PO P" and "Bet T X T'" 
+      using TangentAt_def assms(3) chord_completion by blast
+    have "A \<noteq> B" 
+      using False TangentAt_def assms(3) tangent_neq by blast
+    obtain TT where "Col A B TT" and "TT OnCircle PO P" and 
+      "\<forall> Y. (Col A B Y \<and>Y OnCircle PO P) \<longrightarrow> TT = Y" 
+      using Tangent_def \<open>Tangent A B PO P\<close> by auto
+    have "TT = T" 
+      by (simp add: \<open>Col A B T\<close> \<open>T OnCircle PO P\<close> \<open>\<forall>Y. Col A B Y \<and> Y OnCircle PO P \<longrightarrow> TT = Y\<close>)
+    have "T = T'" 
+      by (metis \<open>Col A B T\<close> \<open>Bet T X T'\<close> \<open>T' OnCircle PO P\<close> \<open>TT = T\<close> 
+          \<open>\<forall>Y. Col A B Y \<and> Y OnCircle PO P \<longrightarrow> TT = Y\<close> assms(1) assms(2) bet_col colx)
+    have "Col A X T" 
+      using \<open>Bet T X T'\<close> \<open>T = T'\<close> assms(1) bet_neq12__neq by blast
+    hence "X = T" 
+      using \<open>Bet T X T'\<close> \<open>T = T'\<close> between_identity by blast
+  }
+  then show ?thesis 
+    using assms(1) ninc__outcs by blast
+qed
+
+(** If line AB is tangent to a circle of center O at a point T, then OT is perpendicular to AB.
+This is Euclid Book III, Prop 18 *)
+
+lemma tangentat_perp: 
+  assumes "PO \<noteq> P" and
+    "TangentAt A B PO P T"
+  shows "A B Perp PO T" 
+proof -
+  have "Tangent A B PO P" 
+    using assms(2) TangentAt_def by blast
+  have "Col A B T" 
+    using assms(2) TangentAt_def by blast
+  have "T OnCircle PO P" 
+    using assms(2) TangentAt_def by blast
+  have "A \<noteq> B" 
+    using \<open>Tangent A B PO P\<close> assms(1) tangent_neq by blast
+  have "\<not> Col A B PO" 
+    by (metis NCol_cases \<open>Tangent A B PO P\<close> assms(1) diam_not_tangent)
+  obtain R where "Col A B R" and "A B Perp PO R" 
+    using \<open>\<not> Col A B PO\<close> l8_18_existence by blast
+  show ?thesis
+  proof (cases "T = R")
+    case True
+    then show ?thesis 
+      using \<open>A B Perp PO R\<close> by auto
+  next
+    case False
+    hence "T \<noteq> R"
+      by simp
+    obtain T' where "R Midpoint T T'" 
+      using symmetric_point_construction by auto
+    show ?thesis 
+    proof (cases "A = R")
+      case True
+      hence "T R Perp R PO" 
+        by (metis False \<open>A B Perp PO R\<close> \<open>Col A B T\<close> perp_col perp_comm)
+      hence "R PerpAt T R R PO" 
+        using col_trivial_1 col_trivial_3 l8_14_2_1b_bis by auto
+      hence "Per PO R T" 
+        using l8_2 perp_in_per_2 by blast
+      then obtain T'' where "R Midpoint T T''" and "Cong PO T PO T''" 
+        using Per_def by blast
+      hence "T' = T''" 
+        using SymR_uniq_aux \<open>R Midpoint T T'\<close> by blast
+      have "T \<noteq> T'" 
+        using False \<open>R Midpoint T T'\<close> l8_20_2 by blast
+      have "T' OnCircle PO P" 
+        using OnCircle_def \<open>Cong PO T PO T''\<close> \<open>T OnCircle PO P\<close> \<open>T' = T''\<close> 
+          cong_inner_transitivity by blast
+      have "T' OutCircleS PO P" 
+        by (metis Col_def Midpoint_def True \<open>Col A B T\<close> \<open>R Midpoint T T''\<close> \<open>T \<noteq> T'\<close> 
+            \<open>T' = T''\<close> assms(2) col_transitivity_2 l4_19 not_bet_distincts tangent_out)
+      hence "PO P Lt PO T'" 
+        by (simp add: OutCircleS_def)
+      hence "PO P Le PO T'" 
+        using lt__le by auto
+      have "\<not> Cong PO P PO T'" 
+        using \<open>PO P Lt PO T'\<close> cong__nlt by blast
+      have "Cong PO T' PO P" 
+        using OnCircle_def \<open>T' OnCircle PO P\<close> by blast
+      then show ?thesis 
+        using Cong_cases \<open>\<not> Cong PO P PO T'\<close> by blast
+    next
+      case False
+      hence "A \<noteq> R" 
+        by simp
+      hence "A R Perp PO R" 
+        using \<open>A B Perp PO R\<close> \<open>Col A B R\<close> perp_col by blast
+      have "Col R A T" 
+        by (metis \<open>A \<noteq> B\<close> \<open>Col A B R\<close> \<open>Col A B T\<close> col_permutation_4 col_transitivity_2)
+      have "R T Perp PO R" 
+        using Perp_perm \<open>A B Perp PO R\<close> \<open>Col A B R\<close> \<open>Col A B T\<close> \<open>T \<noteq> R\<close> perp_col0 by blast
+      hence "R PerpAt T R R PO" 
+        using Perp_in_perm perp_perp_in by blast
+      have "Per PO R T" 
+        using \<open>R T Perp PO R\<close> col_trivial_2 col_trivial_3 l8_16_1 by blast
+      then obtain T'' where "R Midpoint T T''" and "Cong PO T PO T''" 
+        using Per_def by blast
+      hence "T' = T''" 
+        using \<open>R Midpoint T T'\<close> symmetric_point_uniqueness by blast
+      have "T \<noteq> T'" 
+        using \<open>R Midpoint T T'\<close> \<open>T \<noteq> R\<close> l7_3 by blast
+      have "T' OnCircle PO P" 
+        using OnCircle_def \<open>Cong PO T PO T''\<close> \<open>T OnCircle PO P\<close> \<open>T' = T''\<close> 
+          cong_inner_transitivity by blast
+      have "Col A B T'" 
+        by (metis \<open>Col A B R\<close> \<open>Col A B T\<close> \<open>R Midpoint T T''\<close> \<open>T \<noteq> R\<close> 
+            \<open>T' = T''\<close> colx midpoint_col)
+      hence "T' OutCircleS PO P" 
+        by (metis \<open>T \<noteq> T'\<close> assms(2) tangent_out)
+      hence "T R Perp R PO" 
+        using Perp_cases \<open>R T Perp PO R\<close> by blast
+      have "PO P Le PO T'" 
+        using OnCircle_def \<open>T' OnCircle PO P\<close> cong__le3412 by auto
+      have "\<not> Cong PO P PO T'" 
+        using \<open>T' OnCircle PO P\<close> \<open>T' OutCircleS PO P\<close> onc__inc outcs__ninc by blast
+      moreover have "Cong PO P PO T'" 
+        using Cong_cases OnCircle_def \<open>T' OnCircle PO P\<close> by blast
+      ultimately show ?thesis 
+        by blast
+    qed
+  qed
+qed
+
+(** AB is tangent to the circle (O,P) iff they intersect at a point X
+such that AB is perpendicular to OX. *)
+
+lemma tangency_chara_R1:
+  assumes "P \<noteq> PO" and
+    "\<exists> X. (X OnCircle PO P \<and> X PerpAt A B PO X)"
+  shows "Tangent A B PO P" 
+proof -
+  obtain T where "T OnCircle PO P" and "T PerpAt A B PO T" 
+    using assms(2) by blast
+  hence "Col A B T \<and> Col PO T T" 
+    using perp_in_col by blast
+  hence "Col A B T" 
+    by blast
+  moreover 
+  {
+    fix Y
+    assume "Col A B Y" and "Y OnCircle PO P"
+    have "T = Y" 
+    proof (cases "T = Y")
+      case True
+      then show ?thesis 
+        by blast
+    next
+      case False
+      hence "T Y Perp PO T" 
+        using \<open>Col A B Y\<close> \<open>T PerpAt A B PO T\<close> calculation perp_col2 perp_in_perp by blast
+      have "T PerpAt T Y PO T" 
+        using \<open>T Y Perp PO T\<close> col_trivial_3 l8_15_1 by auto
+      hence False 
+        by (metis \<open>T OnCircle PO P\<close> \<open>Y OnCircle PO P\<close> col_onc2_perp__mid 
+            midpoint_out not_col_distincts out_diff1 perp_in_perp_bis perp_in_sym perp_not_eq_1)
+      then show ?thesis 
+        by blast
+    qed
+  }
+  ultimately show ?thesis 
+    using Tangent_def \<open>T OnCircle PO P\<close> by blast
+qed
+
+lemma tangency_chara_R2:
+  assumes "P \<noteq> PO" and
+    "Tangent A B PO P"
+  shows "\<exists> X. (X OnCircle PO P \<and> X PerpAt A B PO X)" 
+proof -
+  obtain T where "Col A B T" and "T OnCircle PO P" and 
+    "\<forall> Y. (Col A B Y \<and> Y OnCircle PO P) \<longrightarrow> T = Y" 
+    using assms(2) Tangent_def by auto
+  then have "TangentAt A B PO P T" 
+    using TangentAt_def assms(2) by blast
+  have "A B Perp PO T" 
+    by (metis \<open>TangentAt A B PO P T\<close> assms(1) tangentat_perp)
+  hence "T PerpAt A B PO T" 
+    using \<open>Col A B T\<close> l8_15_1 by blast
+  thus ?thesis 
+    using \<open>T OnCircle PO P\<close> by blast
+qed
+
+lemma tangency_chara:
+  assumes "P \<noteq> PO" 
+  shows "(\<exists> X. (X OnCircle PO P \<and> X PerpAt A B PO X)) \<longleftrightarrow> Tangent A B PO P" 
+  using assms tangency_chara_R1 tangency_chara_R2 by blast
+
+lemma tangency_chara2_R1:
+  assumes "Q OnCircle PO P" and
+    "Col Q A B" and
+    "(\<forall> X. Col A B X \<longrightarrow> X = Q \<or> X OutCircleS PO P)"
+  shows "Tangent A B PO P" 
+proof -
+  have "Col A B Q" 
+    by (simp add: assms(2) col_permutation_1)
+  moreover have "\<forall> Y. (Col A B Y \<and> Y OnCircle PO P) \<longrightarrow> Q = Y" 
+    using assms(3) onc__inc outcs__ninc_1 by blast
+  ultimately show ?thesis 
+    using assms(1) Tangent_def by blast
+qed
+
+lemma tangency_chara2_R2:
+  assumes "Q OnCircle PO P" and
+    "Col Q A B" and
+    "Tangent A B PO P"
+  shows "\<forall> X. Col A B X \<longrightarrow> X = Q \<or> X OutCircleS PO P" 
+  by (metis Col_cases TangentAt_def assms(1) assms(2) assms(3) tangent_out)
+
+lemma tangency_chara2:
+  assumes "Q OnCircle PO P" and
+    "Col Q A B"  
+  shows "(\<forall> X. Col A B X \<longrightarrow> X = Q \<or> X OutCircleS PO P) \<longleftrightarrow> Tangent A B PO P" 
+  using assms(1) assms(2) tangency_chara2_R1 tangency_chara2_R2 by blast
+
+lemma tangency_chara3_R1: 
+  assumes "A \<noteq> B" and
+    "Q OnCircle PO P" and
+    "Col Q A B" and
+    "\<forall> X. (Col A B X \<longrightarrow> X OutCircle PO P)"
+  shows "Tangent A B PO P" 
+proof -
+  have "(\<forall> X. Col A B X \<longrightarrow> X = Q \<or> X OutCircleS PO P) \<longleftrightarrow> Tangent A B PO P" 
+    by (simp add: assms(2) assms(3) tangency_chara2)
+  moreover
+  {
+    fix X
+    assume "Col A B X" 
+    {
+      assume "X \<noteq> Q"
+      have "X OutCircle PO P" 
+        by (simp add: \<open>Col A B X\<close> assms(4))
+      hence "PO P Le PO X" 
+        by (simp add: OutCircle_def)
+      {
+        assume "Cong PO P PO X"
+        obtain M where "M Midpoint X Q" 
+          using MidR_uniq_aux by blast
+        hence "M InCircleS PO P" 
+          using OnCircle_def \<open>Cong PO P PO X\<close> \<open>X \<noteq> Q\<close> assms(2) onc2_mid__incs 
+            onc_sym by presburger
+        have "Col A B M" 
+          using NCol_cases \<open>Col A B X\<close> \<open>M Midpoint X Q\<close> \<open>X \<noteq> Q\<close> assms(3) colx midpoint_col by blast
+        hence "M OutCircle PO P" 
+          using assms(4) by blast
+        hence "\<not> PO M Lt PO P" 
+          using \<open>M InCircleS PO P\<close> outc__nincs by auto
+        hence False 
+          using \<open>M InCircleS PO P\<close> \<open>M OutCircle PO P\<close> outc__nincs by blast
+      }
+      hence "PO P Lt PO X" 
+        using Lt_def \<open>PO P Le PO X\<close> by blast
+      hence "X OutCircleS PO P" 
+        by (simp add: OutCircleS_def)
+    }
+    hence "X = Q \<or> X OutCircleS PO P" 
+      by blast
+  }
+  ultimately show ?thesis 
+    by blast
+qed
+
+lemma tangency_chara3_R2:
+  assumes "Q OnCircle PO P" and
+    "Col Q A B" and
+    "Tangent A B PO P" 
+  shows "\<forall> X. (Col A B X \<longrightarrow> X OutCircle PO P)" 
+  using assms(2) assms(3) assms(1) onc__outc outcs__outc tangency_chara2 by blast
+
+lemma tangency_chara3:
+  assumes "A \<noteq> B" and
+    "Q OnCircle PO P" and
+    "Col Q A B" 
+  shows "(\<forall> X. (Col A B X \<longrightarrow> X OutCircle PO P)) \<longleftrightarrow> Tangent A B PO P" 
+  using assms(1) assms(2) assms(3) tangency_chara3_R1 tangency_chara3_R2 by blast
+
+(** Euclid Book III Prop 5 
+ If two circles cut one another, then they do not have the same center. *)
+
+lemma intercc__neq:
+  assumes "InterCC A B C D" 
+  shows "A \<noteq> C" 
+proof -
+  obtain P Q where "InterCCAt A B C D P Q" 
+    using InterCC_def assms by blast
+  {
+    assume "A = C"
+    hence "Cong A B A D" 
+      by (metis InterCCAt_def \<open>InterCCAt A B C D P Q\<close> onc2__cong onc_sym)
+    hence False 
+      using InterCCAt_def \<open>A = C\<close> \<open>InterCCAt A B C D P Q\<close> eqc_chara_2 by force
+  }
+  thus ?thesis 
+    by blast
+qed
+
+(** Euclid Book III Prop 6 
+If two circles touch one another, then they do not have the same center.
+*)
+
+lemma tangentcc__neq:
+  assumes "A \<noteq> B" and
+    "TangentCC A B C D" 
+  shows "A \<noteq> C" 
+  by (metis OnCircle_def TangentCC_def assms(1) assms(2) eqc_chara neqc_chara_2 
+      onc_sym tree_points_onc_cop)
+
+lemma interccat__neq:
+  assumes "InterCCAt A B C D P Q" 
+  shows "A \<noteq> C" 
+  using InterCC_def assms intercc__neq by blast
+
+lemma interccat__ncol:
+  assumes "InterCCAt A B C D P Q" 
+  shows "\<not> Col A C P" 
+proof -
+  {
+    assume "Col A C P"
+    have "P = Q" 
+    proof (rule l4_18 [where ?A="A" and ?B="C"], simp_all add: \<open>Col A C P\<close>)
+      show "A \<noteq> C" 
+        using assms interccat__neq by auto
+      show "Cong A P A Q" 
+        by (meson InterCCAt_def assms onc2__cong)
+      show "Cong C P C Q" 
+        by (meson InterCCAt_def assms onc2__cong)
+    qed
+    hence False 
+      using InterCCAt_def assms by force
+  }
+  thus ?thesis 
+    by blast
+qed
+
+(** Euclid Book III Prop 10
+ A circle does not cut a circle at more than two points.
+ *)
+lemma cop_onc2__oreq:
+  assumes "InterCCAt A B C D P Q" and
+    "Coplanar A C P Q" and
+    "Z OnCircle A B" and
+    "Z OnCircle C D" and
+    "Coplanar A C P Z" 
+  shows "Z = P \<or> Z = Q" 
+proof (cases "Z = Q")
+  case True
+  then show ?thesis 
+    by simp
+next
+  case False
+  hence "Z \<noteq> Q" 
+    by simp
+  obtain M where "M Midpoint Q P" 
+    using MidR_uniq_aux by blast
+  hence "Per A M Q" 
+    by (meson InterCCAt_def Per_def assms(1) onc2__cong)
+  have "Per C M Q" 
+    by (meson InterCCAt_def Per_def \<open>M Midpoint Q P\<close> assms(1) onc2__cong)
+  obtain N where "N Midpoint Z Q" 
+    using MidR_uniq_aux by blast
+  hence "Per A N Q" 
+    by (meson InterCCAt_def assms(1) assms(3) l7_2 mid_onc2__per)
+  have "Per C N Q" 
+    by (meson InterCCAt_def \<open>N Midpoint Z Q\<close> assms(1) assms(4) l7_2 mid_onc2__per)
+  have "Coplanar Q A C M" 
+    by (meson Midpoint_def \<open>M Midpoint Q P\<close> assms(2) bet_cop2__cop 
+        coplanar_perm_18 ncop_distincts)
+  have "Col A C M" 
+  proof -
+    have "Coplanar Q A C M" 
+      using \<open>Coplanar Q A C M\<close> by auto
+    moreover have "Q \<noteq> M" 
+      by (metis InterCCAt_def \<open>M Midpoint Q P\<close> assms(1) midpoint_distinct_1)
+    ultimately show ?thesis 
+      by (simp add: \<open>Per A M Q\<close> \<open>Per C M Q\<close> cop_per2__col)
+  qed
+  have "A \<noteq> C" 
+    using assms(1) interccat__neq by auto
+  have "Col A C N" 
+  proof -
+    have "Coplanar Q A C N" 
+      by (meson Midpoint_def \<open>N Midpoint Z Q\<close> assms(1) assms(2) assms(5)
+          bet_cop2__cop coplanar_pseudo_trans interccat__ncol ncop_distincts)
+    moreover have "Q \<noteq> N" 
+      using False \<open>N Midpoint Z Q\<close> is_midpoint_id l7_2 by blast
+    ultimately show ?thesis 
+      using \<open>Per A N Q\<close> \<open>Per C N Q\<close> cop_per2__col by blast
+  qed
+  have "A C Perp Q P" 
+  proof (cases "A = M")
+    case True
+    then show ?thesis 
+      by (metis Cong_cases False Mid_perm OnCircle_def \<open>A \<noteq> C\<close> \<open>M Midpoint Q P\<close> 
+          \<open>N Midpoint Z Q\<close> \<open>Per A N Q\<close> \<open>Per C M Q\<close> between_equality between_symmetry 
+          cong_identity_inv mid_onc2__perp midpoint_bet onc212 outer_transitivity_between2 
+          per_double_cong perp_left_comm symmetric_point_construction)
+  next
+    case False
+    hence "M PerpAt A M M Q" 
+      by (metis InterCCAt_def \<open>M Midpoint Q P\<close> \<open>Per A M Q\<close> assms(1) midpoint_distinct_1 
+          per_perp_in)
+    hence "M A Perp Q M" 
+      using perp_comm perp_in_perp by blast 
+    hence "A M Perp M Q" 
+      using Perp_cases by auto
+    have "Col A M C" 
+      using Col_cases \<open>Col A C M\<close> by auto
+    hence "A C Perp M Q" 
+      using perp_col \<open>A M Perp M Q\<close> \<open>A \<noteq> C\<close> by blast
+    then show ?thesis 
+      using \<open>M Midpoint Q P\<close> col_trivial_2 l7_3 midpoint_col perp_col2_bis by blast
+  qed
+  have "Col Q N Z" 
+    using \<open>N Midpoint Z Q\<close> col_permutation_2 midpoint_col by blast
+  have "N \<noteq> Q" 
+    using False Midpoint_def \<open>N Midpoint Z Q\<close> cong_identity_inv by blast
+  have "Q Z Perp C A" 
+    using perp_col 
+    by (metis (full_types) False Perp_cases \<open>A \<noteq> C\<close> \<open>Col A C N\<close> \<open>Col Q N Z\<close> 
+        \<open>N \<noteq> Q\<close> \<open>Per A N Q\<close> \<open>Per C N Q\<close> col_per_perp col_permutation_2 not_col_permutation_4)
+  hence "A C Perp Q Z" 
+    using Perp_cases by blast
+  have "Q P Par Q Z" 
+  proof (rule l12_9 [where ?C1.0="A" and ?C2.0="C"],simp_all add: assms(2) assms(5))
+    show "Coplanar A C Q Q" 
+      using ncop_distincts by blast
+    show "Coplanar A C Q Z" 
+      using Coplanar_def \<open>Col A C N\<close> \<open>Col Q N Z\<close> col_permutation_5 by blast
+    show "Q P Perp A C" 
+      using Perp_perm \<open>A C Perp Q P\<close> by blast
+    show "Q Z Perp A C" 
+      using Perp_perm \<open>Q Z Perp C A\<close> by blast
+  qed
+  moreover {
+    assume "Q P ParStrict Q Z"
+    hence "Z = P" 
+      using not_par_strict_id by blast
+  }
+  moreover {
+    assume "Q \<noteq> P \<and> Q \<noteq> Z \<and> Col Q Q Z \<and> Col P Q Z"
+    hence "Z = P \<or> Z = Q" 
+      using line_circle_two_points by (metis InterCCAt_def assms(1) assms(3))
+    hence "Z = P" 
+      by (simp add: False)
+  }
+  ultimately show ?thesis 
+    using Par_def by blast
+qed
+
+(*
+
+
+
+Context `{T2D:Tarski_2D}.
+
+
+Proof.
+intros.
+assert(HCop := all_coplanar A C P Q).
+assert(HCop1 := all_coplanar A C P Z).
+apply(cop_onc2__oreq A B C D); assumption.
+Qed.
+
+End Tangency_2D.
+*)
 end
 
 subsection "Axioms continuity"
@@ -2058,6 +2716,119 @@ definition DedekindVariant :: bool
  (\<forall> X Y. (Alpha X \<and> Beta Y) \<longrightarrow> (Bet A X Y \<and> X \<noteq> Y)))
 \<longrightarrow>
   (\<exists> B. \<forall> X Y. (Alpha X \<and> Beta Y) \<longrightarrow> Bet X B Y)"
+
+
+subsubsection "Continuity Propositions"
+
+(** Prop 17 construction of the tangent to a circle at a given point *)
+
+lemma tangent_construction: 
+  assumes "segment_circle" and
+    "X OutCircle PO P" 
+  shows "\<exists> Y. Tangent X Y PO P" 
+proof (cases "PO = P")
+  case True
+  then show ?thesis 
+    by (metis bet_col inc_eq ninc__outcs onc212 onc__outc outcs__outc 
+        point_construction_different tangency_chara3)
+next
+  case False
+  hence "PO \<noteq> X" 
+    using assms(2) outc_eq by blast 
+  have "X OnCircle PO P \<or> X InCircleS PO P \<or> X OutCircleS PO P" 
+    by (simp add: circle_cases)
+  moreover { 
+    assume "X OnCircle PO P" 
+    moreover 
+    obtain Y where "X Y Perp PO X" 
+      using \<open>PO \<noteq> X\<close> perp_exists by fastforce
+    have "X PerpAt X Y PO X"
+      using \<open>X Y Perp PO X\<close> perp_perp_in by auto
+    ultimately have ?thesis 
+      by (metis False tangency_chara_R1)
+  }
+  moreover have "X InCircleS PO P \<longrightarrow> ?thesis" 
+    using assms(2) outc__nincs by auto
+  moreover {
+    assume "X OutCircleS PO P"
+    obtain U where "U OnCircle PO P" and "PO Out X U"
+      using False \<open>PO \<noteq> X\<close> onc_exists by metis
+    have "Bet PO U X" 
+    proof -
+      {
+        assume "Bet PO X U" 
+        hence "PO X Le PO U" 
+          by (simp add: bet__le1213)
+        moreover have "PO U Lt PO X" 
+          by (meson OnCircle_def OutCircleS_def \<open>U OnCircle PO P\<close> \<open>X OutCircleS PO P\<close> 
+              cong__le3412 le1234_lt__lt onc_sym)
+        ultimately have ?thesis 
+          using le__nlt by auto
+      }
+      thus ?thesis 
+        using Out_def \<open>PO Out X U\<close> by blast
+    qed
+    obtain R where "U R Perp PO U" 
+      by (metis \<open>PO Out X U\<close> out_diff2 perp_exists)
+    obtain W where "PO Midpoint X W" 
+      using symmetric_point_construction by blast
+    obtain T where "Bet U R T \<or> Bet U T R" and "Cong U T W X" 
+      by (metis segment_construction segment_construction_2)
+    have "U InCircleS PO X" 
+      by (metis OutCircle_def \<open>Bet PO U X\<close> \<open>U OnCircle PO P\<close> \<open>X OutCircleS PO P\<close> 
+          bet_le_eq between_symmetry incs__noutc_2 le_comm onc__inc outcs__ninc)
+    hence "U InCircle PO X" 
+      using incs__inc by auto
+    have "T OutCircleS PO X" 
+      using \<open>Cong U T W X\<close> \<open>PO Midpoint X W\<close> \<open>U InCircleS PO X\<close> diam_cong_incs__outcs 
+        mid_onc__diam not_cong_3421 onc212 by blast
+    hence "T OutCircle PO X" 
+      using outcs__outc by auto
+    hence "\<exists> Z. Bet U Z T \<and> Z OnCircle PO X" 
+      using assms(1) segment_circle_def \<open>U InCircle PO X\<close> by blast
+    then obtain Y where "Bet U Y T" and "Y OnCircle PO X" 
+      by blast
+    hence "\<exists> Q. Q OnCircle PO P \<and> PO Out Y Q" 
+      using False \<open>PO \<noteq> X\<close> onc_exists onc_not_center by presburger
+    then obtain V where "V OnCircle PO P" and "PO Out Y V"
+      by blast
+    have "Bet PO V Y" 
+      by (meson OnCircle_def Out_cases \<open>PO \<midarrow> U \<midarrow> X\<close> \<open>PO Out Y V\<close> \<open>U OnCircle PO P\<close> 
+          \<open>V OnCircle PO P\<close> \<open>Y OnCircle PO X\<close> cong_preserves_bet onc2__cong onc_sym)
+    have "Cong PO X PO Y" 
+      using \<open>Y OnCircle PO X\<close> onc212 onc2__cong by blast
+    have "X PO V CongA Y PO U" 
+      by (simp add: Out_cases \<open>PO Out X U\<close> \<open>PO Out Y V\<close> conga_right_comm out2__conga)
+    hence "Cong V X U Y" 
+      by (meson OnCircle_def \<open>Cong PO X PO Y\<close> \<open>U OnCircle PO P\<close> \<open>V OnCircle PO P\<close> 
+          cong_4321 cong_commutativity cong_transitivity l11_49)
+    hence "PO U Y CongA PO V X" 
+      by (metis Out_def \<open>Cong PO X PO Y\<close> \<open>PO Out X U\<close> \<open>PO Out Y V\<close> \<open>U InCircleS PO X\<close> 
+          \<open>U OnCircle PO P\<close> \<open>V OnCircle PO P\<close> \<open>Y OnCircle PO X\<close> l11_51 not_cong_3412 
+          onc2__cong onc__outc outc__nincs_1)
+    have "Per PO V X" 
+    proof -  
+      have "U Y Perp PO U" 
+        by (metis \<open>PO U Y CongA PO V X\<close> \<open>U R Perp PO U\<close> \<open>(U \<midarrow> R \<midarrow> T) \<or> (U \<midarrow> T \<midarrow> R)\<close> 
+            \<open>U \<midarrow> Y \<midarrow> T\<close> bet_out conga_diff2 l6_6 out_col out_diff2 perp_col perp_not_eq_1)
+      hence "U PerpAt U Y PO U" 
+        using \<open>U Y Perp PO U\<close> perp_perp_in by force
+      hence "U PerpAt PO U U Y" 
+        using Perp_in_cases by blast
+      hence "Per PO U Y" 
+        using perp_in_per by auto
+      thus ?thesis 
+        using \<open>PO U Y CongA PO V X\<close> l11_17 by blast
+    qed
+    have "V PerpAt X V PO V" 
+      by (metis \<open>PO U Y CongA PO V X\<close> \<open>Per PO V X\<close> conga_distinct l8_2 per_perp_in 
+          perp_in_right_comm)
+    hence ?thesis  
+      by (metis \<open>V OnCircle PO P\<close> False tangency_chara_R1)
+  }
+  ultimately show ?thesis 
+    by blast
+qed
 
 subsubsection "Dedekind Variant"
 

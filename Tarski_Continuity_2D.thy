@@ -438,5 +438,12 @@ next
   qed
 qed
 
+lemma onc2__oreq:
+  assumes "InterCCAt A B C D P Q" and
+    "Z OnCircle A B" and
+    "Z OnCircle C D"
+  shows "Z = P \<or> Z = Q" 
+  by (metis InterCCAt_def assms(1) assms(2) assms(3) cong2_onc3__eq interccat__neq onc2__cong)
+
 end
 end
